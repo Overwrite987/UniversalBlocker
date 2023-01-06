@@ -22,9 +22,9 @@ public class CommandBlocker implements Listener {
     }
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
-	  public void onLiteCommand(PlayerCommandPreprocessEvent e) {
+	  public void onBlockedCommand(PlayerCommandPreprocessEvent e) {
 		FileConfiguration config = Main.getInstance().getConfig();
-		FileConfiguration messageconfig = Config.getFile("message.yml");
+		FileConfiguration messageconfig = Config.messages;
 		String com = e.getMessage();
 	    Player p = e.getPlayer();
 	    for (String command : config.getStringList("blocked-commands.lite")) {
@@ -36,8 +36,8 @@ public class CommandBlocker implements Listener {
                         (float)config.getDouble("sounds.blocked-command.volume"), (float)config.getDouble("sounds.blocked-command.pitch"));
             }
 	        if (config.getBoolean("settings.enable-titles")) {
-	            p.sendTitle(RGBcolors.translate(messageconfig.getString("messages.blocksyntax-title").split(":")[0]), 
-	         		   RGBcolors.translate(messageconfig.getString("messages.blocksyntax-title").split(":")[1]));
+	            p.sendTitle(RGBcolors.translate(messageconfig.getString("messages.blockedcommand-title").split(":")[0]), 
+	         		   RGBcolors.translate(messageconfig.getString("messages.blockedcommand-title").split(":")[1]));
 	        }
 	        if (config.getBoolean("settings.notify")) {
 	       	  Bukkit.broadcast(RGBcolors.translate(messageconfig.getString("messages.notify-cmd").replace("%player%", p.getName()).replace("%cmd%", command)), "ublocker.admin");

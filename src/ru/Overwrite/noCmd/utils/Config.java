@@ -8,16 +8,19 @@ import java.io.File;
 import java.io.IOException;
 
 public class Config {
+	
+	public static FileConfiguration messages;
 
-    public static FileConfiguration getFile(String fileName) {
-        File file = new File(Main.getInstance().getDataFolder(), fileName);
-        if (Main.getInstance().getResource(fileName) == null) {
-            return save(YamlConfiguration.loadConfiguration(file), fileName);
+    public static void loadMessages() {
+        File file = new File(Main.getInstance().getDataFolder(), "message.yml");
+        if (Main.getInstance().getResource("message.yml") == null) {
+            save(YamlConfiguration.loadConfiguration(file), "message.yml");
         }
         if (!file.exists()) {
-        	Main.getInstance().saveResource(fileName, false);
+        	Main.getInstance().saveResource("message.yml", false);
         }
-        return YamlConfiguration.loadConfiguration(file);
+        messages = YamlConfiguration.loadConfiguration(file);
+        Main.getInstance().getLogger().info("messages.yml загружен");
     }
 
     public static FileConfiguration save(FileConfiguration config, String fileName) {

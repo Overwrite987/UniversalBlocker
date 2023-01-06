@@ -23,11 +23,11 @@ public class BanWords implements Listener {
 	@EventHandler
 	public void onChat(AsyncPlayerChatEvent e) {
 	  FileConfiguration config = Main.getInstance().getConfig();
+	  FileConfiguration messageconfig = Config.messages;
 	  String message = e.getMessage().toLowerCase();
 	  Player p = e.getPlayer();
 	  for (String banword : config.getStringList("chat-settings.ban-words")) {
 	    if (message.contains(banword.toLowerCase()) && !isAdmin(p)) {
-	      FileConfiguration messageconfig = Config.getFile("message.yml");
 	      p.sendMessage(RGBcolors.translate(messageconfig.getString("messages.blockedword")).replace("%word%", banword));
 	      e.setCancelled(true);
 	      if (config.getBoolean("settings.enable-sounds")) {

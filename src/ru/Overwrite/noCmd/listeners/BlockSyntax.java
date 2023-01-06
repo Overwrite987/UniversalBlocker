@@ -24,9 +24,9 @@ public class BlockSyntax implements Listener {
   @EventHandler(priority = EventPriority.HIGHEST)
   public void onCommand(PlayerCommandPreprocessEvent e) {
 	  FileConfiguration config = Main.getInstance().getConfig();
+	  FileConfiguration messageconfig = Config.messages;
 	  Player p = e.getPlayer();
 	 if (e.getMessage().split(" ")[0].contains(":") && !config.getStringList("excluded-players").contains(p.getName())) {
-	   FileConfiguration messageconfig = Config.getFile("message.yml");
 	   e.setCancelled(true);
 	   p.sendMessage(RGBcolors.translate(messageconfig.getString("messages.blocksyntax")));
 	   if (config.getBoolean("settings.enable-sounds")) {

@@ -24,10 +24,10 @@ public class ChatFilter implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onChatMessage(AsyncPlayerChatEvent e) {
       FileConfiguration config = Main.getInstance().getConfig();
+      FileConfiguration messageconfig = Config.messages;
 	  String message = e.getMessage();
 	  Player p = e.getPlayer();
 	  if (message != null && containsBlockedChars(message) && !isAdmin(p)) {
-		  FileConfiguration messageconfig = Config.getFile("message.yml");
 	      p.sendMessage(RGBcolors.translate(messageconfig.getString("messages.blockedchatsymbol")));
 	      e.setCancelled(true);
 	      if (config.getBoolean("settings.enable-sounds")) {

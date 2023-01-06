@@ -3,6 +3,7 @@ package ru.Overwrite.noCmd;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import ru.Overwrite.noCmd.utils.Config;
 
 public class CommandClass implements CommandExecutor {
   private final Main plugin;
@@ -23,6 +24,7 @@ public class CommandClass implements CommandExecutor {
     } 
     if (args[0].equalsIgnoreCase("reload") && sender.hasPermission("ublocker.admin")) {
       this.plugin.reloadConfig();
+      Config.loadMessages();
       sender.sendMessage("§cUniversalBlocker §7> §aКонфигурация перезагружена");
       return true;
     } 

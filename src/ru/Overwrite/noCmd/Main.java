@@ -12,7 +12,7 @@ public class Main extends JavaPlugin {
   public static Main getInstance() {
      return instance;
   }
-	
+ 
   private static final int SUB_VERSION = Integer.parseInt(
        Bukkit.getServer().getClass().getPackage().getName()
                .replace(".", ",")
@@ -35,7 +35,7 @@ public class Main extends JavaPlugin {
 	instance = this;
     getCommand("universalblocker").setExecutor(new CommandClass(this));
     saveDefaultConfig();
-    reloadConfig();
+    Config.loadMessages();
     if (getConfig().getBoolean("settings.enable-metrics")) {
       new Metrics(this, 15379);
     }

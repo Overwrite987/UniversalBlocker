@@ -24,12 +24,12 @@ public class SyntaxBlocker implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onSyntax(PlayerCommandPreprocessEvent e) {
       FileConfiguration config = Main.getInstance().getConfig();
+      FileConfiguration messageconfig = Config.messages;
 	  for (String symbol : config.getStringList("symbols.blocked-symbols")) {
 	    String com = e.getMessage().toLowerCase();
 	    Player p = e.getPlayer();
 	    if (!startWithExcluded(com)) {
 	      if (com.contains(symbol.toLowerCase()) && !isAdmin(p)) {
-	    	FileConfiguration messageconfig = Config.getFile("message.yml");
 	    	p.sendMessage(RGBcolors.translate(messageconfig.getString("messages.blockedsymbol")).replace("%symbol%", symbol));
 	        e.setCancelled(true);
 	        if (config.getBoolean("settings.enable-sounds")) {
