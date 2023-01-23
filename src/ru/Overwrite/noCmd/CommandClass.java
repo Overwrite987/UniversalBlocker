@@ -3,6 +3,13 @@ package ru.Overwrite.noCmd;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+
+import ru.Overwrite.noCmd.listeners.BanWords;
+import ru.Overwrite.noCmd.listeners.SyntaxBlocker;
+import ru.Overwrite.noCmd.listeners.ChatFilter;
+import ru.Overwrite.noCmd.listeners.CommandBlocker;
+import ru.Overwrite.noCmd.listeners.CommandHider;
+import ru.Overwrite.noCmd.listeners.TabComplete;
 import ru.Overwrite.noCmd.utils.Config;
 
 public class CommandClass implements CommandExecutor {
@@ -25,6 +32,25 @@ public class CommandClass implements CommandExecutor {
     if (args[0].equalsIgnoreCase("reload") && sender.hasPermission("ublocker.admin")) {
       this.plugin.reloadConfig();
       Config.loadMessages();
+      Config.setupExcluded();
+      if (BanWords.active) {
+    	  Config.setupBanWords();
+      }
+      if (SyntaxBlocker.active) {
+    	  Config.setupSyntax();
+      }
+      if (ChatFilter.active) {
+    	  Config.setupChars();
+      }
+      if (CommandBlocker.active) {
+    	  Config.setupCommands();
+      }
+      if (CommandHider.active && !CommandBlocker.active) {
+    	  Config.setupCommands();
+      }
+      if (TabComplete.active) {
+    	  Config.setupArgshidden();
+      }
       sender.sendMessage("§cUniversalBlocker §7> §aКонфигурация перезагружена");
       return true;
     } 

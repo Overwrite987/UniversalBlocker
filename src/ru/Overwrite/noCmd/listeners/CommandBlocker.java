@@ -14,20 +14,24 @@ import ru.Overwrite.noCmd.utils.RGBcolors;
 
 public class CommandBlocker implements Listener {
 	
+	public static boolean active = false;
+	
 	Main main;	
 	public CommandBlocker(Main main) {
         Bukkit.getPluginManager().registerEvents(this, main);
+        Config.setupCommands();
+        active = true;
         this.main = main;
-        main.getLogger().info("command-blocker - enabled");
+        main.getLogger().info("> command-blocker - enabled");
     }
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	  public void onBlockedCommand(PlayerCommandPreprocessEvent e) {
-		FileConfiguration config = Main.getInstance().getConfig();
+		FileConfiguration config = main.getConfig();
 		FileConfiguration messageconfig = Config.messages;
 		String com = e.getMessage();
 	    Player p = e.getPlayer();
-	    for (String command : config.getStringList("blocked-commands.lite")) {
+	    for (String command : Config.liteblocked) {
 	      if ((com.toLowerCase().startsWith("/" + command + " ") || com.equalsIgnoreCase("/" + command)) && !isAdmin(p)) {
 	    	p.sendMessage(RGBcolors.translate(messageconfig.getString("messages.blockedcommand")).replace("%cmd%", command));
 	        e.setCancelled(true);
@@ -41,17 +45,19 @@ public class CommandBlocker implements Listener {
 	        }
 	        if (config.getBoolean("settings.notify")) {
 	       	  Bukkit.broadcast(RGBcolors.translate(messageconfig.getString("messages.notify-cmd").replace("%player%", p.getName()).replace("%cmd%", command)), "ublocker.admin");
-	       	  for (Player ps : Bukkit.getOnlinePlayers()) {
-				if (ps.hasPermission("ublocker.admin")) {
-				    ps.playSound(ps.getLocation(), Sound.valueOf(config.getString("sounds.admin-notify.sound")),
-				             (float)config.getDouble("sounds.admin-notify.volume"), (float)config.getDouble("sounds.admin-notify.pitch")); 
-				}
+	       	  if (config.getBoolean("settings.enable-sounds")) {
+	       	    for (Player ps : Bukkit.getOnlinePlayers()) {
+				  if (ps.hasPermission("ublocker.admin")) {
+				      ps.playSound(ps.getLocation(), Sound.valueOf(config.getString("sounds.admin-notify.sound")),
+				               (float)config.getDouble("sounds.admin-notify.volume"), (float)config.getDouble("sounds.admin-notify.pitch")); 
+				  }
+	       	    }
 		      }
 	        }
 	        continue;
 	      } 
 	    }
-	    for (String command : config.getStringList("blocked-commands.full")) {
+	    for (String command : Config.fullblocked) {
 		  if ((com.toLowerCase().startsWith("/" + command + " ") || com.equalsIgnoreCase("/" + command)) && !config.getStringList("excluded-players").contains(p.getName())) {
 		   	p.sendMessage(RGBcolors.translate(messageconfig.getString("messages.blockedcommand")).replace("%cmd%", command));
 		    e.setCancelled(true);
@@ -64,21 +70,22 @@ public class CommandBlocker implements Listener {
 	         		   RGBcolors.translate(messageconfig.getString("messages.blockedcommand-title").split(":")[1]));
 	        }
 		    if (config.getBoolean("settings.notify")) {
-		     Bukkit.broadcast(RGBcolors.translate(messageconfig.getString("messages.notify-cmd").replace("%player%", p.getName()).replace("%cmd%", command)), "ublocker.admin");
-		     for (Player ps : Bukkit.getOnlinePlayers()) {
-			    if (ps.hasPermission("ublocker.admin")) {
-				    ps.playSound(ps.getLocation(), Sound.valueOf(config.getString("sounds.admin-notify.sound")),
-					         (float)config.getDouble("sounds.admin-notify.volume"), (float)config.getDouble("sounds.admin-notify.pitch")); 
-			    }
+		      Bukkit.broadcast(RGBcolors.translate(messageconfig.getString("messages.notify-cmd").replace("%player%", p.getName()).replace("%cmd%", command)), "ublocker.admin");
+		      if (config.getBoolean("settings.enable-sounds")) {
+		        for (Player ps : Bukkit.getOnlinePlayers()) {
+			      if (ps.hasPermission("ublocker.admin")) {
+				      ps.playSound(ps.getLocation(), Sound.valueOf(config.getString("sounds.admin-notify.sound")),
+					           (float)config.getDouble("sounds.admin-notify.volume"), (float)config.getDouble("sounds.admin-notify.pitch")); 
+			      }
+		        }
 			  }
 		    }
 		  }
 	    }
-      }
+     }
 	
 	private boolean isAdmin(Player p) {
-		FileConfiguration config = Main.getInstance().getConfig();
-	  if (p.hasPermission("ublocker.bypass.commands") || config.getStringList("excluded-players").contains(p.getName())) {
+	  if (p.hasPermission("ublocker.bypass.commands") || Config.excludedplayers.contains(p.getName())) {
 		  return true;
 	  }
 	  return false;

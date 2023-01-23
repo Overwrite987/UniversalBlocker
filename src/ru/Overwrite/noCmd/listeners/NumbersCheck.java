@@ -18,12 +18,12 @@ public class NumbersCheck implements Listener {
 	public NumbersCheck(Main main) {
         Bukkit.getPluginManager().registerEvents(this, main);
         this.main = main;
-        main.getLogger().info("numbers-check - enabled");
+        main.getLogger().info("> numbers-check - enabled");
     }
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	  public void onChatNumber(AsyncPlayerChatEvent e) {
-	  FileConfiguration config = Main.getInstance().getConfig();
+	  FileConfiguration config = main.getConfig();
 	  FileConfiguration messageconfig = Config.messages;
 	    String message = e.getMessage();
 	    Player p = e.getPlayer();
@@ -62,8 +62,7 @@ public class NumbersCheck implements Listener {
 	  }
 	
 	private boolean isAdmin(Player p) {
-	  FileConfiguration config = Main.getInstance().getConfig();
-	  if (p.hasPermission("ublocker.bypass.numbers") || config.getStringList("excluded-players").contains(p.getName())) {
+	  if (p.hasPermission("ublocker.bypass.numbers") || Config.excludedplayers.contains(p.getName())) {
 		  return true;
 	  }
 	  return false;

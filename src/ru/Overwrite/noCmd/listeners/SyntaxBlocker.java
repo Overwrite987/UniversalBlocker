@@ -14,18 +14,22 @@ import ru.Overwrite.noCmd.utils.RGBcolors;
 
 public class SyntaxBlocker implements Listener {
 	
+	public static boolean active = false;
+	
 	Main main;	
 	public SyntaxBlocker(Main main) {
         Bukkit.getPluginManager().registerEvents(this, main);
+        Config.setupSyntax();
+        active = true;
         this.main = main;
-        main.getLogger().info("symbol-blocker - enabled");
+        main.getLogger().info("> symbol-blocker - enabled");
     }
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onSyntax(PlayerCommandPreprocessEvent e) {
-      FileConfiguration config = Main.getInstance().getConfig();
+      FileConfiguration config = main.getConfig();
       FileConfiguration messageconfig = Config.messages;
-	  for (String symbol : config.getStringList("symbols.blocked-symbols")) {
+	  for (String symbol : Config.blockedsymbol) {
 	    String com = e.getMessage().toLowerCase();
 	    Player p = e.getPlayer();
 	    if (!startWithExcluded(com)) {
@@ -57,8 +61,7 @@ public class SyntaxBlocker implements Listener {
 	}
 	
 	private boolean startWithExcluded(String com) {
-	FileConfiguration config = Main.getInstance().getConfig();
-	   for (String excluded : config.getStringList("symbols.excluded-commands")) {
+	   for (String excluded : Config.excludedcommands) {
 	     if (com.toLowerCase().startsWith("/" + excluded + " ")) {
 	    	 return true;
 	     }
@@ -67,8 +70,7 @@ public class SyntaxBlocker implements Listener {
 	}
 	
 	private boolean isAdmin(Player p) {
-	FileConfiguration config = Main.getInstance().getConfig();
-	  if (p.hasPermission("ublocker.bypass.symbol") || config.getStringList("excluded-players").contains(p.getName())) {
+	  if (p.hasPermission("ublocker.bypass.symbol") || Config.excludedplayers.contains(p.getName())) {
 		  return true;
 	  }
 	  return false;

@@ -2,19 +2,23 @@ package ru.Overwrite.noCmd.listeners;
 
 import org.bukkit.event.Listener;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import com.destroystokyo.paper.event.server.AsyncTabCompleteEvent;
 import ru.Overwrite.noCmd.Main;
+import ru.Overwrite.noCmd.utils.Config;
 
 public class TabComplete implements Listener {
+	
+	public static boolean active = false;
 	
 	Main main;	
 	public TabComplete(Main main) {
         Bukkit.getPluginManager().registerEvents(this, main);
+        Config.setupArgshidden();
+        active = true;
         this.main = main;
-        main.getLogger().info("command-hider - enabled");
+        main.getLogger().info("> args-hider - enabled");
     }
 	
 	@EventHandler
@@ -22,9 +26,8 @@ public class TabComplete implements Listener {
 		if (!(e.getSender() instanceof Player)) {
 		  return;
 		}
-		FileConfiguration config = Main.getInstance().getConfig();
 		Player p = (Player)e.getSender();
-		for (String command : config.getStringList("blocked-commands.args-tab-complete")) {
+		for (String command : Config.argshidedcmds) {
 		  if (e.getBuffer().equalsIgnoreCase("/" + command + " ") && !isAdmin(p)) {
 			e.setCancelled(true);
 	      }
@@ -32,8 +35,7 @@ public class TabComplete implements Listener {
 	  }
 	
 	private boolean isAdmin(Player p) {
-		FileConfiguration config = Main.getInstance().getConfig();
-	  if (p.hasPermission("ublocker.bypass.tabcomplete") || config.getStringList("excluded-players").contains(p.getName())) {
+	  if (p.hasPermission("ublocker.bypass.tabcomplete") || Config.excludedplayers.contains(p.getName())) {
 		  return true;
 	  }
 	  return false;

@@ -7,22 +7,29 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerCommandSendEvent;
 import ru.Overwrite.noCmd.Main;
+import ru.Overwrite.noCmd.utils.Config;
 
 public class CommandHider implements Listener {
+	
+	public static boolean active = false;
 	
 	Main main;	
 	public CommandHider(Main main) {
         Bukkit.getPluginManager().registerEvents(this, main);
+        if (!CommandBlocker.active) {
+            Config.setupCommands();
+        }
+        active = true;
         this.main = main;
-        main.getLogger().info("command-hider - enabled");
+        main.getLogger().info("> command-hider - enabled");
     }
 	
 	@EventHandler
 	  public void onCommandSend(PlayerCommandSendEvent e) {
-	    FileConfiguration config = Main.getInstance().getConfig();
+	    FileConfiguration config = main.getConfig();
 	    Player p = e.getPlayer();
 	    if (!isAdmin(p)) {
-	      e.getCommands().removeIf(cmd -> config.getStringList("blocked-commands.lite").contains(cmd) || config.getStringList("blocked-commands.full").contains(cmd));
+	      e.getCommands().removeIf(cmd -> Config.liteblocked.contains(cmd) || Config.fullblocked.contains(cmd));
 	      if (config.getBoolean("settings.enable-blocksyntax")) {
 	        e.getCommands().removeIf(cmd -> cmd.contains(":"));
 	      }
@@ -30,8 +37,7 @@ public class CommandHider implements Listener {
 	  }
 	
 	private boolean isAdmin(Player p) {
-		FileConfiguration config = Main.getInstance().getConfig();
-	  if (p.hasPermission("ublocker.bypass.tabcomplete") || config.getStringList("excluded-players").contains(p.getName())) {
+	  if (p.hasPermission("ublocker.bypass.tabcomplete") || Config.excludedplayers.contains(p.getName())) {
 		  return true;
 	  }
 	  return false;

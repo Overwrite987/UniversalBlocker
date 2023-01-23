@@ -14,16 +14,20 @@ import ru.Overwrite.noCmd.utils.Config;
 
 public class ChatFilter implements Listener {
 	
+	public static boolean active = false;
+	
 	Main main;	
 	public ChatFilter(Main main) {
         Bukkit.getPluginManager().registerEvents(this, main);
+        Config.setupChars();
+        active = true;
         this.main = main;
-        main.getLogger().info("allowed-chars - enabled");
+        main.getLogger().info("> allowed-chars - enabled");
     }
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onChatMessage(AsyncPlayerChatEvent e) {
-      FileConfiguration config = Main.getInstance().getConfig();
+      FileConfiguration config = main.getConfig();
       FileConfiguration messageconfig = Config.messages;
 	  String message = e.getMessage();
 	  Player p = e.getPlayer();
@@ -40,33 +44,34 @@ public class ChatFilter implements Listener {
 	      }
 	    if (config.getBoolean("settings.notify")) {
 	      Bukkit.broadcast(RGBcolors.translate(messageconfig.getString("messages.notify-chatsymbol").replace("%player%", p.getName()).replace("%chatsymbol%", message)), "ublocker.admin");
-	      for (Player ps : Bukkit.getOnlinePlayers()) {
-			if (ps.hasPermission("ublocker.admin")) {
-			    ps.playSound(ps.getLocation(), Sound.valueOf(config.getString("sounds.admin-notify.sound")),
-			             (float)config.getDouble("sounds.admin-notify.volume"), (float)config.getDouble("sounds.admin-notify.pitch")); 
-			}
+	      if (config.getBoolean("settings.enable-sounds")) {
+	        for (Player ps : Bukkit.getOnlinePlayers()) {
+			  if (ps.hasPermission("ublocker.admin")) {
+			      ps.playSound(ps.getLocation(), Sound.valueOf(config.getString("sounds.admin-notify.sound")),
+			               (float)config.getDouble("sounds.admin-notify.volume"), (float)config.getDouble("sounds.admin-notify.pitch")); 
+			  }
+	        }
 	      }
 	    }
 	  } 
 	}
 	
 	private boolean isAdmin(Player p) {
-		FileConfiguration config = Main.getInstance().getConfig();
-	  if (p.hasPermission("ublocker.bypass.chatsymbol") || config.getStringList("excluded-players").contains(p.getName())) {
+	  if (p.hasPermission("ublocker.bypass.chatsymbol") || Config.excludedplayers.contains(p.getName())) {
 		  return true;
 	  }
 	  return false;
 	}
 	  
     private boolean containsBlockedChars(String message) {
-	  FileConfiguration config = Main.getInstance().getConfig();
-	    char[] d = message.toLowerCase().toCharArray();
-	    int b = d.length;
-        for (int f = 0; f < b; f++) {
+	char[] d = message.toLowerCase().toCharArray();
+	int b = d.length;
+      for (int f = 0; f < b; f++) {
 	    char c = d[f];
-	  if (config.getString("chat-settings.allowed-chars").indexOf(c) == -1)
-		 return true; 
-	   } 
+	    if (Config.allowedchars.indexOf(c) == -1) {
+		   return true; 
+	    } 
+      }
 	 return false;
-   }
+    }
 }

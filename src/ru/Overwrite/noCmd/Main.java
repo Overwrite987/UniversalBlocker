@@ -13,7 +13,7 @@ public class Main extends JavaPlugin {
      return instance;
   }
  
-  private static final int SUB_VERSION = Integer.parseInt(
+  public final int SUB_VERSION = Integer.parseInt(
        Bukkit.getServer().getClass().getPackage().getName()
                .replace(".", ",")
                .split(",")[3]
@@ -36,14 +36,15 @@ public class Main extends JavaPlugin {
     getCommand("universalblocker").setExecutor(new CommandClass(this));
     saveDefaultConfig();
     Config.loadMessages();
+    Config.setupExcluded();
     if (getConfig().getBoolean("settings.enable-metrics")) {
       new Metrics(this, 15379);
     }
-    if (getConfig().getBoolean("settings.enable-words-blocker")) {
-    	new BanWords(this);
-    }
     if (getConfig().getBoolean("settings.enable-blocksyntax")) {
         new BlockSyntax(this);
+    }
+    if (getConfig().getBoolean("settings.enable-words-blocker")) {
+    	new BanWords(this);
     }
     if (getConfig().getBoolean("settings.enable-allowed-chars")) {
     	new ChatFilter(this);

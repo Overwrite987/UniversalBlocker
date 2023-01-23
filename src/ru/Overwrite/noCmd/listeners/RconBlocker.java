@@ -13,7 +13,7 @@ public class RconBlocker implements Listener {
 	public RconBlocker(Main main) {
         Bukkit.getPluginManager().registerEvents(this, main);
         this.main = main;
-        main.getLogger().info("rcon-blocker - enabled");
+        main.getLogger().info("> rcon-blocker - enabled");
     }
 	
   @EventHandler
@@ -24,7 +24,7 @@ public class RconBlocker implements Listener {
   }
 	 
   private boolean rconBoolean(String message) {
-      FileConfiguration config = Main.getInstance().getConfig();
+      FileConfiguration config = main.getConfig();
 	  for (String s : config.getStringList("blocked-commands.rcon")) {
         if (s.equalsIgnoreCase(message))
 		  return true; 

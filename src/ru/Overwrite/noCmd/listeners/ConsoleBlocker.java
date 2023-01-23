@@ -13,7 +13,7 @@ public class ConsoleBlocker implements Listener {
 	public ConsoleBlocker(Main main) {
         Bukkit.getPluginManager().registerEvents(this, main);
         this.main = main;
-        main.getLogger().info("console-blocker - enabled");
+        main.getLogger().info("> console-blocker - enabled");
     }
  
   @EventHandler
@@ -24,7 +24,7 @@ public class ConsoleBlocker implements Listener {
   }
  
   private boolean consoleBoolean(String message) {
-	  FileConfiguration config = Main.getInstance().getConfig();
+	  FileConfiguration config = main.getConfig();
 	  for (String s : config.getStringList("blocked-commands.console")) {
 	    if (s.equalsIgnoreCase(message))
 	      return true; 

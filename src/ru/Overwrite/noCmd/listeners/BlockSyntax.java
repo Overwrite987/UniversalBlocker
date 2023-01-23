@@ -18,12 +18,12 @@ public class BlockSyntax implements Listener {
 	public BlockSyntax(Main main) {
         Bukkit.getPluginManager().registerEvents(this, main);
         this.main = main;
-        main.getLogger().info("blocksyntax - enabled");
+        main.getLogger().info("> blocksyntax - enabled");
     }
 	
   @EventHandler(priority = EventPriority.HIGHEST)
   public void onCommand(PlayerCommandPreprocessEvent e) {
-	  FileConfiguration config = Main.getInstance().getConfig();
+	  FileConfiguration config = main.getConfig();
 	  FileConfiguration messageconfig = Config.messages;
 	  Player p = e.getPlayer();
 	 if (e.getMessage().split(" ")[0].contains(":") && !config.getStringList("excluded-players").contains(p.getName())) {
