@@ -16,7 +16,7 @@ settings:
   enable-tab-complere-blocker: true
   # Блокировка команд через : (bukkit:pl и т.п.)
   enable-blocksyntax: true
-  # Скрывать ли заблокированные команды из таб комплита
+  # Скрывать ли заблокированные команды из таб комплита (доступно только с 1.13)
   hide-blocked-commands-from-tab-comple: true
   # Включить ли тайтлы при "нарушениях" игроков
   enable-titles: true

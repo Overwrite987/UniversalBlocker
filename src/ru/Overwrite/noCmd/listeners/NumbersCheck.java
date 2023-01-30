@@ -36,7 +36,7 @@ public class NumbersCheck implements Listener {
 	        count++; 
 	    } 
 	    if (count > limit && !isAdmin(p)) {
-	      p.sendMessage(RGBcolors.translate(messageconfig.getString("messages.maxnumbers-msg")));
+	      p.sendMessage(RGBcolors.translate(messageconfig.getString("messages.maxnumbers-msg").replace("%limit%", config.getString("chat-settings.maxmsg-numbers"))));
 	      e.setCancelled(true);
 	      if (config.getBoolean("settings.enable-sounds")) {
               p.playSound(p.getLocation(), Sound.valueOf(config.getString("sounds.blocked-chat.sound")),

@@ -13,11 +13,6 @@ import ru.Overwrite.noCmd.listeners.TabComplete;
 import ru.Overwrite.noCmd.utils.Config;
 
 public class CommandClass implements CommandExecutor {
-  private final Main plugin;
-  
-  public CommandClass(Main plugin) {
-    this.plugin = plugin;
-  }
   
   public boolean onCommand(CommandSender sender, Command cmd, String commandlabel, String[] args) {
     cmd.getName().equalsIgnoreCase("ub");
@@ -30,7 +25,7 @@ public class CommandClass implements CommandExecutor {
       return true;
     } 
     if (args[0].equalsIgnoreCase("reload") && sender.hasPermission("ublocker.admin")) {
-      this.plugin.reloadConfig();
+      Main.getInstance().reloadConfig();
       Config.loadMessages();
       Config.setupExcluded();
       if (BanWords.active) {

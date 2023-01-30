@@ -33,7 +33,7 @@ public class Main extends JavaPlugin {
 		  return;
 	  }
 	instance = this;
-    getCommand("universalblocker").setExecutor(new CommandClass(this));
+    getCommand("universalblocker").setExecutor(new CommandClass());
     saveDefaultConfig();
     Config.loadMessages();
     Config.setupExcluded();
