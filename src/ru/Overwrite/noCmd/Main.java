@@ -2,6 +2,7 @@ package ru.Overwrite.noCmd;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import com.comphenix.protocol.ProtocolLibrary;
 import ru.Overwrite.noCmd.listeners.*;
 import ru.Overwrite.noCmd.utils.*;
 
@@ -55,7 +56,7 @@ public class Main extends JavaPlugin {
     if (SUB_VERSION >= 13 && getConfig().getBoolean("settings.hide-blocked-commands-from-tab-comple")) {
         new CommandHider(this);
     } else {
-    	getLogger().info("Функция скрытия команд из таб-комплита не доступна на вашей версии!");
+    	getLogger().info("Скрытие из таб-комплита не доступно на вашей версии!");
     }
     if (getConfig().getBoolean("settings.enable-console-blocker")) {
         new ConsoleBlocker(this);

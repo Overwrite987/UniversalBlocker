@@ -26,6 +26,12 @@ public class TabComplete implements Listener {
 		if (!(e.getSender() instanceof Player)) {
 		  return;
 		}
+		// Пиздим чужой код, ай яй яй
+		String buffer = e.getBuffer();
+        if ((buffer.split(" ").length == 1 && !buffer.endsWith(" ")) || !buffer.startsWith("/")) {
+            e.setCancelled(true);
+            return;
+        }
 		Player p = (Player)e.getSender();
 		for (String command : Config.argshidedcmds) {
 		  if (e.getBuffer().equalsIgnoreCase("/" + command + " ") && !isAdmin(p)) {
