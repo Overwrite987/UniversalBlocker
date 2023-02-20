@@ -51,7 +51,7 @@ public class Main extends JavaPlugin {
     if (getConfig().getBoolean("settings.enable-metrics")) {
       new Metrics(this, 15379);
     }
-    if (getConfig().getBoolean("main-settings.update-checker")) {
+    if (getConfig().getBoolean("settings.update-checker")) {
     	checkUpdates(this, version -> {
             getLogger().info("§6========================================");
             if (getDescription().getVersion().equals(version)) {
