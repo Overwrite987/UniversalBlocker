@@ -22,7 +22,9 @@ public class CommandBlocker implements Listener {
         Config.setupCommands();
         active = true;
         this.main = main;
-        main.getLogger().info("> command-blocker - enabled");
+        if (main.debug) {
+        	main.getLogger().info("> command-blocker - enabled");
+        }
     }
 	
 	@EventHandler(priority = EventPriority.HIGHEST)

@@ -21,7 +21,9 @@ public class BanWords implements Listener {
         Config.setupBanWords();
         active = true;
         this.main = main;
-        main.getLogger().info("> words-blocker - enabled");
+        if (main.debug) {
+        	main.getLogger().info("> words-blocker - enabled");
+        }
     }
 	
 	@EventHandler

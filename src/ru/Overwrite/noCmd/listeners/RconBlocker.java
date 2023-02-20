@@ -13,7 +13,9 @@ public class RconBlocker implements Listener {
 	public RconBlocker(Main main) {
         Bukkit.getPluginManager().registerEvents(this, main);
         this.main = main;
-        main.getLogger().info("> rcon-blocker - enabled");
+        if (main.debug) {
+        	main.getLogger().info("> rcon-blocker - enabled");
+        }
     }
 	
   @EventHandler

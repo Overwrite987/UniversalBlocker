@@ -18,7 +18,9 @@ public class TabComplete implements Listener {
         Config.setupArgshidden();
         active = true;
         this.main = main;
-        main.getLogger().info("> args-hider - enabled");
+        if (main.debug) {
+        	main.getLogger().info("> args-hider - enabled");
+        }
     }
 	
 	@EventHandler

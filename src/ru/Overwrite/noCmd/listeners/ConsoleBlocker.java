@@ -13,7 +13,9 @@ public class ConsoleBlocker implements Listener {
 	public ConsoleBlocker(Main main) {
         Bukkit.getPluginManager().registerEvents(this, main);
         this.main = main;
-        main.getLogger().info("> console-blocker - enabled");
+        if (main.debug) {
+        	main.getLogger().info("> console-blocker - enabled");
+        }
     }
  
   @EventHandler

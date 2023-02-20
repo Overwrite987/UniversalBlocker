@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 
 import ru.Overwrite.noCmd.listeners.BanWords;
 import ru.Overwrite.noCmd.listeners.SyntaxBlocker;
+import ru.Overwrite.noCmd.listeners.SignSymbolBlocker;
 import ru.Overwrite.noCmd.listeners.ChatFilter;
 import ru.Overwrite.noCmd.listeners.CommandBlocker;
 import ru.Overwrite.noCmd.listeners.CommandHider;
@@ -15,7 +16,6 @@ import ru.Overwrite.noCmd.utils.Config;
 public class CommandClass implements CommandExecutor {
   
   public boolean onCommand(CommandSender sender, Command cmd, String commandlabel, String[] args) {
-    cmd.getName().equalsIgnoreCase("ub");
     if (!sender.hasPermission("ublocker.admin")) {
       sender.sendMessage("§7This server is using §cUniversalBlocker §7by §5Overwrite");
       return true;
@@ -34,6 +34,9 @@ public class CommandClass implements CommandExecutor {
       if (SyntaxBlocker.active) {
     	  Config.setupSyntax();
       }
+      if (SignSymbolBlocker.active) {
+    	  Config.setupSignSyntax();
+      }
       if (ChatFilter.active) {
     	  Config.setupChars();
       }
@@ -50,7 +53,7 @@ public class CommandClass implements CommandExecutor {
       return true;
     } 
     if (!args[0].equalsIgnoreCase("reload") && args.length > 1) {
-      sender.sendMessage("§6/ub reload - перезагрузить конфиг");
+      sender.sendMessage("§6/ " + commandlabel + " reload - перезагрузить конфиг");
     } else {
       sender.sendMessage("§7This server is using §cUniversalBlocker §7by §5Overwrite");
     } 

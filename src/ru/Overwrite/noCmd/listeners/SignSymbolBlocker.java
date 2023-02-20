@@ -6,39 +6,39 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import ru.Overwrite.noCmd.Main;
 import ru.Overwrite.noCmd.utils.Config;
 import ru.Overwrite.noCmd.utils.RGBcolors;
 
-public class SyntaxBlocker implements Listener {
+public class SignSymbolBlocker implements Listener {
 	
-	public static boolean active = false;
+public static boolean active = false;
 	
 	Main main;	
-	public SyntaxBlocker(Main main) {
+	public SignSymbolBlocker(Main main) {
         Bukkit.getPluginManager().registerEvents(this, main);
-        Config.setupSyntax();
+        Config.setupSignSyntax();
         active = true;
         this.main = main;
         if (main.debug) {
-        	main.getLogger().info("> symbol-blocker - enabled");
+        	main.getLogger().info("> sign-symbol-blocker - enabled");
         }
     }
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onSyntax(PlayerCommandPreprocessEvent e) {
+	public void onSyntax(SignChangeEvent e) {
 	    FileConfiguration config = main.getConfig();
 	    FileConfiguration messageconfig = Config.messages;
-	    String message = e.getMessage().toLowerCase();
+	    String line0 = e.getLine(0);
+		String line1 = e.getLine(1);
+		String line2 = e.getLine(2);
+		String line3 = e.getLine(3);
 	    Player player = e.getPlayer();
-	    if (startWithExcluded(message)) {
-            return;
-        }
-	    for (String symbol : Config.blockedsymbol) {
-	        if (message.contains(symbol) && !isAdmin(player)) {
-	            String symbolMessage = RGBcolors.translate(messageconfig.getString("messages.blockedsymbol")).replace("%symbol%", symbol);
+	    for (String symbol : Config.blockedsignsymbol) {
+	        if ((line0.contains(symbol) || line1.contains(symbol) || line2.contains(symbol) || line3.contains(symbol)) && !isAdmin(player)) {
+	            String symbolMessage = RGBcolors.translate(messageconfig.getString("messages.blockedsignsymbol")).replace("%symbol%", symbol);
 	            player.sendMessage(symbolMessage);
 	            e.setCancelled(true);
 
@@ -48,14 +48,14 @@ public class SyntaxBlocker implements Listener {
 	            }
 
 	            if (config.getBoolean("settings.enable-titles")) {
-	                String[] titleMessages = messageconfig.getString("messages.blockedsymbol-title").split(":");
+	                String[] titleMessages = messageconfig.getString("messages.blockedsignsymbol-title").split(":");
 	                String title = RGBcolors.translate(titleMessages[0]);
 	                String subtitle = RGBcolors.translate(titleMessages[1]).replace("%symbol%", symbol);
 	                player.sendTitle(title, subtitle);
 	            }
 
 	            if (config.getBoolean("settings.notify")) {
-	                String notifyMessage = RGBcolors.translate(messageconfig.getString("messages.notify-symbol").replace("%player%", player.getName()).replace("%symbol%", symbol));
+	                String notifyMessage = RGBcolors.translate(messageconfig.getString("messages.notify-signsymbol").replace("%player%", player.getName()).replace("%symbol%", symbol));
 	                Bukkit.broadcast(notifyMessage, "ublocker.admin");
 
 	                if (config.getBoolean("settings.enable-sounds")) {
@@ -71,19 +71,10 @@ public class SyntaxBlocker implements Listener {
 	    }
 	}
 	
-	private boolean startWithExcluded(String com) {
-	   for (String excluded : Config.excludedcommands) {
-	     if (com.toLowerCase().startsWith("/" + excluded + " ")) {
-	    	 return true;
-	     }
-	  }
-	  return false;  
-	}
-	
 	private boolean isAdmin(Player p) {
-	  if (p.hasPermission("ublocker.bypass.symbol") || Config.excludedplayers.contains(p.getName())) {
-		  return true;
-	  }
-	  return false;
-	}
+		  if (p.hasPermission("ublocker.bypass.symbol") || Config.excludedplayers.contains(p.getName())) {
+			  return true;
+		  }
+		  return false;
+		}
 }

@@ -21,7 +21,9 @@ public class CommandHider implements Listener {
         }
         active = true;
         this.main = main;
-        main.getLogger().info("> command-hider - enabled");
+        if (main.debug) {
+        	main.getLogger().info("> command-hider - enabled");
+        }
     }
 	
 	@EventHandler

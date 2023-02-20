@@ -11,32 +11,35 @@ import java.util.HashSet;
 
 public class Config {
 	
+	private static final Main instance = Main.getInstance();
+	
 	public static FileConfiguration messages;
 	
 	public static Set<String> fullblocked;
 	public static Set<String> liteblocked;
 	public static Set<String> banwords;
 	public static Set<String> blockedsymbol;
+	public static Set<String> blockedsignsymbol;
 	public static Set<String> excludedcommands;
 	public static Set<String> excludedplayers;
 	public static Set<String> argshidedcmds;
 	public static String allowedchars;
 
     public static void loadMessages() {
-        File file = new File(Main.getInstance().getDataFolder(), "message.yml");
-        if (Main.getInstance().getResource("message.yml") == null) {
+        File file = new File(instance.getDataFolder(), "message.yml");
+        if (instance.getResource("message.yml") == null) {
             save(YamlConfiguration.loadConfiguration(file), "message.yml");
         }
         if (!file.exists()) {
-        	Main.getInstance().saveResource("message.yml", false);
+        	instance.saveResource("message.yml", false);
         }
         messages = YamlConfiguration.loadConfiguration(file);
-        Main.getInstance().getLogger().info("> messages.yml загружен");
+        instance.getLogger().info("> messages.yml загружен");
     }
 
     public static FileConfiguration save(FileConfiguration config, String fileName) {
         try {
-            config.save(new File(Main.getInstance().getDataFolder(), fileName));
+            config.save(new File(instance.getDataFolder(), fileName));
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -44,41 +47,47 @@ public class Config {
     }
     
     public static void setupExcluded() {
-    	FileConfiguration config = Main.getInstance().getConfig();
+    	FileConfiguration config = instance.getConfig();
     	excludedplayers = new HashSet<String>(config.getStringList("excluded-players"));
-    	Main.getInstance().getLogger().info("§e> Невосприимчивые игроки загружены");
+    	instance.getLogger().info("§e> Невосприимчивые игроки загружены");
     }
     
     public static void setupCommands() {
-    	FileConfiguration config = Main.getInstance().getConfig();
+    	FileConfiguration config = instance.getConfig();
     	fullblocked = new HashSet<String>(config.getStringList("blocked-commands.full"));
     	liteblocked = new HashSet<String>(config.getStringList("blocked-commands.lite"));
-    	Main.getInstance().getLogger().info("§e> Списки блокировок команд загружены");
+    	instance.getLogger().info("§e> Списки блокировок команд загружены");
     }
     
     public static void setupBanWords() {
-    	FileConfiguration config = Main.getInstance().getConfig();
+    	FileConfiguration config = instance.getConfig();
     	banwords = new HashSet<String>(config.getStringList("chat-settings.ban-words"));
-    	Main.getInstance().getLogger().info("§e> Списки заблокированных слов загружены");
+    	instance.getLogger().info("§e> Списки заблокированных слов загружены");
     }
     
     public static void setupChars() {
-    	FileConfiguration config = Main.getInstance().getConfig();
+    	FileConfiguration config = instance.getConfig();
     	allowedchars = config.getString("chat-settings.allowed-chars");
-    	Main.getInstance().getLogger().info("§e> Список разрешенных символов чата загружен");
+    	instance.getLogger().info("§e> Список разрешенных символов чата загружен");
     }
     
     public static void setupSyntax() {
-    	FileConfiguration config = Main.getInstance().getConfig();
+    	FileConfiguration config = instance.getConfig();
     	blockedsymbol = new HashSet<String>(config.getStringList("symbols.blocked-symbols"));
     	excludedcommands = new HashSet<String>(config.getStringList("symbols.excluded-commands"));
-    	Main.getInstance().getLogger().info("§e> Списки блокировок символов команд загружены");
+    	instance.getLogger().info("§e> Списки блокировок символов команд загружены");
+    }
+    
+    public static void setupSignSyntax() {
+    	FileConfiguration config = instance.getConfig();
+    	blockedsignsymbol = new HashSet<String>(config.getStringList("symbols.blocked-sign-symbols"));
+    	instance.getLogger().info("§e> Списки блокировок символов табличек загружены");
     }
     
     public static void setupArgshidden() {
-    	FileConfiguration config = Main.getInstance().getConfig();
+    	FileConfiguration config = instance.getConfig();
     	argshidedcmds = new HashSet<String>(config.getStringList("blocked-commands.args-tab-complete"));
-    	Main.getInstance().getLogger().info("§e> Команды с заблокированными аргументами загружены");
+    	instance.getLogger().info("§e> Команды с заблокированными аргументами загружены");
     }
     
 }

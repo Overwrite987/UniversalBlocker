@@ -22,7 +22,9 @@ public class ChatFilter implements Listener {
         Config.setupChars();
         active = true;
         this.main = main;
-        main.getLogger().info("> allowed-chars - enabled");
+        if (main.debug) {
+        	main.getLogger().info("> allowed-chars - enabled");
+        }
     }
 	
 	@EventHandler(priority = EventPriority.HIGHEST)

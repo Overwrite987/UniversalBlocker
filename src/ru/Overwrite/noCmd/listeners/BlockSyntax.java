@@ -18,7 +18,9 @@ public class BlockSyntax implements Listener {
 	public BlockSyntax(Main main) {
         Bukkit.getPluginManager().registerEvents(this, main);
         this.main = main;
-        main.getLogger().info("> blocksyntax - enabled");
+        if (main.debug) {
+        	main.getLogger().info("> blocksyntax - enabled");
+        }
     }
 	
   @EventHandler(priority = EventPriority.HIGHEST)

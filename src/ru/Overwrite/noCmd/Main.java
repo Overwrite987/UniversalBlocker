@@ -1,12 +1,19 @@
 package ru.Overwrite.noCmd;
 
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import com.comphenix.protocol.ProtocolLibrary;
 import ru.Overwrite.noCmd.listeners.*;
 import ru.Overwrite.noCmd.utils.*;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.Scanner;
+import java.util.function.Consumer;
+
 public class Main extends JavaPlugin {
+	
+  public boolean debug = false;
 	
   private static Main instance;
 	  
@@ -38,8 +45,24 @@ public class Main extends JavaPlugin {
     saveDefaultConfig();
     Config.loadMessages();
     Config.setupExcluded();
+    if (getConfig().getBoolean("debug")) {
+    	debug = true;
+    }
     if (getConfig().getBoolean("settings.enable-metrics")) {
       new Metrics(this, 15379);
+    }
+    if (getConfig().getBoolean("main-settings.update-checker")) {
+    	checkUpdates(this, version -> {
+            getLogger().info("§6========================================");
+            if (getDescription().getVersion().equals(version)) {
+                getLogger().info("§aВы используете последнюю версию плагина!");
+            } else {
+                getLogger().info("§aВы используете устаревшую или некорректную версию плагина!");
+                getLogger().info("§aВы можете загрузить последнюю версию плагина здесь:");
+                getLogger().info("§bhttps://github.com/Overwrite987/UniversalBlocker/releases/");
+            }
+            getLogger().info("§6========================================");
+        });
     }
     if (getConfig().getBoolean("settings.enable-blocksyntax")) {
         new BlockSyntax(this);
@@ -70,9 +93,24 @@ public class Main extends JavaPlugin {
     if (getConfig().getBoolean("settings.enable-symbol-blocker")) {
         new SyntaxBlocker(this);
     }
+    if (getConfig().getBoolean("settings.enable-sign-symbol-blocker")) {
+        new SignSymbolBlocker(this);
+    }
     if (getConfig().getBoolean("settings.enable-tab-complere-blocker")) {
         new TabComplete(this);
     }
+  }
+  
+  private static void checkUpdates(Plugin plugin, Consumer<String> consumer) {
+      Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+          try (Scanner scanner = new Scanner(new URL("https://raw.githubusercontent.com/Overwrite987/UniversalBlocker/master/VERSION").openStream())) {
+              if (scanner.hasNext()) {
+                  consumer.accept(scanner.next());
+              }
+          } catch (IOException exception) {
+              plugin.getLogger().info("Can't check for updates: " + exception.getMessage());
+          }
+      });
   }
 	
   public void onDisable() {

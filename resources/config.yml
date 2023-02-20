@@ -9,6 +9,8 @@
 settings: 
   # Включить ли отправку анонимной статистики (пожалуйста не отключайте)
   enable-metrics: true
+  # Проверять ли наличие обновлений (пожалуйста не отключайте)
+  update-checker: true
   # Оповещать ли администраторов о "нарушениях" игроков
   notify: true
   # Отключать ли сервер при отключении плагина
@@ -21,16 +23,19 @@ settings:
   enable-console-blocker: true
   enable-rcon-blocker: true
   enable-symbol-blocker: true
-  enable-tab-complere-blocker: true
+  enable-sign-symbol-blocker: true
+  # Блокирует просмотр плагинов читом и через прочие способы
+  enable-tab-complere-blocker: true 
   # Блокировка команд через : (bukkit:pl и т.п.)
   enable-blocksyntax: true
   # Скрывать ли заблокированные команды из таб комплита (доступно только с 1.13)
   hide-blocked-commands-from-tab-comple: true
-  use-alternative-hider: true
   # Включить ли тайтлы при "нарушениях" игроков
   enable-titles: true
   # Включить ли звуковые оповещения при "нарушениях" игроков
   enable-sounds: true
+  # Включите это если что-то не работает и смотрите что будет
+  debug: false
     
 # На каких игроков не будут действовать никакие запреты (можно оставить пустым)
 excluded-players:
@@ -40,8 +45,12 @@ excluded-players:
 chat-settings:
   # Какие символы можно писать в чате
   allowed-chars: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ ~`1!2@3#4$5%6^7&§89(0)-_=+*|[{]}\;:"',<.>/?!№
-  # Максимум цифр в сообщении
+  # Максимальное кол-во цифр в сообщении
   maxmsg-numbers: 7
+  # Проверять ли строго
+  # Если включено - плагин будет блокировать все сообщения с большим колличеством цифр в сообщении
+  # Если отключено - плагин будет блокировать только попытки написать IP (по типу 228.13.37.69 - число цифр в IP 11, а разрешено 7)
+  strict-number-chek: true
   # Запрещенные слова
   ban-words:
    - 'хуй'
@@ -70,6 +79,11 @@ symbols:
    - 'reg'
    - 'register'
    - 'pas'
+  # Список запрещенных символов на табличках
+  blocked-sign-symbols:
+   - '.ru'
+   - '[hack]'
+   - '[opka]'
    
 # Запрещенные команды
 blocked-commands:
