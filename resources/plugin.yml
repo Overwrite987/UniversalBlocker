@@ -10,6 +10,7 @@ commands:
 permissions:
   ublocker.bypass.*:
     children:
+      ublocker.bypass.banwords: true
       ublocker.bypass.commands: true
       ublocker.bypass.tabcomplete: true
       ublocker.bypass.numbers: true

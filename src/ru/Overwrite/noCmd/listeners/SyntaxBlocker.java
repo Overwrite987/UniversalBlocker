@@ -13,77 +13,63 @@ import ru.Overwrite.noCmd.utils.Config;
 import ru.Overwrite.noCmd.utils.RGBcolors;
 
 public class SyntaxBlocker implements Listener {
-	
-	public static boolean active = false;
-	
-	Main main;	
-	public SyntaxBlocker(Main main) {
-        Bukkit.getPluginManager().registerEvents(this, main);
-        Config.setupSyntax();
-        active = true;
-        this.main = main;
-        if (main.debug) {
-        	main.getLogger().info("> symbol-blocker - enabled");
-        }
-    }
-	
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onSyntax(PlayerCommandPreprocessEvent e) {
-	    FileConfiguration config = main.getConfig();
-	    FileConfiguration messageconfig = Config.messages;
-	    String message = e.getMessage().toLowerCase();
-	    Player player = e.getPlayer();
-	    if (startWithExcluded(message)) {
-            return;
-        }
-	    for (String symbol : Config.blockedsymbol) {
-	        if (message.contains(symbol) && !isAdmin(player)) {
-	            String symbolMessage = RGBcolors.translate(messageconfig.getString("messages.blockedsymbol")).replace("%symbol%", symbol);
-	            player.sendMessage(symbolMessage);
-	            e.setCancelled(true);
 
-	            if (config.getBoolean("settings.enable-sounds")) {
-	                player.playSound(player.getLocation(), Sound.valueOf(config.getString("sounds.blocked-command.sound")),
-	                        (float)config.getDouble("sounds.blocked-command.volume"), (float)config.getDouble("sounds.blocked-command.pitch"));
-	            }
+	    private final Main main = Main.getInstance();
 
-	            if (config.getBoolean("settings.enable-titles")) {
-	                String[] titleMessages = messageconfig.getString("messages.blockedsymbol-title").split(":");
-	                String title = RGBcolors.translate(titleMessages[0]);
-	                String subtitle = RGBcolors.translate(titleMessages[1]).replace("%symbol%", symbol);
-	                player.sendTitle(title, subtitle);
-	            }
-
-	            if (config.getBoolean("settings.notify")) {
-	                String notifyMessage = RGBcolors.translate(messageconfig.getString("messages.notify-symbol").replace("%player%", player.getName()).replace("%symbol%", symbol));
-	                Bukkit.broadcast(notifyMessage, "ublocker.admin");
-
+	    @EventHandler(priority = EventPriority.HIGHEST)
+	    public void onSyntax(PlayerCommandPreprocessEvent e) {
+	        FileConfiguration config = main.getConfig();
+	        FileConfiguration messageConfig = Config.messages;
+	        String message = e.getMessage().toLowerCase();
+	        Player p = e.getPlayer();
+	        if (startWithExcluded(message)) {
+	            return;
+	        }
+	        for (String symbol : Config.blockedsymbol) {
+	            if (message.contains(symbol) && !isAdmin(p)) {
+	                String symbolMessage = (RGBcolors.translate(messageConfig.getString("messages.blockedsymbol"))).replace("%symbol%", symbol);
+	                p.sendMessage(symbolMessage);
+	                e.setCancelled(true);
 	                if (config.getBoolean("settings.enable-sounds")) {
-	                    for (Player admin : Bukkit.getOnlinePlayers()) {
-	                        if (admin.hasPermission("ublocker.admin")) {
-	                            admin.playSound(admin.getLocation(), Sound.valueOf(config.getString("sounds.admin-notify.sound")),
-	                                    (float)config.getDouble("sounds.admin-notify.volume"), (float)config.getDouble("sounds.admin-notify.pitch"));
+	                    p.playSound(p.getLocation(), Sound.valueOf(config.getString("sounds.blocked-command.sound")),
+	                            (float) config.getDouble("sounds.blocked-command.volume"), (float) config.getDouble("sounds.blocked-command.pitch"));
+	                }
+	                if (config.getBoolean("settings.enable-titles")) {
+	                    String[] titleMessages = messageConfig.getString("messages.blockedsymbol-title").split(":");
+	                    String title = RGBcolors.translate(titleMessages[0]);
+	                    String subtitle = (RGBcolors.translate(titleMessages[1])).replace("%symbol%", symbol);
+	                    int fadeIn = Integer.parseInt(titleMessages[2]);
+	        			int stay = Integer.parseInt(titleMessages[3]);
+	        			int fadeOut = Integer.parseInt(titleMessages[4]);
+	        			p.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
+	                }
+	                if (config.getBoolean("settings.notify")) {
+	                    String notifyMessage = (RGBcolors.translate(messageConfig.getString("messages.notify-symbol").replace("%player%", p.getName()))).replace("%symbol%", symbol);
+	                    Bukkit.broadcast(notifyMessage, "ublocker.admin");
+
+	                    if (config.getBoolean("settings.enable-sounds")) {
+	                        for (Player admin : Bukkit.getOnlinePlayers()) {
+	                            if (admin.hasPermission("ublocker.admin")) {
+	                                admin.playSound(admin.getLocation(), Sound.valueOf(config.getString("sounds.admin-notify.sound")),
+	                                        (float) config.getDouble("sounds.admin-notify.volume"), (float) config.getDouble("sounds.admin-notify.pitch"));
+	                            }
 	                        }
 	                    }
 	                }
 	            }
 	        }
 	    }
-	}
-	
+
 	private boolean startWithExcluded(String com) {
-	   for (String excluded : Config.excludedcommands) {
-	     if (com.toLowerCase().startsWith("/" + excluded + " ")) {
-	    	 return true;
-	     }
-	  }
-	  return false;  
+	    for (String excluded : Config.excludedcommands) {
+	        if (com.toLowerCase().startsWith("/" + excluded + " ")) {
+	           return true;
+	        }
+	    }
+	    return false;
 	}
-	
+
 	private boolean isAdmin(Player p) {
-	  if (p.hasPermission("ublocker.bypass.symbol") || Config.excludedplayers.contains(p.getName())) {
-		  return true;
-	  }
-	  return false;
+	    return p.hasPermission("ublocker.bypass.symbol") || Config.excludedplayers.contains(p.getName());
 	}
 }

@@ -15,14 +15,7 @@ public class Config {
 	
 	public static FileConfiguration messages;
 	
-	public static Set<String> fullblocked;
-	public static Set<String> liteblocked;
-	public static Set<String> banwords;
-	public static Set<String> blockedsymbol;
-	public static Set<String> blockedsignsymbol;
-	public static Set<String> excludedcommands;
-	public static Set<String> excludedplayers;
-	public static Set<String> argshidedcmds;
+	public static Set<String> fullblocked, liteblocked, banwords, blockedsymbol, blockedsignsymbol, excludedcommands, excludedplayers, argshidedcmds, consoleblocked, rconblocked;
 	public static String allowedchars;
 
     public static void loadMessages() {
@@ -34,7 +27,9 @@ public class Config {
         	instance.saveResource("message.yml", false);
         }
         messages = YamlConfiguration.loadConfiguration(file);
-        instance.getLogger().info("> messages.yml загружен");
+        if (instance.debug) {
+        	instance.getLogger().info("> messages.yml загружен");
+        }
     }
 
     public static FileConfiguration save(FileConfiguration config, String fileName) {
@@ -46,48 +41,68 @@ public class Config {
         return config;
     }
     
-    public static void setupExcluded() {
-    	FileConfiguration config = instance.getConfig();
-    	excludedplayers = new HashSet<String>(config.getStringList("excluded-players"));
-    	instance.getLogger().info("§e> Невосприимчивые игроки загружены");
+    public static void setupExcluded(FileConfiguration config) {
+        excludedplayers = new HashSet<>(config.getStringList("excluded-players"));
+        if (instance.debug) {
+            instance.getLogger().info("§e> Невосприимчивые игроки загружены");
+        }
     }
     
-    public static void setupCommands() {
-    	FileConfiguration config = instance.getConfig();
-    	fullblocked = new HashSet<String>(config.getStringList("blocked-commands.full"));
-    	liteblocked = new HashSet<String>(config.getStringList("blocked-commands.lite"));
-    	instance.getLogger().info("§e> Списки блокировок команд загружены");
+    public static void setupCommands(FileConfiguration config) {
+    	fullblocked = new HashSet<>(config.getStringList("blocked-commands.full"));
+    	liteblocked = new HashSet<>(config.getStringList("blocked-commands.lite"));
+    	if (instance.debug) {
+    		instance.getLogger().info("§e> Списки блокировок команд загружены");
+    	}
     }
     
-    public static void setupBanWords() {
-    	FileConfiguration config = instance.getConfig();
-    	banwords = new HashSet<String>(config.getStringList("chat-settings.ban-words"));
-    	instance.getLogger().info("§e> Списки заблокированных слов загружены");
+    public static void setupBanWords(FileConfiguration config) {
+    	banwords = new HashSet<>(config.getStringList("chat-settings.ban-words"));
+    	if (instance.debug) {
+    		instance.getLogger().info("§e> Списки заблокированных слов загружены");
+    	}
     }
     
-    public static void setupChars() {
-    	FileConfiguration config = instance.getConfig();
+    public static void setupChars(FileConfiguration config) {
     	allowedchars = config.getString("chat-settings.allowed-chars");
-    	instance.getLogger().info("§e> Список разрешенных символов чата загружен");
+    	if (instance.debug) {
+    		instance.getLogger().info("§e> Список разрешенных символов чата загружен");
+    	}
     }
     
-    public static void setupSyntax() {
-    	FileConfiguration config = instance.getConfig();
-    	blockedsymbol = new HashSet<String>(config.getStringList("symbols.blocked-symbols"));
-    	excludedcommands = new HashSet<String>(config.getStringList("symbols.excluded-commands"));
-    	instance.getLogger().info("§e> Списки блокировок символов команд загружены");
+    public static void setupSyntax(FileConfiguration config) {
+    	blockedsymbol = new HashSet<>(config.getStringList("symbols.blocked-symbols"));
+    	excludedcommands = new HashSet<>(config.getStringList("symbols.excluded-commands"));
+    	if (instance.debug) {
+    		instance.getLogger().info("§e> Списки блокировок символов команд загружены");
+    	}
     }
     
-    public static void setupSignSyntax() {
-    	FileConfiguration config = instance.getConfig();
-    	blockedsignsymbol = new HashSet<String>(config.getStringList("symbols.blocked-sign-symbols"));
-    	instance.getLogger().info("§e> Списки блокировок символов табличек загружены");
+    public static void setupSignSyntax(FileConfiguration config) {
+    	blockedsignsymbol = new HashSet<>(config.getStringList("symbols.blocked-sign-symbols"));
+    	if (instance.debug) {
+    		instance.getLogger().info("§e> Списки блокировок символов табличек загружены");
+    	}
     }
     
-    public static void setupArgshidden() {
-    	FileConfiguration config = instance.getConfig();
-    	argshidedcmds = new HashSet<String>(config.getStringList("blocked-commands.args-tab-complete"));
-    	instance.getLogger().info("§e> Команды с заблокированными аргументами загружены");
+    public static void setupArgshidden(FileConfiguration config) {
+    	argshidedcmds = new HashSet<>(config.getStringList("blocked-commands.args-tab-complete"));
+    	if (instance.debug) {
+    		instance.getLogger().info("§e> Команды с заблокированными аргументами загружены");
+    	}
     }
     
+    public static void setupRcon(FileConfiguration config) {
+    	rconblocked = new HashSet<>(config.getStringList("blocked-commands.rcon"));
+    	if (instance.debug) {
+    		instance.getLogger().info("§e> Заблокированные команды rcon загружены");
+    	}
+    }
+    
+    public static void setupConsole(FileConfiguration config) {
+    	consoleblocked = new HashSet<>(config.getStringList("blocked-commands.console"));
+    	if (instance.debug) {
+    		instance.getLogger().info("§e> Заблокированные команды консоли загружены");
+    	}
+    }
 }

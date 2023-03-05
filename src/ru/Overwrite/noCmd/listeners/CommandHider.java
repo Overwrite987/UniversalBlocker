@@ -1,6 +1,5 @@
 package ru.Overwrite.noCmd.listeners;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -11,20 +10,7 @@ import ru.Overwrite.noCmd.utils.Config;
 
 public class CommandHider implements Listener {
 	
-	public static boolean active = false;
-	
-	Main main;	
-	public CommandHider(Main main) {
-        Bukkit.getPluginManager().registerEvents(this, main);
-        if (!CommandBlocker.active) {
-            Config.setupCommands();
-        }
-        active = true;
-        this.main = main;
-        if (main.debug) {
-        	main.getLogger().info("> command-hider - enabled");
-        }
-    }
+	private final Main main = Main.getInstance();
 	
 	@EventHandler
 	  public void onCommandSend(PlayerCommandSendEvent e) {
@@ -38,10 +24,7 @@ public class CommandHider implements Listener {
 	    } 
 	  }
 	
-	private boolean isAdmin(Player p) {
-	  if (p.hasPermission("ublocker.bypass.tabcomplete") || Config.excludedplayers.contains(p.getName())) {
-		  return true;
-	  }
-	  return false;
-	}
+	private boolean isAdmin(Player player) {
+        return player.hasPermission("ublocker.bypass.tabcomplete") || Config.excludedplayers.contains(player.getName());
+    }
 }

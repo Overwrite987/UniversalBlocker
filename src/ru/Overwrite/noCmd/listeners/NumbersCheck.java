@@ -17,14 +17,7 @@ import ru.Overwrite.noCmd.utils.Config;
 
 public class NumbersCheck implements Listener {
 	
-	Main main;	
-	public NumbersCheck(Main main) {
-        Bukkit.getPluginManager().registerEvents(this, main);
-        this.main = main;
-        if (main.debug) {
-        	main.getLogger().info("> numbers-check - enabled");
-        }
-    }
+	private final Main main = Main.getInstance();
 	
 	private final Pattern IP_PATTERN = Pattern.compile("(\\d+\\.){3}");
 
@@ -73,8 +66,13 @@ public class NumbersCheck implements Listener {
                     (float)config.getDouble("sounds.blocked-chat.volume"), (float)config.getDouble("sounds.blocked-chat.pitch"));
         }
  	    if (config.getBoolean("settings.enable-titles")) {
- 	        p.sendTitle(RGBcolors.translate(messageconfig.getString("messages.maxnumbers-title").split(":")[0]), 
- 	         	RGBcolors.translate(messageconfig.getString("messages.maxnumbers-title").split(":")[1]));
+ 	    	String[] titleMessages = messageconfig.getString("messages.maxnumbers-title").split(":");
+ 	    	String title = RGBcolors.translate(titleMessages[0]);
+			String subtitle = RGBcolors.translate(titleMessages[1]);
+			int fadeIn = Integer.parseInt(titleMessages[2]);
+			int stay = Integer.parseInt(titleMessages[3]);
+			int fadeOut = Integer.parseInt(titleMessages[4]);
+			p.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
  	    }
  	    if (config.getBoolean("settings.notify")) {
  	        Bukkit.broadcast(RGBcolors.translate(messageconfig.getString("messages.notify-maxnumbers")
@@ -90,12 +88,9 @@ public class NumbersCheck implements Listener {
  	   }	
 	}
 	
-	private boolean isAdmin(Player p) {
-	  if (p.hasPermission("ublocker.bypass.numbers") || Config.excludedplayers.contains(p.getName())) {
-		  return true;
-	  }
-	  return false;
-	}
+	private boolean isAdmin(Player player) {
+        return player.hasPermission("ublocker.bypass.numbers") || Config.excludedplayers.contains(player.getName());
+    }
 
 }
 
