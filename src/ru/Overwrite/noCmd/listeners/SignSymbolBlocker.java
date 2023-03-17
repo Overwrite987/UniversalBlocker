@@ -32,7 +32,7 @@ public class SignSymbolBlocker implements Listener {
             e.setCancelled(true);
             if (config.getBoolean("settings.enable-sounds")) {
                 p.playSound(p.getLocation(), Sound.valueOf(config.getString("sounds.blocked-command.sound")),
-                        (float) config.getDouble("sounds.blocked-command.volume"), (float) config.getDouble("sounds.blocked-command.pitch"));
+                        (float)config.getDouble("sounds.blocked-command.volume"), (float)config.getDouble("sounds.blocked-command.pitch"));
             }
             if (config.getBoolean("settings.enable-titles")) {
                 String[] titleMessages = messageConfig.getString("messages.blockedsignsymbol-title").split(":");
@@ -46,12 +46,11 @@ public class SignSymbolBlocker implements Listener {
             if (config.getBoolean("settings.notify")) {
                 String notifyMessage = RGBcolors.translate(messageConfig.getString("messages.notify-signsymbol").replace("%player%", p.getName()).replace("%symbol%", blockedSymbol));
                 Bukkit.broadcast(notifyMessage, "ublocker.admin");
-
                 if (config.getBoolean("settings.enable-sounds")) {
                     for (Player admin : Bukkit.getOnlinePlayers()) {
                         if (admin.hasPermission("ublocker.admin")) {
                             admin.playSound(admin.getLocation(), Sound.valueOf(config.getString("sounds.admin-notify.sound")),
-                                    (float) config.getDouble("sounds.admin-notify.volume"), (float) config.getDouble("sounds.admin-notify.pitch"));
+                                    (float)config.getDouble("sounds.admin-notify.volume"), (float)config.getDouble("sounds.admin-notify.pitch"));
                         }
                     }
                 }

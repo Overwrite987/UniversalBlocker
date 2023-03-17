@@ -24,7 +24,6 @@ public class NumbersCheck implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onChatNumber(AsyncPlayerChatEvent e) {
 	    FileConfiguration config = main.getConfig();
-	    FileConfiguration messageconfig = Config.messages;
 	    String message = e.getMessage();
 	    Player p = e.getPlayer();
 	    int limit = config.getInt("chat-settings.maxmsg-numbers");
@@ -57,35 +56,35 @@ public class NumbersCheck implements Listener {
 	}
 	
 	private void cancelChatEvent(Player p, String message, Cancellable e) {
-		e.setCancelled(true);
-		FileConfiguration config = main.getConfig();
-		FileConfiguration messageconfig = Config.messages;
-		p.sendMessage(RGBcolors.translate(messageconfig.getString("messages.maxnumbers-msg").replace("%limit%", config.getString("chat-settings.maxmsg-numbers"))));
-		if (config.getBoolean("settings.enable-sounds")) {
-            p.playSound(p.getLocation(), Sound.valueOf(config.getString("sounds.blocked-chat.sound")),
+		 e.setCancelled(true);
+		 FileConfiguration config = main.getConfig();
+		 FileConfiguration messageconfig = Config.messages;
+		 p.sendMessage(RGBcolors.translate(messageconfig.getString("messages.maxnumbers-msg").replace("%limit%", config.getString("chat-settings.maxmsg-numbers"))));
+		 if (config.getBoolean("settings.enable-sounds")) {
+             p.playSound(p.getLocation(), Sound.valueOf(config.getString("sounds.blocked-chat.sound")),
                     (float)config.getDouble("sounds.blocked-chat.volume"), (float)config.getDouble("sounds.blocked-chat.pitch"));
-        }
- 	    if (config.getBoolean("settings.enable-titles")) {
- 	    	String[] titleMessages = messageconfig.getString("messages.maxnumbers-title").split(":");
- 	    	String title = RGBcolors.translate(titleMessages[0]);
-			String subtitle = RGBcolors.translate(titleMessages[1]);
-			int fadeIn = Integer.parseInt(titleMessages[2]);
-			int stay = Integer.parseInt(titleMessages[3]);
-			int fadeOut = Integer.parseInt(titleMessages[4]);
-			p.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
- 	    }
- 	    if (config.getBoolean("settings.notify")) {
- 	        Bukkit.broadcast(RGBcolors.translate(messageconfig.getString("messages.notify-maxnumbers")
- 	        	.replace("%player%", p.getName()).replace("%limit%", config.getString("chat-settings.maxmsg-numbers")).replace("%msg%", message)), "ublocker.admin");
- 	    if (config.getBoolean("settings.enable-sounds")) {
- 		   for (Player ps : Bukkit.getOnlinePlayers()) {
- 		     if (ps.hasPermission("ublocker.admin")) {
- 		         ps.playSound(ps.getLocation(), Sound.valueOf(config.getString("sounds.admin-notify.sound")),
- 		                  (float)config.getDouble("sounds.admin-notify.volume"), (float)config.getDouble("sounds.admin-notify.pitch")); 
- 		     }
- 		   }
- 		 }
- 	   }	
+         }
+ 	     if (config.getBoolean("settings.enable-titles")) {
+ 	    	 String[] titleMessages = messageconfig.getString("messages.maxnumbers-title").split(":");
+ 	    	 String title = RGBcolors.translate(titleMessages[0]);
+			 String subtitle = RGBcolors.translate(titleMessages[1]);
+			 int fadeIn = Integer.parseInt(titleMessages[2]);
+			 int stay = Integer.parseInt(titleMessages[3]);
+			 int fadeOut = Integer.parseInt(titleMessages[4]);
+			 p.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
+ 	     }
+ 	     if (config.getBoolean("settings.notify")) {
+ 	         Bukkit.broadcast(RGBcolors.translate(messageconfig.getString("messages.notify-maxnumbers")
+ 	        		 .replace("%player%", p.getName()).replace("%limit%", config.getString("chat-settings.maxmsg-numbers")).replace("%msg%", message)), "ublocker.admin");
+ 	         if (config.getBoolean("settings.enable-sounds")) {
+ 	        	 for (Player ps : Bukkit.getOnlinePlayers()) {
+ 	        		 if (ps.hasPermission("ublocker.admin")) {
+ 	        			 ps.playSound(ps.getLocation(), Sound.valueOf(config.getString("sounds.admin-notify.sound")),
+ 	        					 (float)config.getDouble("sounds.admin-notify.volume"), (float)config.getDouble("sounds.admin-notify.pitch")); 
+ 	        		 }
+ 	        	 }
+ 	         }
+ 	     }	
 	}
 	
 	private boolean isAdmin(Player player) {
