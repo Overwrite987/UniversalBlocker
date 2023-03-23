@@ -13,7 +13,7 @@ public class CommandClass implements CommandExecutor {
   
   public boolean onCommand(CommandSender sender, Command cmd, String commandlabel, String[] args) {
     if (!sender.hasPermission("ublocker.admin")) {
-      sender.sendMessage("§7This server is using §cUniversalBlocker "+ main.getDescription().getVersion() +" §7by §5Overwrite");
+      sender.sendMessage("§6❖ §7Running §c§lUniversalBlocker v1.11§7 by §5OverwriteMC");
       return true;
     } 
     if (args.length == 0 && sender.hasPermission("ublocker.admin")) {
@@ -23,8 +23,15 @@ public class CommandClass implements CommandExecutor {
     if (args[0].equalsIgnoreCase("reload") && sender.hasPermission("ublocker.admin")) {
       main.reloadConfig();
       FileConfiguration config = main.getConfig();
+      Config.loadBooleans(config);
+      Config.loadMessageFile();
       Config.loadMessages();
+      Config.loadNotifies();
+      Config.loadTitles();
       Config.setupExcluded(config);
+      if (config.getBoolean("settings.enable-sounds")) {
+      	Config.setupSounds(config);
+      }
       if (!Config.banwords.isEmpty()) {
     	  Config.setupBanWords(config);
       }
@@ -68,7 +75,7 @@ public class CommandClass implements CommandExecutor {
     	  logger.info("§6Рконблокед §7:" + Config.rconblocked.toString());
       }
     } else {
-      sender.sendMessage("§7This server is using §cUniversalBlocker §7by §5Overwrite");
+      sender.sendMessage("§6❖ §7Running §c§lUniversalBlocker v1.11§7 by §5OverwriteMC");
     } 
     return true;
   }

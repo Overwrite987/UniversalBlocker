@@ -1,5 +1,6 @@
 package ru.Overwrite.noCmd.utils;
 
+import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import ru.Overwrite.noCmd.Main;
@@ -15,10 +16,65 @@ public class Config {
 	
 	public static FileConfiguration messages;
 	
-	public static Set<String> fullblocked, liteblocked, banwords, blockedsymbol, blockedsignsymbol, excludedcommands, excludedplayers, argshidedcmds, consoleblocked, rconblocked;
-	public static String allowedchars;
+	public static Set<String> 
+	fullblocked, 
+	liteblocked, 
+	banwords, 
+	blockedsymbol, 
+	blockedsignsymbol, 
+	excludedcommands, 
+	excludedplayers, 
+	argshidedcmds, 
+	consoleblocked, 
+	rconblocked;
+	
+	public static String 
+	allowedchars,
+	messages_blockedcommand,
+	messages_blockedsymbol,
+	messages_blockedsignsymbol,
+	messages_blockedchatsymbol,
+	messages_blockedword,
+	messages_blocksyntax,
+	messages_maxnumbers,
+	notify_blockedcommand,
+	notify_blockedsymbol,
+	notify_blockedsignsymbol,
+	notify_blockedchatsymbol,
+	notify_blockedword,
+	notify_blocksyntax,
+	notify_maxnumbers,
+	titles_blockedcommand,
+	titles_blockedsymbol,
+	titles_blockedsignsymbol,
+	titles_blockedchatsymbol,
+	titles_blockedword,
+	titles_blocksyntax,
+	titles_maxnumbers;
+	
+	public static Sound
+	sounds_admin_notify_sound,
+	sounds_blocked_command_sound,
+	sounds_blocked_symbol_sound,
+	sounds_blocked_chat_sound;
+	
+	public static boolean
+	settings_notify,
+	settings_enable_titles,
+	settings_enable_sounds,
+	chat_settings_strict_number_chek;
+	
+	public static float
+	sounds_admin_notify_volume,
+	sounds_admin_notify_pitch,
+	sounds_blocked_command_volume,
+	sounds_blocked_command_pitch,
+	sounds_blocked_symbol_volume,
+	sounds_blocked_symbol_pitch,
+	sounds_blocked_chat_volume,
+	sounds_blocked_chat_pitch;
 
-    public static void loadMessages() {
+    public static void loadMessageFile() {
         File file = new File(instance.getDataFolder(), "message.yml");
         if (instance.getResource("message.yml") == null) {
             save(YamlConfiguration.loadConfiguration(file), "message.yml");
@@ -28,7 +84,7 @@ public class Config {
         }
         messages = YamlConfiguration.loadConfiguration(file);
         if (instance.debug) {
-        	instance.getLogger().info("> messages.yml загружен");
+        	instance.getLogger().info("§a> messages.yml загружен");
         }
     }
 
@@ -39,6 +95,73 @@ public class Config {
             ex.printStackTrace();
         }
         return config;
+    }
+    
+    public static void loadBooleans(FileConfiguration config) {
+    	settings_notify = config.getBoolean("settings.notify");
+    	settings_enable_titles = config.getBoolean("settings.enable-titles");
+    	settings_enable_sounds = config.getBoolean("settings.enable-sounds");
+    	chat_settings_strict_number_chek = config.getBoolean("chat-settings.strict-number-chek");
+    	if (instance.debug) {
+            instance.getLogger().info("§e> Настройки загружены");
+        }
+    }
+    
+    public static void loadMessages() {
+    	messages_blockedcommand = RGBcolors.translate(messages.getString("messages.blockedcommand"));
+    	messages_blockedsymbol = RGBcolors.translate(messages.getString("messages.blockedsymbol"));
+    	messages_blockedsignsymbol = RGBcolors.translate(messages.getString("messages.blockedsignsymbol"));
+    	messages_blockedchatsymbol = RGBcolors.translate(messages.getString("messages.blockedchatsymbol"));
+    	messages_blockedword = RGBcolors.translate(messages.getString("messages.blockedword"));
+    	messages_blocksyntax = RGBcolors.translate(messages.getString("messages.blocksyntax"));
+    	messages_maxnumbers = RGBcolors.translate(messages.getString("messages.maxnumbers"));
+    	if (instance.debug) {
+            instance.getLogger().info("§e> Сообщения загружены");
+        }
+    }
+    
+    public static void loadNotifies() {
+    	notify_blockedcommand = RGBcolors.translate(messages.getString("notify.blockedcommand"));
+    	notify_blockedsymbol = messages.getString("notify.blockedsymbol");
+    	notify_blockedsignsymbol = RGBcolors.translate(messages.getString("notify.blockedsignsymbol"));
+    	notify_blockedchatsymbol = RGBcolors.translate(messages.getString("notify.blockedchatsymbol"));
+    	notify_blockedword = RGBcolors.translate(messages.getString("notify.blockedword"));
+    	notify_blocksyntax = RGBcolors.translate(messages.getString("notify.blocksyntax"));
+    	notify_maxnumbers = RGBcolors.translate(messages.getString("notify.maxnumbers"));
+    	if (instance.debug) {
+            instance.getLogger().info("§e> Оповещения загружены");
+        }
+    }
+    
+    public static void loadTitles() {
+    	titles_blockedcommand = RGBcolors.translate(messages.getString("titles.blockedcommand"));
+    	titles_blockedsymbol = RGBcolors.translate(messages.getString("titles.blockedsymbol"));
+    	titles_blockedsignsymbol = RGBcolors.translate(messages.getString("titles.blockedsignsymbol"));
+    	titles_blockedchatsymbol = RGBcolors.translate(messages.getString("titles.blockedchatsymbol"));
+    	titles_blockedword = RGBcolors.translate(messages.getString("titles.blockedword"));
+    	titles_blocksyntax = RGBcolors.translate(messages.getString("titles.blocksyntax"));
+    	titles_maxnumbers = RGBcolors.translate(messages.getString("titles.maxnumbers"));
+    	if (instance.debug) {
+            instance.getLogger().info("§e> Тайтлы загружены");
+        }
+    }
+    
+    public static void setupSounds(FileConfiguration config) {
+    	sounds_admin_notify_sound = Sound.valueOf(config.getString("sounds.admin-notify.sound"));
+    	sounds_admin_notify_volume = (float)config.getDouble("sounds.admin-notify.volume");
+    	sounds_admin_notify_pitch = (float)config.getDouble("sounds.admin-notify.pitch");
+    	sounds_blocked_command_sound = Sound.valueOf(config.getString("sounds.blocked-command.sound"));
+    	sounds_blocked_command_volume = (float)config.getDouble("sounds.blocked-command.volume");
+    	sounds_blocked_command_pitch = (float)config.getDouble("sounds.blocked-command.pitch");
+    	sounds_blocked_symbol_sound = Sound.valueOf(config.getString("sounds.blocked-symbol.sound"));
+    	sounds_blocked_symbol_volume = (float)config.getDouble("sounds.blocked-symbol.volume");
+    	sounds_blocked_symbol_pitch = (float)config.getDouble("sounds.blocked-symbol.pitch");
+    	sounds_blocked_chat_sound = Sound.valueOf(config.getString("sounds.blocked-chat.sound"));
+    	sounds_blocked_chat_volume = (float)config.getDouble("sounds.blocked-chat.volume");
+    	sounds_blocked_chat_pitch = (float)config.getDouble("sounds.blocked-chat.pitch");
+    	if (instance.debug) {
+            instance.getLogger().info("§e> Звуки загружены");
+        }
     }
     
     public static void setupExcluded(FileConfiguration config) {
