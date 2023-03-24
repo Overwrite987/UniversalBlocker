@@ -122,7 +122,7 @@ public class Config {
     
     public static void loadNotifies() {
     	notify_blockedcommand = RGBcolors.translate(messages.getString("notify.blockedcommand"));
-    	notify_blockedsymbol = messages.getString("notify.blockedsymbol");
+    	notify_blockedsymbol = RGBcolors.translate(messages.getString("notify.blockedsymbol"));
     	notify_blockedsignsymbol = RGBcolors.translate(messages.getString("notify.blockedsignsymbol"));
     	notify_blockedchatsymbol = RGBcolors.translate(messages.getString("notify.blockedchatsymbol"));
     	notify_blockedword = RGBcolors.translate(messages.getString("notify.blockedword"));

@@ -7,7 +7,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import ru.Overwrite.noCmd.utils.Config;
-import ru.Overwrite.noCmd.utils.RGBcolors;
 
 public class SyntaxBlocker implements Listener {
 
@@ -36,7 +35,7 @@ public class SyntaxBlocker implements Listener {
 	                p.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
 	            }
 	            if (Config.settings_notify) {
-	            	String notifyMessage = RGBcolors.translate(Config.notify_blockedsymbol.replace("%player%", p.getName())).replace("%symbol%", symbol);
+	            	String notifyMessage = Config.notify_blockedsymbol.replace("%player%", p.getName()).replace("%symbol%", symbol);
 	            	for (Player admin : Bukkit.getOnlinePlayers()) {
 	            		if (admin.hasPermission("ublocker.admin")) {
 	            			admin.sendMessage(notifyMessage);

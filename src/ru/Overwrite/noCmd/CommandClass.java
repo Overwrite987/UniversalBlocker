@@ -23,6 +23,7 @@ public class CommandClass implements CommandExecutor {
     if (args[0].equalsIgnoreCase("reload") && sender.hasPermission("ublocker.admin")) {
       main.reloadConfig();
       FileConfiguration config = main.getConfig();
+      main.debug = config.getBoolean("settings.debug");
       Config.loadBooleans(config);
       Config.loadMessageFile();
       Config.loadMessages();
@@ -63,16 +64,20 @@ public class CommandClass implements CommandExecutor {
       sender.sendMessage("§6/" + commandlabel + " reload - перезагрузить конфиг");
       if (main.debug) {
     	  Logger logger = main.getLogger();
-    	  logger.info("§6Фулл-блокед командс §7:" + Config.fullblocked.toString()); 
-    	  logger.info("§6Лайт-блокед командс §7:" + Config.liteblocked.toString());
-    	  logger.info("§6Банворды §7:" + Config.banwords.toString());
-    	  logger.info("§6Блокедсимволс §7:" + Config.blockedsymbol.toString());
-    	  logger.info("§6Блокедсигнсимволс §7:" + Config.blockedsignsymbol.toString()); 
-    	  logger.info("§6Эксплюдедкомандс §7:" + Config.excludedcommands.toString()); 
-    	  logger.info("§6Эксклюдедплеерс §7:" + Config.excludedplayers.toString());
-    	  logger.info("§6Аргсхайден §7:" + Config.argshidedcmds.toString());
-    	  logger.info("§6Консольблокед §7:" + Config.consoleblocked.toString());
-    	  logger.info("§6Рконблокед §7:" + Config.rconblocked.toString());
+    	  logger.info("§6Нотифай§7: " + Config.settings_notify);
+    	  logger.info("§6Енабле титлы§7: " + Config.settings_enable_titles);
+    	  logger.info("§6Енабле саундсы§7: " + Config.settings_enable_sounds);
+    	  logger.info("§6Стрикт намбер чек§7: " + Config.chat_settings_strict_number_chek);
+    	  logger.info("§6Фулл-блокед командс§7: " + Config.fullblocked.toString()); 
+    	  logger.info("§6Лайт-блокед командс§7: " + Config.liteblocked.toString());
+    	  logger.info("§6Банворды§7: " + Config.banwords.toString());
+    	  logger.info("§6Блокедсимволс§7: " + Config.blockedsymbol.toString());
+    	  logger.info("§6Блокедсигнсимволс§7: " + Config.blockedsignsymbol.toString()); 
+    	  logger.info("§6Эксплюдедкомандс§7: " + Config.excludedcommands.toString()); 
+    	  logger.info("§6Эксклюдедплеерс§7: " + Config.excludedplayers.toString());
+    	  logger.info("§6Аргсхайден§7: " + Config.argshidedcmds.toString());
+    	  logger.info("§6Консольблокед§7: " + Config.consoleblocked.toString());
+    	  logger.info("§6Рконблокед§7: " + Config.rconblocked.toString());
       }
     } else {
       sender.sendMessage("§6❖ §7Running §c§lUniversalBlocker v1.11§7 by §5OverwriteMC");
