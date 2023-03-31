@@ -18,7 +18,7 @@ public class Main extends JavaPlugin {
 	
   Server server = getServer();
   
-  public boolean debug;
+  public boolean debug, folia;
   private final PluginManager pluginManager = server.getPluginManager();
   private final Logger logger = getLogger();
 	
@@ -59,7 +59,7 @@ public class Main extends JavaPlugin {
     if (config.getBoolean("settings.enable-metrics")) {
       new Metrics(this, 15379);
     }
-    if (config.getBoolean("settings.update-checker")) {
+    if (config.getBoolean("settings.update-checker") && !folia) {
     	checkUpdates(this, version -> {
             logger.info("§6========================================");
             if (getDescription().getVersion().equals(version)) {
@@ -164,8 +164,10 @@ public class Main extends JavaPlugin {
           logger.info("§eСкачать Paper для старых версий: §ahttps://papermc.io/legacy §7((в тесте выбирайте 2 вариант ответа))");
           logger.info("§6============= §6! WARNING ! §c=============");
           setEnabled(false);
-          return;
-      }    	
+      } else if (server.getName().equals("Folia")) {
+    	  logger.info("Активируем поддержку Folia!");
+    	  folia = true;
+      }
   }
   
   private void checkUpdates(Plugin plugin, Consumer<String> consumer) {
