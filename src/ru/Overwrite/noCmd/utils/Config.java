@@ -84,7 +84,7 @@ public class Config {
         }
         messages = YamlConfiguration.loadConfiguration(file);
         if (instance.debug) {
-        	instance.getLogger().info("§a> messages.yml загружен");
+        	instance.logger.info("§a> messages.yml загружен");
         }
     }
 
@@ -103,7 +103,7 @@ public class Config {
     	settings_enable_sounds = config.getBoolean("settings.enable-sounds");
     	chat_settings_strict_number_chek = config.getBoolean("chat-settings.strict-number-chek");
     	if (instance.debug) {
-            instance.getLogger().info("§e> Настройки загружены");
+            instance.logger.info("§e> Настройки загружены");
         }
     }
     
@@ -116,7 +116,7 @@ public class Config {
     	messages_blocksyntax = RGBcolors.translate(messages.getString("messages.blocksyntax"));
     	messages_maxnumbers = RGBcolors.translate(messages.getString("messages.maxnumbers"));
     	if (instance.debug) {
-            instance.getLogger().info("§e> Сообщения загружены");
+            instance.logger.info("§e> Сообщения загружены");
         }
     }
     
@@ -129,7 +129,7 @@ public class Config {
     	notify_blocksyntax = RGBcolors.translate(messages.getString("notify.blocksyntax"));
     	notify_maxnumbers = RGBcolors.translate(messages.getString("notify.maxnumbers"));
     	if (instance.debug) {
-            instance.getLogger().info("§e> Оповещения загружены");
+            instance.logger.info("§e> Оповещения загружены");
         }
     }
     
@@ -142,7 +142,7 @@ public class Config {
     	titles_blocksyntax = RGBcolors.translate(messages.getString("titles.blocksyntax"));
     	titles_maxnumbers = RGBcolors.translate(messages.getString("titles.maxnumbers"));
     	if (instance.debug) {
-            instance.getLogger().info("§e> Тайтлы загружены");
+            instance.logger.info("§e> Тайтлы загружены");
         }
     }
     
@@ -160,14 +160,14 @@ public class Config {
     	sounds_blocked_chat_volume = (float)config.getDouble("sounds.blocked-chat.volume");
     	sounds_blocked_chat_pitch = (float)config.getDouble("sounds.blocked-chat.pitch");
     	if (instance.debug) {
-            instance.getLogger().info("§e> Звуки загружены");
+            instance.logger.info("§e> Звуки загружены");
         }
     }
     
     public static void setupExcluded(FileConfiguration config) {
         excludedplayers = new HashSet<>(config.getStringList("excluded-players"));
         if (instance.debug) {
-            instance.getLogger().info("§e> Невосприимчивые игроки загружены");
+            instance.logger.info("§e> Невосприимчивые игроки загружены");
         }
     }
     
@@ -175,21 +175,21 @@ public class Config {
     	fullblocked = new HashSet<>(config.getStringList("blocked-commands.full"));
     	liteblocked = new HashSet<>(config.getStringList("blocked-commands.lite"));
     	if (instance.debug) {
-    		instance.getLogger().info("§e> Списки блокировок команд загружены");
+    		instance.logger.info("§e> Списки блокировок команд загружены");
     	}
     }
     
     public static void setupBanWords(FileConfiguration config) {
     	banwords = new HashSet<>(config.getStringList("chat-settings.ban-words"));
     	if (instance.debug) {
-    		instance.getLogger().info("§e> Списки заблокированных слов загружены");
+    		instance.logger.info("§e> Списки заблокированных слов загружены");
     	}
     }
     
     public static void setupChars(FileConfiguration config) {
     	allowedchars = config.getString("chat-settings.allowed-chars");
     	if (instance.debug) {
-    		instance.getLogger().info("§e> Список разрешенных символов чата загружен");
+    		instance.logger.info("§e> Список разрешенных символов чата загружен");
     	}
     }
     
@@ -197,35 +197,35 @@ public class Config {
     	blockedsymbol = new HashSet<>(config.getStringList("symbols.blocked-symbols"));
     	excludedcommands = new HashSet<>(config.getStringList("symbols.excluded-commands"));
     	if (instance.debug) {
-    		instance.getLogger().info("§e> Списки блокировок символов команд загружены");
+    		instance.logger.info("§e> Списки блокировок символов команд загружены");
     	}
     }
     
     public static void setupSignSyntax(FileConfiguration config) {
     	blockedsignsymbol = new HashSet<>(config.getStringList("symbols.blocked-sign-symbols"));
     	if (instance.debug) {
-    		instance.getLogger().info("§e> Списки блокировок символов табличек загружены");
+    		instance.logger.info("§e> Списки блокировок символов табличек загружены");
     	}
     }
     
     public static void setupArgshidden(FileConfiguration config) {
     	argshidedcmds = new HashSet<>(config.getStringList("blocked-commands.args-tab-complete"));
     	if (instance.debug) {
-    		instance.getLogger().info("§e> Команды с заблокированными аргументами загружены");
+    		instance.logger.info("§e> Команды с заблокированными аргументами загружены");
     	}
     }
     
     public static void setupRcon(FileConfiguration config) {
     	rconblocked = new HashSet<>(config.getStringList("blocked-commands.rcon"));
     	if (instance.debug) {
-    		instance.getLogger().info("§e> Заблокированные команды rcon загружены");
+    		instance.logger.info("§e> Заблокированные команды rcon загружены");
     	}
     }
     
     public static void setupConsole(FileConfiguration config) {
     	consoleblocked = new HashSet<>(config.getStringList("blocked-commands.console"));
     	if (instance.debug) {
-    		instance.getLogger().info("§e> Заблокированные команды консоли загружены");
+    		instance.logger.info("§e> Заблокированные команды консоли загружены");
     	}
     }
 }

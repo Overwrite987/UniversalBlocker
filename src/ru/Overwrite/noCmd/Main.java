@@ -20,7 +20,7 @@ public class Main extends JavaPlugin {
   
   public boolean debug, folia;
   private final PluginManager pluginManager = server.getPluginManager();
-  private final Logger logger = getLogger();
+  public final Logger logger = getLogger();
 	
   private static Main instance;
 	  
