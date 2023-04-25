@@ -5,9 +5,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import com.destroystokyo.paper.event.server.AsyncTabCompleteEvent;
 
+import ru.Overwrite.noCmd.Main;
 import ru.Overwrite.noCmd.utils.Config;
 
 public class TabComplete implements Listener {
+	
+	final Main plugin;
+	private final Config pluginConfig;
+	
+	public TabComplete(Main plugin) {
+        this.plugin = plugin;
+        pluginConfig = plugin.getPluginConfig();
+	}
 
     @EventHandler
     public void onTabComplete(AsyncTabCompleteEvent e) {
@@ -20,7 +29,7 @@ public class TabComplete implements Listener {
             e.setCancelled(true);
             return;
         }
-        for (String command : Config.argshidedcmds) {
+        for (String command : pluginConfig.argshidedcmds) {
             if (e.getBuffer().equalsIgnoreCase("/" + command + " ") && !isAdmin(p)) {
                 e.setCancelled(true);
             }
@@ -28,6 +37,6 @@ public class TabComplete implements Listener {
     }
 
     private boolean isAdmin(Player p) {
-        return p.hasPermission("ublocker.bypass.tabcomplete") || Config.excludedplayers.contains(p.getName());
+        return p.hasPermission("ublocker.bypass.tabcomplete") || pluginConfig.excludedplayers.contains(p.getName());
     }
 }

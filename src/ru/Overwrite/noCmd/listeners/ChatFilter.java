@@ -7,9 +7,19 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+
+import ru.Overwrite.noCmd.Main;
 import ru.Overwrite.noCmd.utils.Config;
 
 public class ChatFilter implements Listener {
+	
+	final Main plugin;
+	private final Config pluginConfig;
+	
+	public ChatFilter(Main plugin) {
+        this.plugin = plugin;
+        pluginConfig = plugin.getPluginConfig();
+	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onChatMessage(AsyncPlayerChatEvent e) {
@@ -22,28 +32,22 @@ public class ChatFilter implements Listener {
 	
 	private void cancelChatEvent(Player p, String message, Cancellable e) {
 		e.setCancelled(true);
-	    p.sendMessage(Config.messages_blockedchatsymbol);
-	    if (Config.settings_enable_sounds) {
-            p.playSound(p.getLocation(), Config.sounds_blocked_chat_sound,
-                    Config.sounds_blocked_chat_volume, Config.sounds_blocked_chat_pitch);
+	    p.sendMessage(pluginConfig.messages_blockedchatsymbol);
+	    if (pluginConfig.settings_enable_sounds) {
+            p.playSound(p.getLocation(), pluginConfig.sounds_blocked_chat_sound,
+                    pluginConfig.sounds_blocked_chat_volume, pluginConfig.sounds_blocked_chat_pitch);
         }
-	    if (Config.settings_enable_titles) {
-	    	String[] titleMessages = Config.titles_blockedchatsymbol.split(":");
-	    	String title = titleMessages[0];
-	    	String subtitle = titleMessages[1];
-	    	int fadeIn = Integer.parseInt(titleMessages[2]);
-	    	int stay = Integer.parseInt(titleMessages[3]);
-	    	int fadeOut = Integer.parseInt(titleMessages[4]);
-			p.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
+	    if (pluginConfig.settings_enable_titles) {
+	    	plugin.sendTitleMessage(pluginConfig.titles_blockedchatsymbol.split(":"), p);
 	    }
-	    if (Config.settings_notify) {
-	    	String notifyMessage = Config.notify_blockedchatsymbol.replace("%player%", p.getName()).replace("%chatsymbol%", message);
+	    if (pluginConfig.settings_notify) {
+	    	String notifyMessage = pluginConfig.notify_blockedchatsymbol.replace("%player%", p.getName()).replace("%chatsymbol%", message);
 	    	for (Player admin : Bukkit.getOnlinePlayers()) {
    	  			if (admin.hasPermission("ublocker.admin")) {
    	  				admin.sendMessage(notifyMessage);
-   	  				if (Config.settings_enable_sounds) {
-   	  					admin.playSound(admin.getLocation(), Config.sounds_admin_notify_sound,
-   	  							Config.sounds_admin_notify_volume, Config.sounds_admin_notify_pitch); 
+   	  				if (pluginConfig.settings_enable_sounds) {
+   	  					admin.playSound(admin.getLocation(), pluginConfig.sounds_admin_notify_sound,
+   	  							pluginConfig.sounds_admin_notify_volume, pluginConfig.sounds_admin_notify_pitch); 
 	    			}
 	    		}
 	    	}
@@ -51,7 +55,7 @@ public class ChatFilter implements Listener {
 	} 
 	
 	private boolean isAdmin(Player player) {
-        return player.hasPermission("ublocker.bypass.chatsymbols") || Config.excludedplayers.contains(player.getName());
+        return player.hasPermission("ublocker.bypass.chatsymbols") || pluginConfig.excludedplayers.contains(player.getName());
     }
 	  
 	private boolean containsBlockedChars(String message) {
@@ -59,7 +63,7 @@ public class ChatFilter implements Listener {
 	    int length = characters.length;
 	    for (int i = 0; i < length; i++) {
 	        char character = characters[i];
-	        if (Config.allowedchars.indexOf(character) == -1) {
+	        if (pluginConfig.allowedchars.indexOf(character) == -1) {
 	            return true; 
 	        } 
 	    }

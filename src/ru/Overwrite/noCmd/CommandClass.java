@@ -9,7 +9,13 @@ import ru.Overwrite.noCmd.utils.Config;
 
 public class CommandClass implements CommandExecutor {
 	
-  private final Main main = Main.getInstance();
+  final Main plugin;
+  private final Config pluginConfig;
+	
+  public CommandClass(Main plugin) {
+      this.plugin = plugin;
+      pluginConfig = plugin.getPluginConfig();
+  }
   
   public boolean onCommand(CommandSender sender, Command cmd, String commandlabel, String[] args) {
     if (!sender.hasPermission("ublocker.admin")) {
@@ -21,63 +27,63 @@ public class CommandClass implements CommandExecutor {
       return true;
     } 
     if (args[0].equalsIgnoreCase("reload") && sender.hasPermission("ublocker.admin")) {
-      main.reloadConfig();
-      FileConfiguration config = main.getConfig();
-      main.debug = config.getBoolean("settings.debug");
-      Config.loadBooleans(config);
-      Config.loadMessageFile();
-      Config.loadMessages();
-      Config.loadNotifies();
-      Config.loadTitles();
-      Config.setupExcluded(config);
+      plugin.reloadConfig();
+      FileConfiguration config = plugin.getConfig();
+      plugin.debug = config.getBoolean("settings.debug");
+      pluginConfig.loadBooleans(config);
+      pluginConfig.loadMessageFile();
+      pluginConfig.loadMessages();
+      pluginConfig.loadNotifies();
+      pluginConfig.loadTitles();
+      pluginConfig.setupExcluded(config);
       if (config.getBoolean("settings.enable-sounds")) {
-      	Config.setupSounds(config);
+    	  pluginConfig.setupSounds(config);
       }
-      if (!Config.banwords.isEmpty()) {
-    	  Config.setupBanWords(config);
+      if (!pluginConfig.banwords.isEmpty()) {
+    	  pluginConfig.setupBanWords(config);
       }
-      if (!Config.blockedsymbol.isEmpty()) {
-    	  Config.setupSyntax(config);
+      if (!pluginConfig.blockedsymbol.isEmpty()) {
+    	  pluginConfig.setupSyntax(config);
       }
-      if (!Config.blockedsymbol.isEmpty()) {
-    	  Config.setupSignSyntax(config);
+      if (!pluginConfig.blockedsymbol.isEmpty()) {
+    	  pluginConfig.setupSignSyntax(config);
       }
-      if (!Config.allowedchars.isEmpty()) {
-    	  Config.setupChars(config);
+      if (!pluginConfig.allowedchars.isEmpty()) {
+    	  pluginConfig.setupChars(config);
       }
-      if (!Config.liteblocked.isEmpty() && !Config.fullblocked.isEmpty()) {
-    	  Config.setupCommands(config);
+      if (!pluginConfig.liteblocked.isEmpty() && !pluginConfig.fullblocked.isEmpty()) {
+    	  pluginConfig.setupCommands(config);
       }
-      if (!Config.argshidedcmds.isEmpty()) {
-    	  Config.setupArgshidden(config);
+      if (!pluginConfig.argshidedcmds.isEmpty()) {
+    	  pluginConfig.setupArgshidden(config);
       }
-      if (!Config.consoleblocked.isEmpty()) {
-    	  Config.setupConsole(config);
+      if (!pluginConfig.consoleblocked.isEmpty()) {
+    	  pluginConfig.setupConsole(config);
       }
-      if (!Config.rconblocked.isEmpty()) {
-    	  Config.setupRcon(config);
+      if (!pluginConfig.rconblocked.isEmpty()) {
+    	  pluginConfig.setupRcon(config);
       }
       sender.sendMessage("§cUniversalBlocker §7> §aКонфигурация перезагружена");
       return true;
     } 
     if (!args[0].equalsIgnoreCase("reload") && args.length > 1) {
       sender.sendMessage("§6/" + commandlabel + " reload - перезагрузить конфиг");
-      if (main.debug) {
-    	  Logger logger = main.getLogger();
-    	  logger.info("§6Нотифай§7: " + Config.settings_notify);
-    	  logger.info("§6Енабле титлы§7: " + Config.settings_enable_titles);
-    	  logger.info("§6Енабле саундсы§7: " + Config.settings_enable_sounds);
-    	  logger.info("§6Стрикт намбер чек§7: " + Config.chat_settings_strict_number_chek);
-    	  logger.info("§6Фулл-блокед командс§7: " + Config.fullblocked.toString()); 
-    	  logger.info("§6Лайт-блокед командс§7: " + Config.liteblocked.toString());
-    	  logger.info("§6Банворды§7: " + Config.banwords.toString());
-    	  logger.info("§6Блокедсимволс§7: " + Config.blockedsymbol.toString());
-    	  logger.info("§6Блокедсигнсимволс§7: " + Config.blockedsignsymbol.toString()); 
-    	  logger.info("§6Эксплюдедкомандс§7: " + Config.excludedcommands.toString()); 
-    	  logger.info("§6Эксклюдедплеерс§7: " + Config.excludedplayers.toString());
-    	  logger.info("§6Аргсхайден§7: " + Config.argshidedcmds.toString());
-    	  logger.info("§6Консольблокед§7: " + Config.consoleblocked.toString());
-    	  logger.info("§6Рконблокед§7: " + Config.rconblocked.toString());
+      if (plugin.debug) {
+    	  Logger logger = plugin.logger;
+    	  logger.info("§6Нотифай§7: " + pluginConfig.settings_notify);
+    	  logger.info("§6Енабле титлы§7: " + pluginConfig.settings_enable_titles);
+    	  logger.info("§6Енабле саундсы§7: " + pluginConfig.settings_enable_sounds);
+    	  logger.info("§6Стрикт намбер чек§7: " + pluginConfig.chat_settings_strict_number_chek);
+    	  logger.info("§6Фулл-блокед командс§7: " + pluginConfig.fullblocked.toString()); 
+    	  logger.info("§6Лайт-блокед командс§7: " + pluginConfig.liteblocked.toString());
+    	  logger.info("§6Банворды§7: " + pluginConfig.banwords.toString());
+    	  logger.info("§6Блокедсимволс§7: " + pluginConfig.blockedsymbol.toString());
+    	  logger.info("§6Блокедсигнсимволс§7: " + pluginConfig.blockedsignsymbol.toString()); 
+    	  logger.info("§6Эксплюдедкомандс§7: " + pluginConfig.excludedcommands.toString()); 
+    	  logger.info("§6Эксклюдедплеерс§7: " + pluginConfig.excludedplayers.toString());
+    	  logger.info("§6Аргсхайден§7: " + pluginConfig.argshidedcmds.toString());
+    	  logger.info("§6Консольблокед§7: " + pluginConfig.consoleblocked.toString());
+    	  logger.info("§6Рконблокед§7: " + pluginConfig.rconblocked.toString());
       }
     } else {
       sender.sendMessage("§6❖ §7Running §c§lUniversalBlocker v1.11§7 by §5OverwriteMC");

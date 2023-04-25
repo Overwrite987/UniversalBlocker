@@ -15,17 +15,23 @@ import ru.Overwrite.noCmd.utils.Config;
 
 public class NumbersCheck implements Listener {
 	
-	private final Main main = Main.getInstance();
+	final Main plugin;
+	private final Config pluginConfig;
+	
+	public NumbersCheck(Main plugin) {
+        this.plugin = plugin;
+        pluginConfig = plugin.getPluginConfig();
+	}
 	
 	private final Pattern IP_PATTERN = Pattern.compile("(\\d+\\.){3}");
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onChatNumber(AsyncPlayerChatEvent e) {
-	    FileConfiguration config = main.getConfig();
+	    FileConfiguration config = plugin.getConfig();
 	    String message = e.getMessage();
 	    Player p = e.getPlayer();
 	    int limit = config.getInt("chat-settings.maxmsg-numbers");
-	    if (Config.chat_settings_strict_number_chek) {
+	    if (pluginConfig.chat_settings_strict_number_chek) {
 		    int count = 0;
 		    for (int a = 0, b = message.length(); a < b; a++) {
 		      char c = message.charAt(a);
@@ -55,29 +61,23 @@ public class NumbersCheck implements Listener {
 	
 	private void cancelChatEvent(Player p, String message, Cancellable e) {
 		 e.setCancelled(true);
-		 FileConfiguration config = main.getConfig();
-		 p.sendMessage(Config.messages_maxnumbers.replace("%limit%", config.getString("chat-settings.maxmsg-numbers")));
-		 if (Config.settings_enable_sounds) {
-             p.playSound(p.getLocation(), Config.sounds_blocked_chat_sound,
-                    Config.sounds_blocked_chat_volume, Config.sounds_blocked_chat_pitch);
+		 FileConfiguration config = plugin.getConfig();
+		 p.sendMessage(pluginConfig.messages_maxnumbers.replace("%limit%", config.getString("chat-settings.maxmsg-numbers")));
+		 if (pluginConfig.settings_enable_sounds) {
+             p.playSound(p.getLocation(), pluginConfig.sounds_blocked_chat_sound,
+                    pluginConfig.sounds_blocked_chat_volume, pluginConfig.sounds_blocked_chat_pitch);
          }
- 	     if (Config.settings_enable_titles) {
- 	    	 String[] titleMessages = Config.titles_maxnumbers.split(":");
- 	    	 String title = titleMessages[0];
-			 String subtitle = titleMessages[1];
-			 int fadeIn = Integer.parseInt(titleMessages[2]);
-			 int stay = Integer.parseInt(titleMessages[3]);
-			 int fadeOut = Integer.parseInt(titleMessages[4]);
-			 p.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
+ 	     if (pluginConfig.settings_enable_titles) {
+ 	    	 plugin.sendTitleMessage(pluginConfig.titles_maxnumbers.split(":"), p);
  	     }
- 	     if (Config.settings_notify) {
- 	    	String notifyMessage = Config.notify_maxnumbers.replace("%player%", p.getName()).replace("%limit%", config.getString("chat-settings.maxmsg-numbers")).replace("%msg%", message);
+ 	     if (pluginConfig.settings_notify) {
+ 	    	String notifyMessage = pluginConfig.notify_maxnumbers.replace("%player%", p.getName()).replace("%limit%", config.getString("chat-settings.maxmsg-numbers")).replace("%msg%", message);
  	    	for (Player admin : Bukkit.getOnlinePlayers()) {
  	    		if (admin.hasPermission("ublocker.admin")) {
  	    			admin.sendMessage(notifyMessage);
- 	    			if (Config.settings_enable_sounds) {
- 	        			admin.playSound(admin.getLocation(), Config.sounds_admin_notify_sound,
- 	        					Config.sounds_admin_notify_volume, Config.sounds_admin_notify_pitch); 
+ 	    			if (pluginConfig.settings_enable_sounds) {
+ 	        			admin.playSound(admin.getLocation(), pluginConfig.sounds_admin_notify_sound,
+ 	        					pluginConfig.sounds_admin_notify_volume, pluginConfig.sounds_admin_notify_pitch); 
  	        		 }
  	        	 }
  	         }
@@ -85,7 +85,7 @@ public class NumbersCheck implements Listener {
 	}
 	
 	private boolean isAdmin(Player player) {
-        return player.hasPermission("ublocker.bypass.numbers") || Config.excludedplayers.contains(player.getName());
+        return player.hasPermission("ublocker.bypass.numbers") || pluginConfig.excludedplayers.contains(player.getName());
     }
 
 }

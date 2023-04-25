@@ -12,7 +12,7 @@ public class RGBcolors {
 	private static final Pattern HEX_PATTERN = Pattern.compile("&#([a-fA-F\\d]{6})");
 
 	public static String translate(String message) {
-        if (Main.getInstance().SUB_VERSION >= 16) {
+        if (Main.SUB_VERSION >= 16) {
             Matcher matcher = HEX_PATTERN.matcher(message);
             StringBuilder builder = new StringBuilder(message.length() + 4 * 8);
             while (matcher.find()) {

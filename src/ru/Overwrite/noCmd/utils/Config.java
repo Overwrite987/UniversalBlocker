@@ -12,11 +12,15 @@ import java.util.HashSet;
 
 public class Config {
 	
-	private static final Main instance = Main.getInstance();
+	private final Main plugin;
 	
-	public static FileConfiguration messages;
+	public Config(Main plugin) {
+        this.plugin = plugin;
+    }
 	
-	public static Set<String> 
+	public FileConfiguration messages;
+	
+	public Set<String> 
 	fullblocked, 
 	liteblocked, 
 	banwords, 
@@ -28,7 +32,7 @@ public class Config {
 	consoleblocked, 
 	rconblocked;
 	
-	public static String 
+	public String 
 	allowedchars,
 	messages_blockedcommand,
 	messages_blockedsymbol,
@@ -52,19 +56,19 @@ public class Config {
 	titles_blocksyntax,
 	titles_maxnumbers;
 	
-	public static Sound
+	public Sound
 	sounds_admin_notify_sound,
 	sounds_blocked_command_sound,
 	sounds_blocked_symbol_sound,
 	sounds_blocked_chat_sound;
 	
-	public static boolean
+	public boolean
 	settings_notify,
 	settings_enable_titles,
 	settings_enable_sounds,
 	chat_settings_strict_number_chek;
 	
-	public static float
+	public float
 	sounds_admin_notify_volume,
 	sounds_admin_notify_pitch,
 	sounds_blocked_command_volume,
@@ -74,40 +78,40 @@ public class Config {
 	sounds_blocked_chat_volume,
 	sounds_blocked_chat_pitch;
 
-    public static void loadMessageFile() {
-        File file = new File(instance.getDataFolder(), "message.yml");
-        if (instance.getResource("message.yml") == null) {
+    public void loadMessageFile() {
+        File file = new File(plugin.getDataFolder(), "message.yml");
+        if (plugin.getResource("message.yml") == null) {
             save(YamlConfiguration.loadConfiguration(file), "message.yml");
         }
         if (!file.exists()) {
-        	instance.saveResource("message.yml", false);
+        	plugin.saveResource("message.yml", false);
         }
         messages = YamlConfiguration.loadConfiguration(file);
-        if (instance.debug) {
-        	instance.logger.info("§a> messages.yml загружен");
+        if (plugin.debug) {
+        	plugin.logger.info("§a> messages.yml загружен");
         }
     }
 
-    public static FileConfiguration save(FileConfiguration config, String fileName) {
+    public FileConfiguration save(FileConfiguration config, String fileName) {
         try {
-            config.save(new File(instance.getDataFolder(), fileName));
+            config.save(new File(plugin.getDataFolder(), fileName));
         } catch (IOException ex) {
             ex.printStackTrace();
         }
         return config;
     }
     
-    public static void loadBooleans(FileConfiguration config) {
+    public void loadBooleans(FileConfiguration config) {
     	settings_notify = config.getBoolean("settings.notify");
     	settings_enable_titles = config.getBoolean("settings.enable-titles");
     	settings_enable_sounds = config.getBoolean("settings.enable-sounds");
     	chat_settings_strict_number_chek = config.getBoolean("chat-settings.strict-number-chek");
-    	if (instance.debug) {
-            instance.logger.info("§e> Настройки загружены");
+    	if (plugin.debug) {
+            plugin.logger.info("§e> Настройки загружены");
         }
     }
     
-    public static void loadMessages() {
+    public void loadMessages() {
     	messages_blockedcommand = RGBcolors.translate(messages.getString("messages.blockedcommand"));
     	messages_blockedsymbol = RGBcolors.translate(messages.getString("messages.blockedsymbol"));
     	messages_blockedsignsymbol = RGBcolors.translate(messages.getString("messages.blockedsignsymbol"));
@@ -115,12 +119,12 @@ public class Config {
     	messages_blockedword = RGBcolors.translate(messages.getString("messages.blockedword"));
     	messages_blocksyntax = RGBcolors.translate(messages.getString("messages.blocksyntax"));
     	messages_maxnumbers = RGBcolors.translate(messages.getString("messages.maxnumbers"));
-    	if (instance.debug) {
-            instance.logger.info("§e> Сообщения загружены");
+    	if (plugin.debug) {
+            plugin.logger.info("§e> Сообщения загружены");
         }
     }
     
-    public static void loadNotifies() {
+    public void loadNotifies() {
     	notify_blockedcommand = RGBcolors.translate(messages.getString("notify.blockedcommand"));
     	notify_blockedsymbol = RGBcolors.translate(messages.getString("notify.blockedsymbol"));
     	notify_blockedsignsymbol = RGBcolors.translate(messages.getString("notify.blockedsignsymbol"));
@@ -128,12 +132,12 @@ public class Config {
     	notify_blockedword = RGBcolors.translate(messages.getString("notify.blockedword"));
     	notify_blocksyntax = RGBcolors.translate(messages.getString("notify.blocksyntax"));
     	notify_maxnumbers = RGBcolors.translate(messages.getString("notify.maxnumbers"));
-    	if (instance.debug) {
-            instance.logger.info("§e> Оповещения загружены");
+    	if (plugin.debug) {
+            plugin.logger.info("§e> Оповещения загружены");
         }
     }
     
-    public static void loadTitles() {
+    public void loadTitles() {
     	titles_blockedcommand = RGBcolors.translate(messages.getString("titles.blockedcommand"));
     	titles_blockedsymbol = RGBcolors.translate(messages.getString("titles.blockedsymbol"));
     	titles_blockedsignsymbol = RGBcolors.translate(messages.getString("titles.blockedsignsymbol"));
@@ -141,12 +145,12 @@ public class Config {
     	titles_blockedword = RGBcolors.translate(messages.getString("titles.blockedword"));
     	titles_blocksyntax = RGBcolors.translate(messages.getString("titles.blocksyntax"));
     	titles_maxnumbers = RGBcolors.translate(messages.getString("titles.maxnumbers"));
-    	if (instance.debug) {
-            instance.logger.info("§e> Тайтлы загружены");
+    	if (plugin.debug) {
+            plugin.logger.info("§e> Тайтлы загружены");
         }
     }
     
-    public static void setupSounds(FileConfiguration config) {
+    public void setupSounds(FileConfiguration config) {
     	sounds_admin_notify_sound = Sound.valueOf(config.getString("sounds.admin-notify.sound"));
     	sounds_admin_notify_volume = (float)config.getDouble("sounds.admin-notify.volume");
     	sounds_admin_notify_pitch = (float)config.getDouble("sounds.admin-notify.pitch");
@@ -159,73 +163,73 @@ public class Config {
     	sounds_blocked_chat_sound = Sound.valueOf(config.getString("sounds.blocked-chat.sound"));
     	sounds_blocked_chat_volume = (float)config.getDouble("sounds.blocked-chat.volume");
     	sounds_blocked_chat_pitch = (float)config.getDouble("sounds.blocked-chat.pitch");
-    	if (instance.debug) {
-            instance.logger.info("§e> Звуки загружены");
+    	if (plugin.debug) {
+            plugin.logger.info("§e> Звуки загружены");
         }
     }
     
-    public static void setupExcluded(FileConfiguration config) {
+    public void setupExcluded(FileConfiguration config) {
         excludedplayers = new HashSet<>(config.getStringList("excluded-players"));
-        if (instance.debug) {
-            instance.logger.info("§e> Невосприимчивые игроки загружены");
+        if (plugin.debug) {
+            plugin.logger.info("§e> Невосприимчивые игроки загружены");
         }
     }
     
-    public static void setupCommands(FileConfiguration config) {
+    public void setupCommands(FileConfiguration config) {
     	fullblocked = new HashSet<>(config.getStringList("blocked-commands.full"));
     	liteblocked = new HashSet<>(config.getStringList("blocked-commands.lite"));
-    	if (instance.debug) {
-    		instance.logger.info("§e> Списки блокировок команд загружены");
+    	if (plugin.debug) {
+    		plugin.logger.info("§e> Списки блокировок команд загружены");
     	}
     }
     
-    public static void setupBanWords(FileConfiguration config) {
+    public void setupBanWords(FileConfiguration config) {
     	banwords = new HashSet<>(config.getStringList("chat-settings.ban-words"));
-    	if (instance.debug) {
-    		instance.logger.info("§e> Списки заблокированных слов загружены");
+    	if (plugin.debug) {
+    		plugin.logger.info("§e> Списки заблокированных слов загружены");
     	}
     }
     
-    public static void setupChars(FileConfiguration config) {
+    public void setupChars(FileConfiguration config) {
     	allowedchars = config.getString("chat-settings.allowed-chars");
-    	if (instance.debug) {
-    		instance.logger.info("§e> Список разрешенных символов чата загружен");
+    	if (plugin.debug) {
+    		plugin.logger.info("§e> Список разрешенных символов чата загружен");
     	}
     }
     
-    public static void setupSyntax(FileConfiguration config) {
+    public void setupSyntax(FileConfiguration config) {
     	blockedsymbol = new HashSet<>(config.getStringList("symbols.blocked-symbols"));
     	excludedcommands = new HashSet<>(config.getStringList("symbols.excluded-commands"));
-    	if (instance.debug) {
-    		instance.logger.info("§e> Списки блокировок символов команд загружены");
+    	if (plugin.debug) {
+    		plugin.logger.info("§e> Списки блокировок символов команд загружены");
     	}
     }
     
-    public static void setupSignSyntax(FileConfiguration config) {
+    public void setupSignSyntax(FileConfiguration config) {
     	blockedsignsymbol = new HashSet<>(config.getStringList("symbols.blocked-sign-symbols"));
-    	if (instance.debug) {
-    		instance.logger.info("§e> Списки блокировок символов табличек загружены");
+    	if (plugin.debug) {
+    		plugin.logger.info("§e> Списки блокировок символов табличек загружены");
     	}
     }
     
-    public static void setupArgshidden(FileConfiguration config) {
+    public void setupArgshidden(FileConfiguration config) {
     	argshidedcmds = new HashSet<>(config.getStringList("blocked-commands.args-tab-complete"));
-    	if (instance.debug) {
-    		instance.logger.info("§e> Команды с заблокированными аргументами загружены");
+    	if (plugin.debug) {
+    		plugin.logger.info("§e> Команды с заблокированными аргументами загружены");
     	}
     }
     
-    public static void setupRcon(FileConfiguration config) {
+    public void setupRcon(FileConfiguration config) {
     	rconblocked = new HashSet<>(config.getStringList("blocked-commands.rcon"));
-    	if (instance.debug) {
-    		instance.logger.info("§e> Заблокированные команды rcon загружены");
+    	if (plugin.debug) {
+    		plugin.logger.info("§e> Заблокированные команды rcon загружены");
     	}
     }
     
-    public static void setupConsole(FileConfiguration config) {
+    public void setupConsole(FileConfiguration config) {
     	consoleblocked = new HashSet<>(config.getStringList("blocked-commands.console"));
-    	if (instance.debug) {
-    		instance.logger.info("§e> Заблокированные команды консоли загружены");
+    	if (plugin.debug) {
+    		plugin.logger.info("§e> Заблокированные команды консоли загружены");
     	}
     }
 }

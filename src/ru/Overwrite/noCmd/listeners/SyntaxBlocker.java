@@ -6,9 +6,19 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+
+import ru.Overwrite.noCmd.Main;
 import ru.Overwrite.noCmd.utils.Config;
 
 public class SyntaxBlocker implements Listener {
+	
+	final Main plugin;
+	private final Config pluginConfig;
+	
+	public SyntaxBlocker(Main plugin) {
+        this.plugin = plugin;
+        pluginConfig = plugin.getPluginConfig();
+	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onSyntax(PlayerCommandPreprocessEvent e) {
@@ -17,31 +27,25 @@ public class SyntaxBlocker implements Listener {
 	    if (startWithExcluded(message)) {
 	        return;
 	    }
-	    for (String symbol : Config.blockedsymbol) {
+	    for (String symbol : pluginConfig.blockedsymbol) {
 	        if (message.contains(symbol) && !isAdmin(p)) {
-	            p.sendMessage(Config.messages_blockedsymbol.replace("%symbol%", symbol));
+	            p.sendMessage(pluginConfig.messages_blockedsymbol.replace("%symbol%", symbol));
 	            e.setCancelled(true);
-	            if (Config.settings_enable_sounds) {
-	                p.playSound(p.getLocation(), Config.sounds_blocked_command_sound,
-	                       Config.sounds_blocked_command_volume, Config.sounds_blocked_command_pitch);
+	            if (pluginConfig.settings_enable_sounds) {
+	                p.playSound(p.getLocation(), pluginConfig.sounds_blocked_command_sound,
+	                		pluginConfig.sounds_blocked_command_volume, pluginConfig.sounds_blocked_command_pitch);
 	            }
-	            if (Config.settings_enable_titles) {
-	                String[] titleMessages = Config.titles_blockedsymbol.split(":");
-	                String title = titleMessages[0];
-	                String subtitle = titleMessages[1].replace("%symbol%", symbol);
-	                int fadeIn = Integer.parseInt(titleMessages[2]);
-	                int stay = Integer.parseInt(titleMessages[3]);
-	                int fadeOut = Integer.parseInt(titleMessages[4]);
-	                p.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
+	            if (pluginConfig.settings_enable_titles) {
+	            	plugin.sendTitleMessage(pluginConfig.titles_blockedsymbol.replace("%symbol%", symbol).split(":"), p);
 	            }
-	            if (Config.settings_notify) {
-	            	String notifyMessage = Config.notify_blockedsymbol.replace("%player%", p.getName()).replace("%symbol%", symbol);
+	            if (pluginConfig.settings_notify) {
+	            	String notifyMessage = pluginConfig.notify_blockedsymbol.replace("%player%", p.getName()).replace("%symbol%", symbol);
 	            	for (Player admin : Bukkit.getOnlinePlayers()) {
 	            		if (admin.hasPermission("ublocker.admin")) {
 	            			admin.sendMessage(notifyMessage);
-	            			if (Config.settings_enable_sounds) {
-	            				admin.playSound(admin.getLocation(), Config.sounds_admin_notify_sound,
-	            						Config.sounds_admin_notify_volume, Config.sounds_admin_notify_pitch);
+	            			if (pluginConfig.settings_enable_sounds) {
+	            				admin.playSound(admin.getLocation(), pluginConfig.sounds_admin_notify_sound,
+	            						pluginConfig.sounds_admin_notify_volume, pluginConfig.sounds_admin_notify_pitch);
 	                        }
 	                	}
 	                }
@@ -51,7 +55,7 @@ public class SyntaxBlocker implements Listener {
 	}
 
 	private boolean startWithExcluded(String com) {
-	    for (String excluded : Config.excludedcommands) {
+	    for (String excluded : pluginConfig.excludedcommands) {
 	        if (com.toLowerCase().startsWith("/" + excluded + " ")) {
 	           return true;
 	        }
@@ -60,6 +64,6 @@ public class SyntaxBlocker implements Listener {
 	}
 
 	private boolean isAdmin(Player p) {
-	    return p.hasPermission("ublocker.bypass.symbol") || Config.excludedplayers.contains(p.getName());
+	    return p.hasPermission("ublocker.bypass.symbol") || pluginConfig.excludedplayers.contains(p.getName());
 	}
 }
