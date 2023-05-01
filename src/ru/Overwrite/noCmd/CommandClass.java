@@ -51,6 +51,9 @@ public class CommandClass implements CommandExecutor {
       if (!pluginConfig.allowedchars.isEmpty()) {
     	  pluginConfig.setupChars(config);
       }
+      if (!pluginConfig.allowedbookchars.isEmpty()) {
+    	  pluginConfig.setupBookChars(config);
+      }
       if (!pluginConfig.liteblocked.isEmpty() && !pluginConfig.fullblocked.isEmpty()) {
     	  pluginConfig.setupCommands(config);
       }
@@ -86,7 +89,7 @@ public class CommandClass implements CommandExecutor {
     	  logger.info("§6Рконблокед§7: " + pluginConfig.rconblocked.toString());
       }
     } else {
-      sender.sendMessage("§6❖ §7Running §c§lUniversalBlocker v1.11§7 by §5OverwriteMC");
+      sender.sendMessage("§6❖ §7Running §c§lUniversalBlocker v1.12§7 by §5OverwriteMC");
     } 
     return true;
   }

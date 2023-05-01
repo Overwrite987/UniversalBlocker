@@ -1,6 +1,7 @@
 package ru.Overwrite.noCmd.utils;
 
 import org.bukkit.Sound;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import ru.Overwrite.noCmd.Main;
@@ -34,10 +35,12 @@ public class Config {
 	
 	public String 
 	allowedchars,
+	allowedbookchars,
 	messages_blockedcommand,
 	messages_blockedsymbol,
 	messages_blockedsignsymbol,
 	messages_blockedchatsymbol,
+	messages_blockedbooksymbol,
 	messages_blockedword,
 	messages_blocksyntax,
 	messages_maxnumbers,
@@ -45,6 +48,7 @@ public class Config {
 	notify_blockedsymbol,
 	notify_blockedsignsymbol,
 	notify_blockedchatsymbol,
+	notify_blockedbooksymbol,
 	notify_blockedword,
 	notify_blocksyntax,
 	notify_maxnumbers,
@@ -52,6 +56,7 @@ public class Config {
 	titles_blockedsymbol,
 	titles_blockedsignsymbol,
 	titles_blockedchatsymbol,
+	titles_blockedbooksymbol,
 	titles_blockedword,
 	titles_blocksyntax,
 	titles_maxnumbers;
@@ -60,7 +65,8 @@ public class Config {
 	sounds_admin_notify_sound,
 	sounds_blocked_command_sound,
 	sounds_blocked_symbol_sound,
-	sounds_blocked_chat_sound;
+	sounds_blocked_chat_sound,
+	sounds_blocked_book_sound;
 	
 	public boolean
 	settings_notify,
@@ -76,7 +82,9 @@ public class Config {
 	sounds_blocked_symbol_volume,
 	sounds_blocked_symbol_pitch,
 	sounds_blocked_chat_volume,
-	sounds_blocked_chat_pitch;
+	sounds_blocked_chat_pitch,
+	sounds_blocked_book_volume,
+	sounds_blocked_book_pitch;
 
     public void loadMessageFile() {
         File file = new File(plugin.getDataFolder(), "message.yml");
@@ -102,9 +110,10 @@ public class Config {
     }
     
     public void loadBooleans(FileConfiguration config) {
-    	settings_notify = config.getBoolean("settings.notify");
-    	settings_enable_titles = config.getBoolean("settings.enable-titles");
-    	settings_enable_sounds = config.getBoolean("settings.enable-sounds");
+    	ConfigurationSection settings = config.getConfigurationSection("settings");
+    	settings_notify = settings.getBoolean("notify");
+    	settings_enable_titles = settings.getBoolean("enable-titles");
+    	settings_enable_sounds = settings.getBoolean("enable-sounds");
     	chat_settings_strict_number_chek = config.getBoolean("chat-settings.strict-number-chek");
     	if (plugin.debug) {
             plugin.logger.info("§e> Настройки загружены");
@@ -112,57 +121,67 @@ public class Config {
     }
     
     public void loadMessages() {
-    	messages_blockedcommand = RGBcolors.translate(messages.getString("messages.blockedcommand"));
-    	messages_blockedsymbol = RGBcolors.translate(messages.getString("messages.blockedsymbol"));
-    	messages_blockedsignsymbol = RGBcolors.translate(messages.getString("messages.blockedsignsymbol"));
-    	messages_blockedchatsymbol = RGBcolors.translate(messages.getString("messages.blockedchatsymbol"));
-    	messages_blockedword = RGBcolors.translate(messages.getString("messages.blockedword"));
-    	messages_blocksyntax = RGBcolors.translate(messages.getString("messages.blocksyntax"));
-    	messages_maxnumbers = RGBcolors.translate(messages.getString("messages.maxnumbers"));
+    	ConfigurationSection msg = messages.getConfigurationSection("messages");
+    	messages_blockedcommand = RGBcolors.translate(msg.getString("blockedcommand"));
+    	messages_blockedsymbol = RGBcolors.translate(msg.getString("blockedsymbol"));
+    	messages_blockedsignsymbol = RGBcolors.translate(msg.getString("blockedsignsymbol"));
+    	messages_blockedchatsymbol = RGBcolors.translate(msg.getString("blockedchatsymbol"));
+    	messages_blockedbooksymbol = RGBcolors.translate(msg.getString("blockedbooksymbol"));
+    	messages_blockedword = RGBcolors.translate(msg.getString("blockedword"));
+    	messages_blocksyntax = RGBcolors.translate(msg.getString("blocksyntax"));
+    	messages_maxnumbers = RGBcolors.translate(msg.getString("maxnumbers"));
     	if (plugin.debug) {
             plugin.logger.info("§e> Сообщения загружены");
         }
     }
     
     public void loadNotifies() {
-    	notify_blockedcommand = RGBcolors.translate(messages.getString("notify.blockedcommand"));
-    	notify_blockedsymbol = RGBcolors.translate(messages.getString("notify.blockedsymbol"));
-    	notify_blockedsignsymbol = RGBcolors.translate(messages.getString("notify.blockedsignsymbol"));
-    	notify_blockedchatsymbol = RGBcolors.translate(messages.getString("notify.blockedchatsymbol"));
-    	notify_blockedword = RGBcolors.translate(messages.getString("notify.blockedword"));
-    	notify_blocksyntax = RGBcolors.translate(messages.getString("notify.blocksyntax"));
-    	notify_maxnumbers = RGBcolors.translate(messages.getString("notify.maxnumbers"));
+    	ConfigurationSection notify = messages.getConfigurationSection("notify");
+    	notify_blockedcommand = RGBcolors.translate(notify.getString("blockedcommand"));
+    	notify_blockedsymbol = RGBcolors.translate(notify.getString("blockedsymbol"));
+    	notify_blockedsignsymbol = RGBcolors.translate(notify.getString("blockedsignsymbol"));
+    	notify_blockedchatsymbol = RGBcolors.translate(notify.getString("blockedchatsymbol"));
+    	notify_blockedbooksymbol = RGBcolors.translate(notify.getString("blockedbooksymbol"));
+    	notify_blockedword = RGBcolors.translate(notify.getString("blockedword"));
+    	notify_blocksyntax = RGBcolors.translate(notify.getString("blocksyntax"));
+    	notify_maxnumbers = RGBcolors.translate(notify.getString("maxnumbers"));
     	if (plugin.debug) {
             plugin.logger.info("§e> Оповещения загружены");
         }
     }
     
     public void loadTitles() {
-    	titles_blockedcommand = RGBcolors.translate(messages.getString("titles.blockedcommand"));
-    	titles_blockedsymbol = RGBcolors.translate(messages.getString("titles.blockedsymbol"));
-    	titles_blockedsignsymbol = RGBcolors.translate(messages.getString("titles.blockedsignsymbol"));
-    	titles_blockedchatsymbol = RGBcolors.translate(messages.getString("titles.blockedchatsymbol"));
-    	titles_blockedword = RGBcolors.translate(messages.getString("titles.blockedword"));
-    	titles_blocksyntax = RGBcolors.translate(messages.getString("titles.blocksyntax"));
-    	titles_maxnumbers = RGBcolors.translate(messages.getString("titles.maxnumbers"));
+    	ConfigurationSection titles = messages.getConfigurationSection("titles");
+    	titles_blockedcommand = RGBcolors.translate(titles.getString("blockedcommand"));
+    	titles_blockedsymbol = RGBcolors.translate(titles.getString("blockedsymbol"));
+    	titles_blockedsignsymbol = RGBcolors.translate(titles.getString("blockedsignsymbol"));
+    	titles_blockedbooksymbol = RGBcolors.translate(titles.getString("blockedbooksymbol"));
+    	titles_blockedchatsymbol = RGBcolors.translate(titles.getString("blockedchatsymbol"));
+    	titles_blockedword = RGBcolors.translate(titles.getString("blockedword"));
+    	titles_blocksyntax = RGBcolors.translate(titles.getString("blocksyntax"));
+    	titles_maxnumbers = RGBcolors.translate(titles.getString("maxnumbers"));
     	if (plugin.debug) {
             plugin.logger.info("§e> Тайтлы загружены");
         }
     }
     
     public void setupSounds(FileConfiguration config) {
-    	sounds_admin_notify_sound = Sound.valueOf(config.getString("sounds.admin-notify.sound"));
-    	sounds_admin_notify_volume = (float)config.getDouble("sounds.admin-notify.volume");
-    	sounds_admin_notify_pitch = (float)config.getDouble("sounds.admin-notify.pitch");
-    	sounds_blocked_command_sound = Sound.valueOf(config.getString("sounds.blocked-command.sound"));
-    	sounds_blocked_command_volume = (float)config.getDouble("sounds.blocked-command.volume");
-    	sounds_blocked_command_pitch = (float)config.getDouble("sounds.blocked-command.pitch");
-    	sounds_blocked_symbol_sound = Sound.valueOf(config.getString("sounds.blocked-symbol.sound"));
-    	sounds_blocked_symbol_volume = (float)config.getDouble("sounds.blocked-symbol.volume");
-    	sounds_blocked_symbol_pitch = (float)config.getDouble("sounds.blocked-symbol.pitch");
-    	sounds_blocked_chat_sound = Sound.valueOf(config.getString("sounds.blocked-chat.sound"));
-    	sounds_blocked_chat_volume = (float)config.getDouble("sounds.blocked-chat.volume");
-    	sounds_blocked_chat_pitch = (float)config.getDouble("sounds.blocked-chat.pitch");
+    	ConfigurationSection sounds = config.getConfigurationSection("sounds");
+    	sounds_admin_notify_sound = Sound.valueOf(sounds.getString("admin-notify.sound"));
+    	sounds_admin_notify_volume = (float)sounds.getDouble("admin-notify.volume");
+    	sounds_admin_notify_pitch = (float)sounds.getDouble("admin-notify.pitch");
+    	sounds_blocked_command_sound = Sound.valueOf(sounds.getString("blocked-command.sound"));
+    	sounds_blocked_command_volume = (float)sounds.getDouble("blocked-command.volume");
+    	sounds_blocked_command_pitch = (float)sounds.getDouble("blocked-command.pitch");
+    	sounds_blocked_symbol_sound = Sound.valueOf(sounds.getString("blocked-symbol.sound"));
+    	sounds_blocked_symbol_volume = (float)sounds.getDouble("blocked-symbol.volume");
+    	sounds_blocked_symbol_pitch = (float)sounds.getDouble("blocked-symbol.pitch");
+    	sounds_blocked_chat_sound = Sound.valueOf(sounds.getString("blocked-chat.sound"));
+    	sounds_blocked_chat_volume = (float)sounds.getDouble("blocked-chat.volume");
+    	sounds_blocked_chat_pitch = (float)sounds.getDouble("blocked-chat.pitch");
+    	sounds_blocked_book_sound = Sound.valueOf(sounds.getString("blocked-book.sound"));
+    	sounds_blocked_book_volume = (float)sounds.getDouble("blocked-book.pitch");
+    	sounds_blocked_book_pitch = (float)sounds.getDouble("blocked-book.pitch");
     	if (plugin.debug) {
             plugin.logger.info("§e> Звуки загружены");
         }
@@ -194,6 +213,13 @@ public class Config {
     	allowedchars = config.getString("chat-settings.allowed-chars");
     	if (plugin.debug) {
     		plugin.logger.info("§e> Список разрешенных символов чата загружен");
+    	}
+    }
+    
+    public void setupBookChars(FileConfiguration config) {
+    	allowedbookchars = config.getString("chat-settings.allowed-book-chars");
+    	if (plugin.debug) {
+    		plugin.logger.info("§e> Список разрешенных символов книжек загружен");
     	}
     }
     

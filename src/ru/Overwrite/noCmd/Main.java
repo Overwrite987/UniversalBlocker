@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.logging.Logger;
 import java.util.function.Consumer;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -37,7 +38,8 @@ public class Main extends JavaPlugin {
 	checkPaper();
     saveDefaultConfig();
     FileConfiguration config = getConfig();
-    if (config.getBoolean("settings.debug")) {
+    ConfigurationSection settings = config.getConfigurationSection("settings");
+    if (settings.getBoolean("debug")) {
     	debug = true;
     }
     pluginConfig.loadBooleans(config);
@@ -46,13 +48,13 @@ public class Main extends JavaPlugin {
     pluginConfig.loadNotifies();
     pluginConfig.loadTitles();
     pluginConfig.setupExcluded(config);
-    if (config.getBoolean("settings.enable-sounds")) {
+    if (settings.getBoolean("enable-sounds")) {
     	pluginConfig.setupSounds(config);
     }
-    if (config.getBoolean("settings.enable-metrics")) {
+    if (settings.getBoolean("enable-metrics")) {
       new Metrics(this, 15379);
     }
-    if (config.getBoolean("settings.update-checker")) {
+    if (settings.getBoolean("update-checker")) {
     	checkUpdates(this, version -> {
             logger.info("§6========================================");
             if (getDescription().getVersion().equals(version)) {
@@ -66,34 +68,34 @@ public class Main extends JavaPlugin {
         });
     }
     PluginManager pluginManager = Bukkit.getPluginManager();
-    if (config.getBoolean("settings.enable-blocksyntax")) {
+    if (settings.getBoolean("enable-blocksyntax")) {
     	pluginManager.registerEvents(new BlockSyntax(this), this);
     	if (debug) {
     		logger.info("§6> BlockSyntax - enabled");
         }
     }
-    if (config.getBoolean("settings.enable-words-blocker")) {
+    if (settings.getBoolean("enable-words-blocker")) {
     	pluginConfig.setupBanWords(config);
     	pluginManager.registerEvents(new BanWords(this), this);
     	if (debug) {
         	logger.info("§6> BanWords - enabled");
         }
     }
-    if (config.getBoolean("settings.enable-allowed-chars")) {
+    if (settings.getBoolean("enable-allowed-chars")) {
     	pluginConfig.setupChars(config);
     	pluginManager.registerEvents(new ChatFilter(this), this);
     	if (debug) {
         	logger.info("§6> ChatFilter - enabled");
         }
     }
-    if (config.getBoolean("settings.enable-command-blocker")) {
+    if (settings.getBoolean("enable-command-blocker")) {
         pluginConfig.setupCommands(config);
         pluginManager.registerEvents(new CommandBlocker(this), this);
         if (debug) {
         	logger.info("§6> CommandBlocker - enabled");
         }
     }
-    if (SUB_VERSION >= 13 && getConfig().getBoolean("settings.hide-blocked-commands-from-tab-comple")) {
+    if (SUB_VERSION >= 13 && settings.getBoolean("hide-blocked-commands-from-tab-comple")) {
     	if (pluginConfig.liteblocked.isEmpty() && pluginConfig.fullblocked.isEmpty()) {
         	pluginConfig.setupCommands(config);
         }
@@ -104,41 +106,48 @@ public class Main extends JavaPlugin {
     } else {
     	logger.info("Скрытие из таб-комплита не доступно на вашей версии!");
     }
-    if (config.getBoolean("settings.enable-console-blocker")) {
+    if (settings.getBoolean("enable-console-blocker")) {
     	pluginManager.registerEvents(new ConsoleBlocker(this), this);
     	pluginConfig.setupConsole(config);
     	if (debug) {
         	logger.info("§6> ConsoleBlocker - enabled");
         }
     }
-    if (config.getBoolean("settings.enable-numbers-check")) {
+    if (settings.getBoolean("enable-numbers-check")) {
     	pluginManager.registerEvents(new NumbersCheck(this), this);
     	if (debug) {
         	logger.info("§6> NumbersCheck - enabled");
         }
     }
-    if (config.getBoolean("settings.enable-rcon-blocker")) {
+    if (settings.getBoolean("enable-rcon-blocker")) {
     	pluginManager.registerEvents(new RconBlocker(this), this);
     	pluginConfig.setupRcon(config);
     	if (debug) {
         	logger.info("§6> RconBlocker - enabled");
         }
     }
-    if (config.getBoolean("settings.enable-symbol-blocker")) {
+    if (settings.getBoolean("enable-symbol-blocker")) {
     	pluginConfig.setupSyntax(config);
     	pluginManager.registerEvents(new SyntaxBlocker(this), this);
     	if (debug) {
         	logger.info("§6> SyntaxBlocker - enabled");
         }
     }
-    if (config.getBoolean("settings.enable-sign-symbol-blocker")) {
+    if (settings.getBoolean("enable-sign-symbol-blocker")) {
     	pluginConfig.setupSignSyntax(config);
     	pluginManager.registerEvents(new SignSymbolBlocker(this), this);
     	if (debug) {
         	logger.info("§6> SignSymbolBlocker - enabled");
         }
     }
-    if (config.getBoolean("settings.enable-tab-complere-blocker")) {
+    if (settings.getBoolean("enable-allowed-book-chars")) {
+    	pluginConfig.setupBookChars(config);
+    	pluginManager.registerEvents(new BookChecker(this), this);
+    	if (debug) {
+        	logger.info("§6> BookChecker - enabled");
+        }
+    }
+    if (settings.getBoolean("enable-tab-complere-blocker")) {
     	pluginConfig.setupArgshidden(config);
     	pluginManager.registerEvents(new TabComplete(this), this);
     	if (debug) {

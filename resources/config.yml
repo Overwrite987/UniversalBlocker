@@ -19,6 +19,7 @@ settings:
   enable-words-blocker: true
   enable-numbers-check: true
   enable-allowed-chars: true
+  enable-allowed-book-chars: true
   enable-command-blocker: true
   enable-console-blocker: true
   enable-rcon-blocker: true
@@ -45,7 +46,9 @@ excluded-players:
 
 chat-settings:
   # Какие символы можно писать в чате
-  allowed-chars: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ ~`1!2@3#4$5%6^7&§89(0)-_=+*|[{]}\;:"',<.>/?!№
+  allowed-chars: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZабвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ~`1!2@3#4$5%6^7&§89(0)-_=+*|[{]}\;:"',<.>/?!№
+  # Какие символы можно писать в книге
+  allowed-book-chars: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZабвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ~`1!2@3#4$5%6^7&§89(0)-_=+*|[{]}\;:"',<.>/?!№
   # Максимальное кол-во цифр в сообщении
   maxmsg-numbers: 7
   # Проверять ли строго
@@ -148,6 +151,11 @@ sounds:
     pitch: 1.0
   # Звук при запрещенном действии в чате
   blocked-chat:
+    sound: ENTITY_ITEM_BREAK
+    volume: 1.0
+    pitch: 1.0
+  # Звук при запрещенном символе в книге
+  blocked-book:
     sound: ENTITY_ITEM_BREAK
     volume: 1.0
     pitch: 1.0
