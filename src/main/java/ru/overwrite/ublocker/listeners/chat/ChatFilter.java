@@ -46,8 +46,10 @@ public class ChatFilter implements Listener {
         e.setCancelled(true);
         p.sendMessage(pluginConfig.allowed_chat_chars_message);
         if (pluginConfig.allowed_chat_chars_enable_sounds) {
-            p.playSound(p.getLocation(), Sound.valueOf(pluginConfig.allowed_chat_chars_sound_id),
-                    pluginConfig.allowed_chat_chars_sound_volume, pluginConfig.allowed_chat_chars_sound_pitch);
+            p.playSound(p.getLocation(),
+                    Sound.valueOf(pluginConfig.allowed_chat_chars_sound_id),
+                    pluginConfig.allowed_chat_chars_sound_volume,
+                    pluginConfig.allowed_chat_chars_sound_pitch);
         }
         if (pluginConfig.allowed_chat_chars_notify) {
 

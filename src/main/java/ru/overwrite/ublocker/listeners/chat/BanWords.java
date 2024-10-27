@@ -74,8 +74,10 @@ public class BanWords implements Listener {
     private void executeBlockActions(Player p, String banword, String message, Cancellable e) {
         p.sendMessage(pluginConfig.ban_words_message.replace("%word%", banword));
         if (pluginConfig.ban_words_enable_sounds) {
-            p.playSound(p.getLocation(), Sound.valueOf(pluginConfig.ban_words_sound_id),
-                    pluginConfig.ban_words_sound_volume, pluginConfig.ban_words_sound_pitch);
+            p.playSound(p.getLocation(),
+                    Sound.valueOf(pluginConfig.ban_words_sound_id),
+                    pluginConfig.ban_words_sound_volume,
+                    pluginConfig.ban_words_sound_pitch);
         }
         notifyAdmins(p, banword, message);
     }

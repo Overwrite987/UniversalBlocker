@@ -69,8 +69,10 @@ public class NumbersCheck implements Listener {
         e.setCancelled(true);
         p.sendMessage(pluginConfig.numbers_check_message.replace("%limit%", Integer.toString(pluginConfig.maxmsgnumbers)));
         if (pluginConfig.numbers_check_enable_sounds) {
-            p.playSound(p.getLocation(), Sound.valueOf(pluginConfig.numbers_check_sound_id),
-                    pluginConfig.numbers_check_sound_volume, pluginConfig.numbers_check_sound_pitch);
+            p.playSound(p.getLocation(),
+                    Sound.valueOf(pluginConfig.numbers_check_sound_id),
+                    pluginConfig.numbers_check_sound_volume,
+                    pluginConfig.numbers_check_sound_pitch);
         }
         if (pluginConfig.numbers_check_notify) {
 

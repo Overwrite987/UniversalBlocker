@@ -54,8 +54,10 @@ public class BookChecker implements Listener {
         runner.runAsync(() -> {
             p.sendMessage(pluginConfig.allowed_book_chars_message);
             if (pluginConfig.allowed_book_chars_enable_sounds) {
-                p.playSound(p.getLocation(), Sound.valueOf(pluginConfig.allowed_book_chars_sound_id),
-                        pluginConfig.allowed_book_chars_sound_volume, pluginConfig.allowed_book_chars_sound_pitch);
+                p.playSound(p.getLocation(),
+                        Sound.valueOf(pluginConfig.allowed_book_chars_sound_id),
+                        pluginConfig.allowed_book_chars_sound_volume,
+                        pluginConfig.allowed_book_chars_sound_pitch);
             }
             if (pluginConfig.allowed_book_chars_notify) {
                 String[] replacementList = {p.getName(), getFirstBlockedChar(message)};

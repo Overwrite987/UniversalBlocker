@@ -64,8 +64,10 @@ public class CaseCheck implements Listener {
         e.setCancelled(true);
         p.sendMessage(pluginConfig.case_check_message.replace("%limit%", Integer.toString(pluginConfig.maxcuppercasepercent)));
         if (pluginConfig.case_check_enable_sounds) {
-            p.playSound(p.getLocation(), Sound.valueOf(pluginConfig.case_check_sound_id),
-                    pluginConfig.case_check_sound_volume, pluginConfig.case_check_sound_pitch);
+            p.playSound(p.getLocation(),
+                    Sound.valueOf(pluginConfig.case_check_sound_id),
+                    pluginConfig.case_check_sound_volume,
+                    pluginConfig.case_check_sound_pitch);
         }
         if (pluginConfig.case_check_notify) {
 

@@ -61,8 +61,10 @@ public class SignFilter implements Listener {
         runner.runAsync(() -> {
             p.sendMessage(pluginConfig.allowed_sign_chars_message);
             if (pluginConfig.allowed_sign_chars_enable_sounds) {
-                p.playSound(p.getLocation(), Sound.valueOf(pluginConfig.allowed_sign_chars_sound_id),
-                        pluginConfig.allowed_sign_chars_sound_volume, pluginConfig.allowed_sign_chars_sound_pitch);
+                p.playSound(p.getLocation(),
+                        Sound.valueOf(pluginConfig.allowed_sign_chars_sound_id),
+                        pluginConfig.allowed_sign_chars_sound_volume,
+                        pluginConfig.allowed_sign_chars_sound_pitch);
             }
             if (pluginConfig.allowed_sign_chars_notify) {
 

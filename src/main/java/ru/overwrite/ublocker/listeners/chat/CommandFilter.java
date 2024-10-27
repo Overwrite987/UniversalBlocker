@@ -48,7 +48,8 @@ public class CommandFilter implements Listener {
         runner.runAsync(() -> {
             p.sendMessage(pluginConfig.allowed_command_chars_message);
             if (pluginConfig.allowed_command_chars_enable_sounds) {
-                p.playSound(p.getLocation(), Sound.valueOf(pluginConfig.allowed_command_chars_sound_id),
+                p.playSound(p.getLocation(),
+                        Sound.valueOf(pluginConfig.allowed_command_chars_sound_id),
                         pluginConfig.allowed_command_chars_sound_volume,
                         pluginConfig.allowed_command_chars_sound_pitch);
             }
