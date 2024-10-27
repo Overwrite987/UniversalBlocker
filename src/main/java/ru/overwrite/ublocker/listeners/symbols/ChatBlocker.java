@@ -93,10 +93,10 @@ public class ChatBlocker implements Listener {
         }
     }
 
-    private final String[] searchList = {"%world%", "%symbol%", "%msg%"};
-    private final String[] searchListPlus = {"%player%", "%world%", "%msg%", "%symbol%"};
+    private final String[] searchList = {"%player%", "%world%", "%symbol%", "%msg%"};
 
     private void executeActions(Cancellable e, Player p, String message, String symbol, List<Action> actions, String world) {
+        final String[] replacementList = {p.getName(), world, message, symbol};
         for (Action action : actions) {
             switch (action.type()) {
                 case BLOCK: {
@@ -128,7 +128,6 @@ public class ChatBlocker implements Listener {
                         // for (BaseComponent component : comp) {
                         // component.setHoverEvent(hover);
                         // }
-                        String[] replacementList = {world, symbol, message};
 
                         String messageToPlayer = Utils.replaceEach(Utils.colorize(action.context()), searchList, replacementList);
 
@@ -143,7 +142,6 @@ public class ChatBlocker implements Listener {
                         break;
                     runner.runAsync(() -> {
                         String coAction = Utils.colorize(action.context());
-                        String[] replacementList = {world, symbol, message};
                         String[] titleMessages = Utils.replaceEach(coAction, searchList, replacementList).split(";");
                         Utils.sendTitleMessage(titleMessages, p);
                     });
@@ -154,7 +152,6 @@ public class ChatBlocker implements Listener {
                         break;
                     runner.runAsync(() -> {
                         String coAction = Utils.colorize(action.context());
-                        String[] replacementList = {world, symbol, message};
                         String messageToPlayer = Utils.replaceEach(coAction, searchList, replacementList);
                         p.sendActionBar(messageToPlayer);
                     });
@@ -174,8 +171,7 @@ public class ChatBlocker implements Listener {
                 }
                 case LOG: {
                     String[] coAction = action.context().split("file=");
-                    String[] replacementList = {p.getName(), world, message, symbol};
-                    plugin.logAction(Utils.replaceEach(coAction[0], searchListPlus, replacementList), coAction[1]);
+                    plugin.logAction(Utils.replaceEach(coAction[0], searchList, replacementList), coAction[1]);
                     break;
                 }
                 case NOTIFY: {
@@ -185,9 +181,7 @@ public class ChatBlocker implements Listener {
                         String[] coAction = action.context().split("perm=");
                         String perm = coAction[1];
 
-                        String[] replacementList = {p.getName(), world, message, symbol};
-
-                        String notifyMessage = Utils.replaceEach(Utils.colorize(coAction[0]), searchListPlus, replacementList);
+                        String notifyMessage = Utils.replaceEach(Utils.colorize(coAction[0]), searchList, replacementList);
 
                         final Component comp = Utils.createHoverMessage(notifyMessage);
 

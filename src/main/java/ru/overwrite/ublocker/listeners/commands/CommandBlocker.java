@@ -112,10 +112,10 @@ public class CommandBlocker implements Listener {
         }
     }
 
-    private final String[] searchList = {"%world%", "%cmd%", "%fullcmd%"};
-    private final String[] searchListPlus = {"%player%", "%world%", "%cmd%", "%fullcmd%"};
+    private final String[] searchList = {"%player%", "%world%", "%cmd%", "%fullcmd%"};
 
     public boolean executeActions(Cancellable e, Player p, String com, String command, List<Action> actions, List<String> aliases, String world) {
+        final String[] replacementList = {p.getName(), world, com, command};
         for (Action action : actions) {
             switch (action.type()) {
                 case BLOCK: {
@@ -132,8 +132,8 @@ public class CommandBlocker implements Listener {
                         break;
                     }
                     if (contextList.contains("aliases")) {
-                        for (String s : aliases) {
-                            if (executedCommandBase.replace("/", "").equalsIgnoreCase(s)) {
+                        for (String alias : aliases) {
+                            if (executedCommandBase.replace("/", "").equalsIgnoreCase(alias)) {
                                 e.setCancelled(true);
                                 break;
                             }
@@ -144,7 +144,8 @@ public class CommandBlocker implements Listener {
                 case LITE_BLOCK: {
                     plugin.getLogger().info("LITE_BLOCK");
                     String[] coAction = action.context().split("perm=");
-                    List<String> contextList = coAction[0].contains(",") ? List.of(coAction[0].trim().split(","))
+                    List<String> contextList = coAction[0].contains(",")
+                            ? List.of(coAction[0].trim().split(","))
                             : List.of(coAction[0].trim());
                     if (contextList.get(0).isBlank()) {
                         e.setCancelled(true);
@@ -158,8 +159,8 @@ public class CommandBlocker implements Listener {
                         }
                     }
                     if (contextList.contains("aliases")) {
-                        for (String s : aliases) {
-                            if (executedCommandBase.replace("/", "").equalsIgnoreCase(s) && !p.hasPermission(coAction[1])) {
+                        for (String alias : aliases) {
+                            if (executedCommandBase.replace("/", "").equalsIgnoreCase(alias) && !p.hasPermission(coAction[1])) {
                                 e.setCancelled(true);
                                 break;
                             }
@@ -184,8 +185,8 @@ public class CommandBlocker implements Listener {
                         break;
                     }
                     if (contextList.contains("aliases")) {
-                        for (String s : aliases) {
-                            if (executedCommandBase.replace("/", "").equalsIgnoreCase(s)) {
+                        for (String alias : aliases) {
+                            if (executedCommandBase.replace("/", "").equalsIgnoreCase(alias)) {
                                 e.setCancelled(true);
                                 break;
                             }
@@ -198,7 +199,8 @@ public class CommandBlocker implements Listener {
                         break;
                     }
                     String[] coAction = action.context().split("perm=");
-                    List<String> contextList = coAction[0].contains(",") ? List.of(coAction[0].trim().split(","))
+                    List<String> contextList = coAction[0].contains(",")
+                            ? List.of(coAction[0].trim().split(","))
                             : List.of(coAction[0].trim());
                     if (contextList.get(0).isBlank()) {
                         e.setCancelled(true);
@@ -212,8 +214,8 @@ public class CommandBlocker implements Listener {
                         }
                     }
                     if (contextList.contains("aliases")) {
-                        for (String s : aliases) {
-                            if (executedCommandBase.replace("/", "").equalsIgnoreCase(s) && !p.hasPermission(coAction[1])) {
+                        for (String alias : aliases) {
+                            if (executedCommandBase.replace("/", "").equalsIgnoreCase(alias) && !p.hasPermission(coAction[1])) {
                                 e.setCancelled(true);
                                 break;
                             }
@@ -225,7 +227,6 @@ public class CommandBlocker implements Listener {
                     if (!e.isCancelled())
                         break;
                     runner.runAsync(() -> {
-                        String[] replacementList = {world, com, command};
 
                         String message = Utils.replaceEach(Utils.colorize(action.context()), searchList, replacementList);
 
@@ -240,7 +241,6 @@ public class CommandBlocker implements Listener {
                         break;
                     runner.runAsync(() -> {
                         String coAction = Utils.colorize(action.context());
-                        String[] replacementList = {world, com, command};
                         String[] titleMessages = Utils.replaceEach(coAction, searchList, replacementList).split(";");
                         Utils.sendTitleMessage(titleMessages, p);
                     });
@@ -251,7 +251,6 @@ public class CommandBlocker implements Listener {
                         break;
                     runner.runAsync(() -> {
                         String coAction = Utils.colorize(action.context());
-                        String[] replacementList = {world, com, command};
                         String message = Utils.replaceEach(coAction, searchList, replacementList);
                         p.sendActionBar(message);
                     });
@@ -271,8 +270,7 @@ public class CommandBlocker implements Listener {
                 }
                 case LOG: {
                     String[] coAction = action.context().split("file=");
-                    String[] replacementList = {p.getName(), world, com, command};
-                    plugin.logAction(Utils.replaceEach(coAction[0], searchListPlus, replacementList), coAction[1]);
+                    plugin.logAction(Utils.replaceEach(coAction[0], searchList, replacementList), coAction[1]);
                     break;
                 }
                 case NOTIFY: {
@@ -282,9 +280,8 @@ public class CommandBlocker implements Listener {
                         String[] coAction = action.context().split("perm=");
                         String perm = coAction[1];
 
-                        String[] replacementList = {p.getName(), world, com, command};
 
-                        String notifyMessage = Utils.replaceEach(Utils.colorize(coAction[0]), searchListPlus, replacementList);
+                        String notifyMessage = Utils.replaceEach(Utils.colorize(coAction[0]), searchList, replacementList);
 
                         final Component comp = Utils.createHoverMessage(notifyMessage);
 

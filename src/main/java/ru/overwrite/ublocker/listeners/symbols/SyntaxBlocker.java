@@ -98,10 +98,10 @@ public class SyntaxBlocker implements Listener {
         }
     }
 
-    private final String[] searchList = {"%world%", "%symbol%", "%cmd%"};
-    private final String[] searchListPlus = {"%player%", "%world%", "%cmd%", "%symbol%"};
+    private final String[] searchList = {"%player%", "%world%", "%symbol%", "%cmd%"};
 
     private void executeActions(Cancellable e, Player p, String command, String symbol, List<Action> actions, String world) {
+        final String[] replacementList = {p.getName(), world, symbol, command};
         for (Action action : actions) {
             switch (action.type()) {
                 case BLOCK: {
@@ -119,8 +119,6 @@ public class SyntaxBlocker implements Listener {
                     if (!e.isCancelled())
                         break;
                     runner.runAsync(() -> {
-                        String[] replacementList = {world, symbol, command};
-
                         String message = Utils.replaceEach(Utils.colorize(action.context()), searchList, replacementList);
 
                         final Component comp = Utils.createHoverMessage(message);
@@ -134,7 +132,6 @@ public class SyntaxBlocker implements Listener {
                         break;
                     runner.runAsync(() -> {
                         String coAction = Utils.colorize(action.context());
-                        String[] replacementList = {world, symbol, command};
                         String[] titleMessages = Utils.replaceEach(coAction, searchList, replacementList).split(";");
                         Utils.sendTitleMessage(titleMessages, p);
                     });
@@ -145,7 +142,6 @@ public class SyntaxBlocker implements Listener {
                         break;
                     runner.runAsync(() -> {
                         String coAction = Utils.colorize(action.context());
-                        String[] replacementList = {world, symbol, command};
                         String message = Utils.replaceEach(coAction, searchList, replacementList);
                         p.sendActionBar(message);
                     });
@@ -165,8 +161,7 @@ public class SyntaxBlocker implements Listener {
                 }
                 case LOG: {
                     String[] coAction = action.context().split("file=");
-                    String[] replacementList = {p.getName(), world, command, symbol};
-                    plugin.logAction(Utils.replaceEach(coAction[0], searchListPlus, replacementList), coAction[1]);
+                    plugin.logAction(Utils.replaceEach(coAction[0], searchList, replacementList), coAction[1]);
                     break;
                 }
                 case NOTIFY: {
@@ -176,9 +171,7 @@ public class SyntaxBlocker implements Listener {
                         String[] coAction = action.context().split("perm=");
                         String perm = coAction[1];
 
-                        String[] replacementList = {p.getName(), world, command, symbol};
-
-                        String notifyMessage = Utils.replaceEach(Utils.colorize(coAction[0]), searchListPlus, replacementList);
+                        String notifyMessage = Utils.replaceEach(Utils.colorize(coAction[0]), searchList, replacementList);
 
                         final Component comp = Utils.createHoverMessage(notifyMessage);
 

@@ -96,10 +96,10 @@ public class SignBlocker implements Listener {
         }
     }
 
-    private final String[] searchList = {"%world%", "%symbol%"};
-    private final String[] searchListPlus = {"%player%", "%world%", "%symbol%", "%line0%", "%line1%", "%line2%", "%line3%"};
+    private final String[] searchList = {"%player%", "%world%", "%symbol%", "%line0%", "%line1%", "%line2%", "%line3%"};
 
     private void executeActions(Cancellable e, Player p, String line0, String line1, String line2, String line3, String symbol, List<Action> actions, String world) {
+        final String[] replacementList = {p.getName(), world, symbol, line0, line1, line2, line3};
         for (Action action : actions) {
             switch (action.type()) {
                 case BLOCK: {
@@ -117,7 +117,6 @@ public class SignBlocker implements Listener {
                     if (!e.isCancelled())
                         break;
                     runner.runAsync(() -> {
-                        String[] replacementList = {world, symbol};
 
                         String message = Utils.replaceEach(Utils.colorize(action.context()), searchList, replacementList);
 
@@ -132,7 +131,6 @@ public class SignBlocker implements Listener {
                         break;
                     runner.runAsync(() -> {
                         String coAction = Utils.colorize(action.context());
-                        String[] replacementList = {world, symbol};
                         String[] titleMessages = Utils.replaceEach(coAction, searchList, replacementList).split(";");
                         Utils.sendTitleMessage(titleMessages, p);
                     });
@@ -143,7 +141,6 @@ public class SignBlocker implements Listener {
                         break;
                     runner.runAsync(() -> {
                         String coAction = Utils.colorize(action.context());
-                        String[] replacementList = {world, symbol};
                         String message = Utils.replaceEach(coAction, searchList, replacementList);
                         p.sendActionBar(message);
                     });
@@ -163,8 +160,7 @@ public class SignBlocker implements Listener {
                 }
                 case LOG: {
                     String[] coAction = action.context().split("file=");
-                    String[] replacementList = {p.getName(), world, symbol, line0, line1, line2, line3};
-                    plugin.logAction(Utils.replaceEach(coAction[0], searchListPlus, replacementList), coAction[1]);
+                    plugin.logAction(Utils.replaceEach(coAction[0], searchList, replacementList), coAction[1]);
                     break;
                 }
                 case NOTIFY: {
@@ -174,9 +170,7 @@ public class SignBlocker implements Listener {
                         String[] coAction = action.context().split("perm=");
                         String perm = coAction[1];
 
-                        String[] replacementList = {p.getName(), world, symbol, line0, line1, line2, line3};
-
-                        String notifyMessage = Utils.replaceEach(Utils.colorize(coAction[0]), searchListPlus, replacementList);
+                        String notifyMessage = Utils.replaceEach(Utils.colorize(coAction[0]), searchList, replacementList);
 
                         final Component comp = Utils.createHoverMessage(notifyMessage);
 

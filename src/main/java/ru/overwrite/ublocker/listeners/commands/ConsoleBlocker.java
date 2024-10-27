@@ -102,7 +102,9 @@ public class ConsoleBlocker implements Listener {
         for (Action action : actions) {
             switch (action.type()) {
                 case BLOCK_CONSOLE: {
-                    List<String> contextList = action.context().contains(",") ? List.of(action.context().split(",")) : List.of(action.context());
+                    List<String> contextList = action.context().contains(",")
+                            ? List.of(action.context().split(","))
+                            : List.of(action.context());
                     if (contextList.get(0).isBlank()) {
                         return true;
                     }
@@ -111,8 +113,8 @@ public class ConsoleBlocker implements Listener {
                         return true;
                     }
                     if (contextList.contains("aliases")) {
-                        for (String s : aliases) {
-                            if (com.equalsIgnoreCase(s)) {
+                        for (String alias : aliases) {
+                            if (com.equalsIgnoreCase(alias)) {
                                 return true;
                             }
                         }
