@@ -40,7 +40,7 @@ public class PluginMessage implements PluginMessageListener {
             return;
         }
         if (subchannel.equalsIgnoreCase("ublocker_2")) {
-            Runnable run = () -> {
+            runner.runAsync(() -> {
                 String[] split = input.readUTF().split(" ", 2);
                 String perm = split[0];
                 String notifyMessage = split[1];
@@ -50,8 +50,7 @@ public class PluginMessage implements PluginMessageListener {
                         ps.sendMessage(comp);
                     }
                 }
-            };
-            runner.runAsync(run);
+            });
         }
     }
 

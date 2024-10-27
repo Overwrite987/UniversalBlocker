@@ -58,7 +58,7 @@ public class SignFilter implements Listener {
 
     private void cancelSignEvent(Player p, String message, Cancellable e) {
         e.setCancelled(true);
-        Runnable run = () -> {
+        runner.runAsync(() -> {
             p.sendMessage(pluginConfig.allowed_sign_chars_message);
             if (pluginConfig.allowed_sign_chars_enable_sounds) {
                 p.playSound(p.getLocation(), Sound.valueOf(pluginConfig.allowed_sign_chars_sound_id),
@@ -88,8 +88,7 @@ public class SignFilter implements Listener {
                     plugin.getPluginMessage().sendCrossProxyBasic(p, gsonMessage);
                 }
             }
-        };
-        runner.runAsync(run);
+        });
     }
 
     private boolean containsBlockedChars(String message) {

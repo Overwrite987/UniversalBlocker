@@ -118,7 +118,7 @@ public class SyntaxBlocker implements Listener {
                 case MESSAGE: {
                     if (!e.isCancelled())
                         break;
-                    Runnable run = () -> {
+                    runner.runAsync(() -> {
                         String[] replacementList = {world, symbol, command};
 
                         String message = Utils.replaceEach(Utils.colorize(action.context()), searchList, replacementList);
@@ -126,41 +126,37 @@ public class SyntaxBlocker implements Listener {
                         final Component comp = Utils.createHoverMessage(message);
 
                         p.sendMessage(comp);
-                    };
-                    runner.runAsync(run);
+                    });
                     break;
                 }
                 case TITLE: {
                     if (!e.isCancelled())
                         break;
-                    Runnable run = () -> {
+                    runner.runAsync(() -> {
                         String coAction = Utils.colorize(action.context());
                         String[] replacementList = {world, symbol, command};
                         String[] titleMessages = Utils.replaceEach(coAction, searchList, replacementList).split(";");
                         Utils.sendTitleMessage(titleMessages, p);
-                    };
-                    runner.runAsync(run);
+                    });
                     break;
                 }
                 case ACTIONBAR: {
                     if (!e.isCancelled())
                         break;
-                    Runnable run = () -> {
+                    runner.runAsync(() -> {
                         String coAction = Utils.colorize(action.context());
                         String[] replacementList = {world, symbol, command};
                         String message = Utils.replaceEach(coAction, searchList, replacementList);
                         p.sendActionBar(message);
-                    };
-                    runner.runAsync(run);
+                    });
                 }
                 case SOUND: {
                     if (!e.isCancelled())
                         break;
-                    Runnable run = () -> {
+                    runner.runAsync(() -> {
                         String[] sound = action.context().split(";");
                         p.playSound(p.getLocation(), Sound.valueOf(sound[0]), Float.parseFloat(sound[1]), Float.parseFloat(sound[2]));
-                    };
-                    runner.runAsync(run);
+                    });
                     break;
                 }
                 case CONSOLE: {
@@ -176,7 +172,7 @@ public class SyntaxBlocker implements Listener {
                 case NOTIFY: {
                     if (!e.isCancelled())
                         break;
-                    Runnable run = () -> {
+                    runner.runAsync(() -> {
                         String[] coAction = action.context().split("perm=");
                         String perm = coAction[1];
 
@@ -195,14 +191,13 @@ public class SyntaxBlocker implements Listener {
                             String gsonMessage = GsonComponentSerializer.gson().serializer().toJsonTree(comp).toString();
                             plugin.getPluginMessage().sendCrossProxyPerm(p, perm + " " + gsonMessage);
                         }
-                    };
-                    runner.runAsync(run);
+                    });
                     break;
                 }
                 case NOTIFY_SOUND: {
                     if (!e.isCancelled())
                         break;
-                    Runnable run = () -> {
+                    runner.runAsync(() -> {
                         String[] coAction = action.context().split("perm=");
                         String[] sound = coAction[0].split(";");
                         for (Player ps : Bukkit.getOnlinePlayers()) {
@@ -210,8 +205,7 @@ public class SyntaxBlocker implements Listener {
                                 ps.playSound(ps.getLocation(), Sound.valueOf(sound[0]), Float.parseFloat(sound[1]), Float.parseFloat(sound[2]));
                             }
                         }
-                    };
-                    runner.runAsync(run);
+                    });
                     break;
                 }
                 default:

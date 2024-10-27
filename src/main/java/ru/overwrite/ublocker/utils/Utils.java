@@ -11,13 +11,13 @@ import java.util.regex.Pattern;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 import it.unimi.dsi.fastutil.chars.CharOpenHashSet;
 import it.unimi.dsi.fastutil.chars.CharSet;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import ru.overwrite.ublocker.Main;
 
 public final class Utils {
 
@@ -156,8 +156,8 @@ public final class Utils {
         return result.toString();
     }
 
-    public static void checkUpdates(Plugin plugin, Consumer<String> consumer) {
-        Runnable run = () -> {
+    public static void checkUpdates(Main plugin, Consumer<String> consumer) {
+        plugin.getRunner().runAsync(() -> {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(
                     new URL("https://raw.githubusercontent.com/Overwrite987/UniversalBlocker/master/VERSION")
                             .openStream()))) {
@@ -165,11 +165,6 @@ public final class Utils {
             } catch (IOException exception) {
                 plugin.getLogger().warning("Can't check for updates: " + exception.getMessage());
             }
-        };
-        if (Utils.FOLIA) {
-            Bukkit.getAsyncScheduler().runNow(plugin, (t) -> run.run());
-        } else {
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, run);
-        }
+        });
     }
 }

@@ -45,7 +45,7 @@ public class CommandFilter implements Listener {
 
     private void cancelCommandEvent(Player p, String message, Cancellable e) {
         e.setCancelled(true);
-        Runnable run = () -> {
+        runner.runAsync(() -> {
             p.sendMessage(pluginConfig.allowed_command_chars_message);
             if (pluginConfig.allowed_command_chars_enable_sounds) {
                 p.playSound(p.getLocation(), Sound.valueOf(pluginConfig.allowed_command_chars_sound_id),
@@ -76,8 +76,7 @@ public class CommandFilter implements Listener {
                     plugin.getPluginMessage().sendCrossProxyBasic(p, gsonMessage);
                 }
             }
-        };
-        runner.runAsync(run);
+        });
     }
 
     private boolean containsBlockedChars(String message) {

@@ -51,7 +51,7 @@ public class BookChecker implements Listener {
 
     private void cancelBookEvent(Player p, String message, Cancellable e) {
         e.setCancelled(true);
-        Runnable run = () -> {
+        runner.runAsync(() -> {
             p.sendMessage(pluginConfig.allowed_book_chars_message);
             if (pluginConfig.allowed_book_chars_enable_sounds) {
                 p.playSound(p.getLocation(), Sound.valueOf(pluginConfig.allowed_book_chars_sound_id),
@@ -80,8 +80,7 @@ public class BookChecker implements Listener {
                     plugin.getPluginMessage().sendCrossProxyBasic(p, gsonMessage);
                 }
             }
-        };
-        runner.runAsync(run);
+        });
     }
 
     private boolean containsBlockedChars(String message) {

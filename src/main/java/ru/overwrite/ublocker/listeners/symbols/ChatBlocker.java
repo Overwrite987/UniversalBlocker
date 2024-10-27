@@ -113,7 +113,7 @@ public class ChatBlocker implements Listener {
                 case MESSAGE: {
                     if (!e.isCancelled())
                         break;
-                    Runnable run = () -> {
+                    runner.runAsync(() -> {
                         // String hovertext = plugin.getHoverText(coAction);
                         // HoverEvent hover = new HoverEvent(Action.SHOW_TEXT, new
                         // Text(Utils.colorize(hovertext)
@@ -135,46 +135,41 @@ public class ChatBlocker implements Listener {
                         final Component comp = Utils.createHoverMessage(messageToPlayer);
 
                         p.sendMessage(comp);
-                    };
-                    runner.runAsync(run);
+                    });
                     break;
                 }
                 case TITLE: {
                     if (!e.isCancelled())
                         break;
-                    Runnable run = () -> {
+                    runner.runAsync(() -> {
                         String coAction = Utils.colorize(action.context());
                         String[] replacementList = {world, symbol, message};
                         String[] titleMessages = Utils.replaceEach(coAction, searchList, replacementList).split(";");
                         Utils.sendTitleMessage(titleMessages, p);
-                    };
-                    runner.runAsync(run);
+                    });
                     break;
                 }
                 case ACTIONBAR: {
                     if (!e.isCancelled())
                         break;
-                    Runnable run = () -> {
+                    runner.runAsync(() -> {
                         String coAction = Utils.colorize(action.context());
                         String[] replacementList = {world, symbol, message};
                         String messageToPlayer = Utils.replaceEach(coAction, searchList, replacementList);
                         p.sendActionBar(messageToPlayer);
-                    };
-                    runner.runAsync(run);
+                    });
                 }
                 case SOUND: {
                     if (!e.isCancelled())
                         break;
-                    Runnable run = () -> {
+                    runner.runAsync(() -> {
                         String[] sound = action.context().split(";");
                         p.playSound(p.getLocation(), Sound.valueOf(sound[0]), Float.parseFloat(sound[1]), Float.parseFloat(sound[2]));
-                    };
-                    runner.runAsync(run);
+                    });
                     break;
                 }
                 case CONSOLE: {
-                    Runnable run = () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), action.context().replace("%player%", p.getName()));
-                    runner.run(run);
+                    runner.run(() -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), action.context().replace("%player%", p.getName())));
                     break;
                 }
                 case LOG: {
@@ -186,7 +181,7 @@ public class ChatBlocker implements Listener {
                 case NOTIFY: {
                     if (!e.isCancelled())
                         break;
-                    Runnable run = () -> {
+                    runner.runAsync(() -> {
                         String[] coAction = action.context().split("perm=");
                         String perm = coAction[1];
 
@@ -205,14 +200,13 @@ public class ChatBlocker implements Listener {
                             String gsonMessage = GsonComponentSerializer.gson().serializer().toJsonTree(comp).toString();
                             plugin.getPluginMessage().sendCrossProxyPerm(p, perm + " " + gsonMessage);
                         }
-                    };
-                    runner.runAsync(run);
+                    });
                     break;
                 }
                 case NOTIFY_SOUND: {
                     if (!e.isCancelled())
                         break;
-                    Runnable run = () -> {
+                    runner.runAsync(() -> {
                         String[] coAction = action.context().split("perm=");
                         String[] sound = coAction[0].split(";");
                         for (Player ps : Bukkit.getOnlinePlayers()) {
@@ -220,8 +214,7 @@ public class ChatBlocker implements Listener {
                                 ps.playSound(ps.getLocation(), Sound.valueOf(sound[0]), Float.parseFloat(sound[1]), Float.parseFloat(sound[2]));
                             }
                         }
-                    };
-                    runner.runAsync(run);
+                    });
                     break;
                 }
                 default:
