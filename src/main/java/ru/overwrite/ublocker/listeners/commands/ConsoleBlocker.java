@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -35,52 +36,62 @@ public class ConsoleBlocker implements Listener {
         for (CommandGroup group : pluginConfig.commandBlockGroupSet) {
             switch (group.getBlockType()) {
                 case STRING: {
-                    for (String com : group.getCommandsToBlockString()) {
-                        Command comInMap = Bukkit.getCommandMap().getCommand(com.replace("/", ""));
-                        List<String> aliases = comInMap == null ? Collections.emptyList() : new ArrayList<>(comInMap.getAliases());
-                        if (!aliases.isEmpty() && !aliases.contains(comInMap.getName())) {
-                            aliases.add(comInMap.getName());
-                        }
-                        String executedCommandBase = command.contains(" ") ? Utils.cutCommand(command) : command;
-                        if (executedCommandBase.equalsIgnoreCase(com) || aliases.contains(executedCommandBase.replace("/", ""))) {
-                            List<Action> actions = group.getActionsToExecute();
-                            if (actions.isEmpty()) {
-                                continue;
-                            }
-                            if (shouldBlockCommand(com, command, aliases, actions)) {
-                                e.setCancelled(true);
-                                break;
-                            }
-                        }
-                    }
+                    checkStringBlock(e, command, group);
+                    break;
                 }
                 case PATTERN: {
-                    for (Pattern pattern : group.getCommandsToBlockPattern()) {
-                        List<Action> actions = group.getActionsToExecute();
-                        if (actions.isEmpty()) {
-                            continue;
-                        }
-                        Matcher matcher = pattern.matcher(Utils.cutCommand(command).replace("/", ""));
-                        if (matcher.matches()) {
-                            Command comInMap = Bukkit.getCommandMap().getCommand(matcher.group());
-                            List<String> aliases = comInMap == null ? Collections.emptyList() : new ArrayList<>(comInMap.getAliases());
-                            if (!aliases.isEmpty()) {
-                                aliases.add(comInMap.getName());
-                            }
-                            if (aliases.contains(matcher.group())) {
-                                if (shouldBlockCommand(matcher.group(), command, aliases, actions)) {
-                                    e.setCancelled(true);
-                                    break;
-                                }
-                            }
-                            if (shouldBlockCommand(matcher.group(), command, aliases, actions)) {
-                                e.setCancelled(true);
-                                break;
-                            }
-                        }
-                    }
+                    checkPatternBlock(e, command, group);
+                    break;
                 }
                 default: {
+                    break;
+                }
+            }
+        }
+    }
+
+    private void checkStringBlock(ServerCommandEvent e, String command, CommandGroup group) {
+        for (String com : group.getCommandsToBlockString()) {
+            Command comInMap = Bukkit.getCommandMap().getCommand(com.replace("/", ""));
+            List<String> aliases = comInMap == null ? Collections.emptyList() : new ArrayList<>(comInMap.getAliases());
+            if (!aliases.isEmpty() && !aliases.contains(comInMap.getName())) {
+                aliases.add(comInMap.getName());
+            }
+            String executedCommandBase = command.contains(" ") ? Utils.cutCommand(command) : command;
+            if (executedCommandBase.equalsIgnoreCase(com) || aliases.contains(executedCommandBase.replace("/", ""))) {
+                List<Action> actions = group.getActionsToExecute();
+                if (actions.isEmpty()) {
+                    continue;
+                }
+                if (shouldBlockCommand(com, command, aliases, actions)) {
+                    e.setCancelled(true);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void checkPatternBlock(ServerCommandEvent e, String command, CommandGroup group) {
+        for (Pattern pattern : group.getCommandsToBlockPattern()) {
+            List<Action> actions = group.getActionsToExecute();
+            if (actions.isEmpty()) {
+                continue;
+            }
+            Matcher matcher = pattern.matcher(Utils.cutCommand(command).replace("/", ""));
+            if (matcher.matches()) {
+                Command comInMap = Bukkit.getCommandMap().getCommand(matcher.group());
+                List<String> aliases = comInMap == null ? Collections.emptyList() : new ArrayList<>(comInMap.getAliases());
+                if (!aliases.isEmpty()) {
+                    aliases.add(comInMap.getName());
+                }
+                if (aliases.contains(matcher.group())) {
+                    if (shouldBlockCommand(matcher.group(), command, aliases, actions)) {
+                        e.setCancelled(true);
+                        break;
+                    }
+                }
+                if (shouldBlockCommand(matcher.group(), command, aliases, actions)) {
+                    e.setCancelled(true);
                     break;
                 }
             }

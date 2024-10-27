@@ -36,7 +36,7 @@ public class TabComplete implements Listener {
         if (plugin.isExcluded(p))
             return;
         String buffer = e.getBuffer();
-        // Anti plugin stealing with .server plugins
+        // Херня которая запрещает стилить плагины через читы, а за одно еще и предотвращает краш таб-комплитом
         if ((buffer.split(" ").length == 1 && !buffer.endsWith(" ")) || !buffer.startsWith("/") || buffer.length() > 256) {
             e.setCancelled(true);
             return;
@@ -44,43 +44,56 @@ public class TabComplete implements Listener {
         for (CommandGroup group : pluginConfig.commandBlockGroupSet) {
             switch (group.getBlockType()) {
                 case STRING: {
-                    for (String command : group.getCommandsToBlockString()) {
-                        if (buffer.equalsIgnoreCase(command + " ")) {
-                            List<Action> actions = group.getActionsToExecute();
-                            if (actions.isEmpty()) {
-                                continue;
-                            }
-                            Command comInMap = Bukkit.getCommandMap().getCommand(buffer);
-                            List<String> aliases = comInMap == null ? Collections.emptyList() : new ArrayList<>(comInMap.getAliases());
-                            if (!aliases.isEmpty() && !aliases.contains(comInMap.getName())) {
-                                aliases.add(comInMap.getName());
-                            }
-                            if (shouldBlockTabComplete(p, buffer, buffer, aliases, actions) || aliases.contains(buffer)) {
-                                e.setCancelled(true);
-                            }
-                            break;
-                        }
-                    }
+                    checkStringBlock(e, p, buffer, group);
+                    break;
                 }
                 case PATTERN: {
-                    for (Pattern pattern : group.getCommandsToBlockPattern()) {
-                        List<Action> actions = group.getActionsToExecute();
-                        if (actions.isEmpty()) {
-                            continue;
-                        }
-                        Matcher matcher = pattern.matcher(buffer.split(" ")[0]);
-                        if (matcher.matches()) {
-                            Command comInMap = Bukkit.getCommandMap().getCommand(matcher.group());
-                            List<String> aliases = comInMap == null ? Collections.emptyList() : new ArrayList<>(comInMap.getAliases());
-                            if (!aliases.isEmpty()) {
-                                aliases.add(comInMap.getName());
-                            }
-                            if (shouldBlockTabComplete(p, matcher.group(), buffer, aliases, actions) || aliases.contains(matcher.group())) {
-                                e.setCancelled(true);
-                            }
-                            return;
-                        }
-                    }
+                    checkPatternBlock(e, p, buffer, group);
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
+        }
+    }
+
+    private void checkStringBlock(AsyncTabCompleteEvent e, Player p, String buffer, CommandGroup group) {
+        for (String command : group.getCommandsToBlockString()) {
+            if (buffer.equalsIgnoreCase(command + " ")) {
+                List<Action> actions = group.getActionsToExecute();
+                if (actions.isEmpty()) {
+                    continue;
+                }
+                Command comInMap = Bukkit.getCommandMap().getCommand(buffer);
+                List<String> aliases = comInMap == null ? Collections.emptyList() : new ArrayList<>(comInMap.getAliases());
+                if (!aliases.isEmpty() && !aliases.contains(comInMap.getName())) {
+                    aliases.add(comInMap.getName());
+                }
+                if (shouldBlockTabComplete(p, buffer, buffer, aliases, actions) || aliases.contains(buffer)) {
+                    e.setCancelled(true);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void checkPatternBlock(AsyncTabCompleteEvent e, Player p, String buffer, CommandGroup group) {
+        for (Pattern pattern : group.getCommandsToBlockPattern()) {
+            List<Action> actions = group.getActionsToExecute();
+            if (actions.isEmpty()) {
+                continue;
+            }
+            Matcher matcher = pattern.matcher(buffer.split(" ")[0]);
+            if (matcher.matches()) {
+                Command comInMap = Bukkit.getCommandMap().getCommand(matcher.group());
+                List<String> aliases = comInMap == null ? Collections.emptyList() : new ArrayList<>(comInMap.getAliases());
+                if (!aliases.isEmpty()) {
+                    aliases.add(comInMap.getName());
+                }
+                if (shouldBlockTabComplete(p, matcher.group(), buffer, aliases, actions) || aliases.contains(matcher.group())) {
+                    e.setCancelled(true);
+                    break;
                 }
             }
         }
