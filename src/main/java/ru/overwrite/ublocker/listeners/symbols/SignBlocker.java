@@ -117,7 +117,6 @@ public class SignBlocker implements Listener {
                     if (!e.isCancelled())
                         break;
                     runner.runAsync(() -> {
-
                         String message = Utils.replaceEach(Utils.colorize(action.context()), searchList, replacementList);
 
                         final Component comp = Utils.createHoverMessage(message);

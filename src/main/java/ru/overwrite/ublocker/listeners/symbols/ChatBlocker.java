@@ -128,7 +128,6 @@ public class ChatBlocker implements Listener {
                         // for (BaseComponent component : comp) {
                         // component.setHoverEvent(hover);
                         // }
-
                         String messageToPlayer = Utils.replaceEach(Utils.colorize(action.context()), searchList, replacementList);
 
                         final Component comp = Utils.createHoverMessage(messageToPlayer);
