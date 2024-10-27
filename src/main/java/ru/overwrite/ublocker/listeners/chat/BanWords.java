@@ -94,8 +94,10 @@ public class BanWords implements Listener {
                 if (admin.hasPermission("ublocker.admin")) {
                     admin.sendMessage(comp);
                     if (pluginConfig.ban_words_notify_sounds) {
-                        admin.playSound(admin.getLocation(), Sound.valueOf(pluginConfig.ban_words_notify_sound_id),
-                                pluginConfig.ban_words_notify_sound_volume, pluginConfig.ban_words_notify_sound_pitch);
+                        admin.playSound(admin.getLocation(),
+                                Sound.valueOf(pluginConfig.ban_words_notify_sound_id),
+                                pluginConfig.ban_words_notify_sound_volume,
+                                pluginConfig.ban_words_notify_sound_pitch);
                     }
                 }
             }

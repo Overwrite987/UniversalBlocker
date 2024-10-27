@@ -79,7 +79,8 @@ public class CaseCheck implements Listener {
                 if (admin.hasPermission("ublocker.admin")) {
                     admin.sendMessage(comp);
                     if (pluginConfig.case_check_notify_sounds) {
-                        admin.playSound(admin.getLocation(), Sound.valueOf(pluginConfig.case_check_notify_sound_id),
+                        admin.playSound(admin.getLocation(),
+                                Sound.valueOf(pluginConfig.case_check_notify_sound_id),
                                 pluginConfig.case_check_notify_sound_volume,
                                 pluginConfig.case_check_notify_sound_pitch);
                     }
