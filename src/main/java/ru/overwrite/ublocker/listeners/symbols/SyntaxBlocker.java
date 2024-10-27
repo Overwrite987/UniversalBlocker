@@ -47,45 +47,53 @@ public class SyntaxBlocker implements Listener {
             }
             switch (group.getBlockType()) {
                 case STRING: {
-                    for (String symbol : group.getSymbolsToBlock()) {
-                        List<Action> actions = group.getActionsToExecute();
-                        if (actions.isEmpty()) {
-                            continue;
-                        }
-                        if (startWithExcludedString(command, group.getExcludedCommandsString())) {
-                            continue;
-                        }
-                        if (command.contains(symbol)) {
-                            if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
-                                continue;
-                            }
-                            executeActions(e, p, command, symbol, actions, p.getWorld().getName());
-                        }
-                    }
+                    checkStringBlock(e, p, command, group);
                     break;
                 }
                 case PATTERN: {
-                    for (Pattern pattern : group.getPatternsToBlock()) {
-                        List<Action> actions = group.getActionsToExecute();
-                        if (actions.isEmpty()) {
-                            continue;
-                        }
-                        Matcher matcher = pattern.matcher(command);
-                        if (startWithExcludedPattern(command, group.getExcludedCommandsPattern())) {
-                            continue;
-                        }
-                        if (matcher.find()) {
-                            if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
-                                continue;
-                            }
-                            executeActions(e, p, command, matcher.group(), actions, p.getWorld().getName());
-                        }
-                    }
+                    checkPatternBlock(e, p, command, group);
                     break;
                 }
                 default: {
                     break;
                 }
+            }
+        }
+    }
+
+    private void checkStringBlock(PlayerCommandPreprocessEvent e, Player p, String command, SymbolGroup group) {
+        for (String symbol : group.getSymbolsToBlock()) {
+            List<Action> actions = group.getActionsToExecute();
+            if (actions.isEmpty()) {
+                continue;
+            }
+            if (startWithExcludedString(command, group.getExcludedCommandsString())) {
+                continue;
+            }
+            if (command.contains(symbol)) {
+                if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
+                    continue;
+                }
+                executeActions(e, p, command, symbol, actions, p.getWorld().getName());
+            }
+        }
+    }
+
+    private void checkPatternBlock(PlayerCommandPreprocessEvent e, Player p, String command, SymbolGroup group) {
+        for (Pattern pattern : group.getPatternsToBlock()) {
+            List<Action> actions = group.getActionsToExecute();
+            if (actions.isEmpty()) {
+                continue;
+            }
+            Matcher matcher = pattern.matcher(command);
+            if (startWithExcludedPattern(command, group.getExcludedCommandsPattern())) {
+                continue;
+            }
+            if (matcher.find()) {
+                if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
+                    continue;
+                }
+                executeActions(e, p, command, matcher.group(), actions, p.getWorld().getName());
             }
         }
     }

@@ -41,41 +41,18 @@ public class ChatBlocker implements Listener {
         Player p = e.getPlayer();
         if (plugin.isExcluded(p))
             return;
-        String command = e.getMessage().toLowerCase();
+        String message = e.getMessage().toLowerCase();
         for (SymbolGroup group : pluginConfig.symbolBlockGroupSet) {
             if (group.getBlockFactor().isEmpty() || !group.getBlockFactor().contains("chat")) {
                 continue;
             }
             switch (group.getBlockType()) {
                 case STRING: {
-                    for (String symbol : group.getSymbolsToBlock()) {
-                        List<Action> actions = group.getActionsToExecute();
-                        if (actions.isEmpty()) {
-                            continue;
-                        }
-                        if (command.contains(symbol)) {
-                            if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
-                                continue;
-                            }
-                            executeActions(e, p, command, symbol, actions, p.getWorld().getName());
-                        }
-                    }
+                    checkStringBlock(e, p, message, group);
                     break;
                 }
                 case PATTERN: {
-                    for (Pattern pattern : group.getPatternsToBlock()) {
-                        List<Action> actions = group.getActionsToExecute();
-                        if (actions.isEmpty()) {
-                            continue;
-                        }
-                        Matcher matcher = pattern.matcher(command);
-                        if (matcher.find()) {
-                            if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
-                                continue;
-                            }
-                            executeActions(e, p, command, matcher.group(), actions, p.getWorld().getName());
-                        }
-                    }
+                    checkPatternBlock(e, p, message, group);
                     break;
                 }
                 default: {
@@ -85,10 +62,41 @@ public class ChatBlocker implements Listener {
         }
     }
 
+    private void checkStringBlock(AsyncPlayerChatEvent e, Player p, String message, SymbolGroup group) {
+        for (String symbol : group.getSymbolsToBlock()) {
+            List<Action> actions = group.getActionsToExecute();
+            if (actions.isEmpty()) {
+                continue;
+            }
+            if (message.contains(symbol)) {
+                if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
+                    continue;
+                }
+                executeActions(e, p, message, symbol, actions, p.getWorld().getName());
+            }
+        }
+    }
+
+    private void checkPatternBlock(AsyncPlayerChatEvent e, Player p, String message, SymbolGroup group) {
+        for (Pattern pattern : group.getPatternsToBlock()) {
+            List<Action> actions = group.getActionsToExecute();
+            if (actions.isEmpty()) {
+                continue;
+            }
+            Matcher matcher = pattern.matcher(message);
+            if (matcher.find()) {
+                if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
+                    continue;
+                }
+                executeActions(e, p, message, matcher.group(), actions, p.getWorld().getName());
+            }
+        }
+    }
+
     private final String[] searchList = {"%world%", "%symbol%", "%msg%"};
     private final String[] searchListPlus = {"%player%", "%world%", "%msg%", "%symbol%"};
 
-    private void executeActions(Cancellable e, Player p, String command, String symbol, List<Action> actions, String world) {
+    private void executeActions(Cancellable e, Player p, String message, String symbol, List<Action> actions, String world) {
         for (Action action : actions) {
             switch (action.type()) {
                 case BLOCK: {
@@ -120,11 +128,11 @@ public class ChatBlocker implements Listener {
                         // for (BaseComponent component : comp) {
                         // component.setHoverEvent(hover);
                         // }
-                        String[] replacementList = {world, symbol, command};
+                        String[] replacementList = {world, symbol, message};
 
-                        String message = Utils.replaceEach(Utils.colorize(action.context()), searchList, replacementList);
+                        String messageToPlayer = Utils.replaceEach(Utils.colorize(action.context()), searchList, replacementList);
 
-                        final Component comp = Utils.createHoverMessage(message);
+                        final Component comp = Utils.createHoverMessage(messageToPlayer);
 
                         p.sendMessage(comp);
                     };
@@ -136,7 +144,7 @@ public class ChatBlocker implements Listener {
                         break;
                     Runnable run = () -> {
                         String coAction = Utils.colorize(action.context());
-                        String[] replacementList = {world, symbol, command};
+                        String[] replacementList = {world, symbol, message};
                         String[] titleMessages = Utils.replaceEach(coAction, searchList, replacementList).split(";");
                         Utils.sendTitleMessage(titleMessages, p);
                     };
@@ -148,9 +156,9 @@ public class ChatBlocker implements Listener {
                         break;
                     Runnable run = () -> {
                         String coAction = Utils.colorize(action.context());
-                        String[] replacementList = {world, symbol, command};
-                        String message = Utils.replaceEach(coAction, searchList, replacementList);
-                        p.sendActionBar(message);
+                        String[] replacementList = {world, symbol, message};
+                        String messageToPlayer = Utils.replaceEach(coAction, searchList, replacementList);
+                        p.sendActionBar(messageToPlayer);
                     };
                     runner.runAsync(run);
                 }
@@ -171,7 +179,7 @@ public class ChatBlocker implements Listener {
                 }
                 case LOG: {
                     String[] coAction = action.context().split("file=");
-                    String[] replacementList = {p.getName(), world, command, symbol};
+                    String[] replacementList = {p.getName(), world, message, symbol};
                     plugin.logAction(Utils.replaceEach(coAction[0], searchListPlus, replacementList), coAction[1]);
                     break;
                 }
@@ -182,7 +190,7 @@ public class ChatBlocker implements Listener {
                         String[] coAction = action.context().split("perm=");
                         String perm = coAction[1];
 
-                        String[] replacementList = {p.getName(), world, command, symbol};
+                        String[] replacementList = {p.getName(), world, message, symbol};
 
                         String notifyMessage = Utils.replaceEach(Utils.colorize(coAction[0]), searchListPlus, replacementList);
 

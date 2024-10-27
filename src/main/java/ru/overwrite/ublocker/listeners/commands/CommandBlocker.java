@@ -47,56 +47,65 @@ public class CommandBlocker implements Listener {
         for (CommandGroup group : pluginConfig.commandBlockGroupSet) {
             switch (group.getBlockType()) {
                 case STRING: {
-                    for (String com : group.getCommandsToBlockString()) {
-                        Command comInMap = Bukkit.getCommandMap().getCommand(com.replace("/", ""));
-                        List<String> aliases = comInMap == null ? Collections.emptyList() : new ArrayList<>(comInMap.getAliases());
-                        if (!aliases.isEmpty() && !aliases.contains(comInMap.getName())) {
-                            aliases.add(comInMap.getName());
-                        }
-                        String executedCommandBase = command.contains(" ") ? Utils.cutCommand(command) : command;
-                        if (executedCommandBase.equalsIgnoreCase(com) || aliases.contains(executedCommandBase.replace("/", ""))) {
-                            List<Action> actions = group.getActionsToExecute();
-                            if (actions.isEmpty()) {
-                                continue;
-                            }
-                            if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
-                                continue;
-                            }
-                            if (executeActions(e, p, com, command, actions, aliases, p.getWorld().getName())) {
-                                break;
-                            }
-                        }
-                    }
+                    checkStringBlock(e, p, command, group);
+                    break;
                 }
                 case PATTERN: {
-                    for (Pattern pattern : group.getCommandsToBlockPattern()) {
-                        List<Action> actions = group.getActionsToExecute();
-                        if (actions.isEmpty()) {
-                            continue;
-                        }
-                        if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
-                            continue;
-                        }
-                        Matcher matcher = pattern.matcher(Utils.cutCommand(command).replace("/", ""));
-                        if (matcher.matches()) {
-                            Command comInMap = Bukkit.getCommandMap().getCommand(matcher.group());
-                            List<String> aliases = comInMap == null ? Collections.emptyList() : new ArrayList<>(comInMap.getAliases());
-                            if (!aliases.isEmpty()) {
-                                aliases.add(comInMap.getName());
-                            }
-                            if (aliases.contains(matcher.group())) {
-                                if (executeActions(e, p, matcher.group(), command, actions, aliases,
-                                        p.getWorld().getName())) {
-                                    break;
-                                }
-                            }
-                            if (executeActions(e, p, matcher.group(), command, actions, aliases, p.getWorld().getName())) {
-                                break;
-                            }
-                        }
-                    }
+                    checkPatternGroup(e, p, command, group);
+                    break;
                 }
                 default: {
+                    break;
+                }
+            }
+        }
+    }
+
+    private void checkStringBlock(PlayerCommandPreprocessEvent e, Player p, String command, CommandGroup group) {
+        for (String com : group.getCommandsToBlockString()) {
+            Command comInMap = Bukkit.getCommandMap().getCommand(com.replace("/", ""));
+            List<String> aliases = comInMap == null ? Collections.emptyList() : new ArrayList<>(comInMap.getAliases());
+            if (!aliases.isEmpty() && !aliases.contains(comInMap.getName())) {
+                aliases.add(comInMap.getName());
+            }
+            String executedCommandBase = command.contains(" ") ? Utils.cutCommand(command) : command;
+            if (executedCommandBase.equalsIgnoreCase(com) || aliases.contains(executedCommandBase.replace("/", ""))) {
+                List<Action> actions = group.getActionsToExecute();
+                if (actions.isEmpty()) {
+                    continue;
+                }
+                if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
+                    continue;
+                }
+                if (executeActions(e, p, com, command, actions, aliases, p.getWorld().getName())) {
+                    break;
+                }
+            }
+        }
+    }
+
+    private void checkPatternGroup(PlayerCommandPreprocessEvent e, Player p, String command, CommandGroup group) {
+        for (Pattern pattern : group.getCommandsToBlockPattern()) {
+            List<Action> actions = group.getActionsToExecute();
+            if (actions.isEmpty()) {
+                continue;
+            }
+            if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
+                continue;
+            }
+            Matcher matcher = pattern.matcher(Utils.cutCommand(command).replace("/", ""));
+            if (matcher.matches()) {
+                Command comInMap = Bukkit.getCommandMap().getCommand(matcher.group());
+                List<String> aliases = comInMap == null ? Collections.emptyList() : new ArrayList<>(comInMap.getAliases());
+                if (!aliases.isEmpty()) {
+                    aliases.add(comInMap.getName());
+                }
+                if (aliases.contains(matcher.group())) {
+                    if (executeActions(e, p, matcher.group(), command, actions, aliases, p.getWorld().getName())) {
+                        break;
+                    }
+                }
+                if (executeActions(e, p, matcher.group(), command, actions, aliases, p.getWorld().getName())) {
                     break;
                 }
             }

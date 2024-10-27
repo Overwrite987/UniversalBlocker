@@ -58,34 +58,11 @@ public class AnvilBlocker implements Listener {
             }
             switch (group.getBlockType()) {
                 case STRING: {
-                    for (String symbol : group.getSymbolsToBlock()) {
-                        List<Action> actions = group.getActionsToExecute();
-                        if (actions.isEmpty()) {
-                            continue;
-                        }
-                        if (name.contains(symbol)) {
-                            if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
-                                continue;
-                            }
-                            executeActions(e, p, name, symbol, actions, p.getWorld().getName());
-                        }
-                    }
+                    checkStringBlock(e, p, name, group);
                     break;
                 }
                 case PATTERN: {
-                    for (Pattern pattern : group.getPatternsToBlock()) {
-                        List<Action> actions = group.getActionsToExecute();
-                        if (actions.isEmpty()) {
-                            continue;
-                        }
-                        Matcher matcher = pattern.matcher(name);
-                        if (matcher.find()) {
-                            if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
-                                continue;
-                            }
-                            executeActions(e, p, name, matcher.group(), actions, p.getWorld().getName());
-                        }
-                    }
+                    checkPatternBlock(e, p, name, group);
                     break;
                 }
                 default: {
@@ -95,10 +72,41 @@ public class AnvilBlocker implements Listener {
         }
     }
 
+    private void checkStringBlock(InventoryClickEvent e, Player p, String name, SymbolGroup group) {
+        for (String symbol : group.getSymbolsToBlock()) {
+            List<Action> actions = group.getActionsToExecute();
+            if (actions.isEmpty()) {
+                continue;
+            }
+            if (name.contains(symbol)) {
+                if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
+                    continue;
+                }
+                executeActions(e, p, name, symbol, actions, p.getWorld().getName());
+            }
+        }
+    }
+
+    private void checkPatternBlock(InventoryClickEvent e, Player p, String name, SymbolGroup group) {
+        for (Pattern pattern : group.getPatternsToBlock()) {
+            List<Action> actions = group.getActionsToExecute();
+            if (actions.isEmpty()) {
+                continue;
+            }
+            Matcher matcher = pattern.matcher(name);
+            if (matcher.find()) {
+                if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
+                    continue;
+                }
+                executeActions(e, p, name, matcher.group(), actions, p.getWorld().getName());
+            }
+        }
+    }
+
     private final String[] searchList = {"%world%", "%symbol%", "%cmd%"};
     private final String[] searchListPlus = {"%player%", "%world%", "%cmd%", "%symbol%"};
 
-    private void executeActions(Cancellable e, Player p, String command, String symbol, List<Action> actions, String world) {
+    private void executeActions(Cancellable e, Player p, String name, String symbol, List<Action> actions, String world) {
         for (Action action : actions) {
             switch (action.type()) {
                 case BLOCK: {
@@ -116,8 +124,7 @@ public class AnvilBlocker implements Listener {
                     if (!e.isCancelled())
                         break;
                     Runnable run = () -> {
-                        String[] replacementList = {world, symbol, command};
-
+                        String[] replacementList = {world, symbol, name};
                         String message = Utils.replaceEach(Utils.colorize(action.context()), searchList, replacementList);
 
                         final Component comp = Utils.createHoverMessage(message);
@@ -132,7 +139,7 @@ public class AnvilBlocker implements Listener {
                         break;
                     Runnable run = () -> {
                         String coAction = Utils.colorize(action.context());
-                        String[] replacementList = {world, symbol, command};
+                        String[] replacementList = {world, symbol, name};
                         String[] titleMessages = Utils.replaceEach(coAction, searchList, replacementList).split(";");
                         Utils.sendTitleMessage(titleMessages, p);
                     };
@@ -144,7 +151,7 @@ public class AnvilBlocker implements Listener {
                         break;
                     Runnable run = () -> {
                         String coAction = Utils.colorize(action.context());
-                        String[] replacementList = {world, symbol, command};
+                        String[] replacementList = {world, symbol, name};
                         String message = Utils.replaceEach(coAction, searchList, replacementList);
                         p.sendActionBar(message);
                     };
@@ -166,7 +173,7 @@ public class AnvilBlocker implements Listener {
                 }
                 case LOG: {
                     String[] coAction = action.context().split("file=");
-                    String[] replacementList = {p.getName(), world, command, symbol};
+                    String[] replacementList = {p.getName(), world, name, symbol};
                     plugin.logAction(Utils.replaceEach(coAction[0], searchListPlus, replacementList), coAction[1]);
                     break;
                 }
@@ -177,7 +184,7 @@ public class AnvilBlocker implements Listener {
                         String[] coAction = action.context().split("perm=");
                         String perm = coAction[1];
 
-                        String[] replacementList = {p.getName(), world, command, symbol};
+                        String[] replacementList = {p.getName(), world, name, symbol};
 
                         String notifyMessage = Utils.replaceEach(Utils.colorize(coAction[0]), searchListPlus, replacementList);
 

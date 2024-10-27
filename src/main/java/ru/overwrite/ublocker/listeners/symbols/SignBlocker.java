@@ -51,39 +51,47 @@ public class SignBlocker implements Listener {
             }
             switch (group.getBlockType()) {
                 case STRING: {
-                    for (String symbol : group.getSymbolsToBlock()) {
-                        List<Action> actions = group.getActionsToExecute();
-                        if (actions.isEmpty()) {
-                            continue;
-                        }
-                        if (line0.contains(symbol) || line1.contains(symbol) || line2.contains(symbol) || line3.contains(symbol)) {
-                            if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
-                                continue;
-                            }
-                            executeActions(e, p, line0, line1, line2, line3, symbol, actions, p.getWorld().getName());
-                        }
-                    }
+                    checkStringBlock(e, p, line0, line1, line2, line3, group);
                     break;
                 }
                 case PATTERN: {
-                    for (Pattern pattern : group.getPatternsToBlock()) {
-                        List<Action> actions = group.getActionsToExecute();
-                        if (actions.isEmpty()) {
-                            continue;
-                        }
-                        Matcher matcher = pattern.matcher(combined.replace("\n", ""));
-                        if (matcher.find()) {
-                            if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
-                                continue;
-                            }
-                            executeActions(e, p, line0, line1, line2, line3, matcher.group(), actions, p.getWorld().getName());
-                        }
-                    }
+                    checkPatternBlock(e, p, combined, line0, line1, line2, line3, group);
                     break;
                 }
                 default: {
                     break;
                 }
+            }
+        }
+    }
+
+    private void checkStringBlock(SignChangeEvent e, Player p, String line0, String line1, String line2, String line3, SymbolGroup group) {
+        for (String symbol : group.getSymbolsToBlock()) {
+            List<Action> actions = group.getActionsToExecute();
+            if (actions.isEmpty()) {
+                continue;
+            }
+            if (line0.contains(symbol) || line1.contains(symbol) || line2.contains(symbol) || line3.contains(symbol)) {
+                if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
+                    continue;
+                }
+                executeActions(e, p, line0, line1, line2, line3, symbol, actions, p.getWorld().getName());
+            }
+        }
+    }
+
+    private void checkPatternBlock(SignChangeEvent e, Player p, String combined, String line0, String line1, String line2, String line3, SymbolGroup group) {
+        for (Pattern pattern : group.getPatternsToBlock()) {
+            List<Action> actions = group.getActionsToExecute();
+            if (actions.isEmpty()) {
+                continue;
+            }
+            Matcher matcher = pattern.matcher(combined.replace("\n", ""));
+            if (matcher.find()) {
+                if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
+                    continue;
+                }
+                executeActions(e, p, line0, line1, line2, line3, matcher.group(), actions, p.getWorld().getName());
             }
         }
     }
