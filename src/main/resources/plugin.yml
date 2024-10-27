@@ -1,0 +1,20 @@
+name: UniversalBlockerUltimate
+main: ru.overwrite.ublocker.Main
+author: OverwriteMC
+version: '${project.version}'
+api-version: 1.16
+folia-supported: true
+softdepend: [WorldGuard]
+commands:
+  universalblocker:
+    aliases: [ublocker, ub]
+permissions:
+  ublocker.bypass.*:
+    children:
+      ublocker.bypass.banwords: true
+      ublocker.bypass.bookchars: true
+      ublocker.bypass.chatchars: true
+      ublocker.bypass.signchars: true
+      ublocker.bypass.commandchars: true
+      ublocker.bypass.numbers: true
+      ublocker.bypass.case: true
