@@ -143,6 +143,7 @@ public class SignBlocker implements Listener {
                         String message = Utils.replaceEach(coAction, searchList, replacementList);
                         p.sendActionBar(message);
                     });
+                    break;
                 }
                 case SOUND: {
                     if (!e.isCancelled())

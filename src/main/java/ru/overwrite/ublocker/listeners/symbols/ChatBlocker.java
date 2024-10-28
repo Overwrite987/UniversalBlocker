@@ -154,6 +154,7 @@ public class ChatBlocker implements Listener {
                         String messageToPlayer = Utils.replaceEach(coAction, searchList, replacementList);
                         p.sendActionBar(messageToPlayer);
                     });
+                    break;
                 }
                 case SOUND: {
                     if (!e.isCancelled())
