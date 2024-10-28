@@ -17,8 +17,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.google.common.collect.ImmutableList;
-
 import lombok.Getter;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import ru.overwrite.ublocker.conditions.ConditionChecker;
@@ -48,7 +46,7 @@ public class Main extends JavaPlugin {
 
     public final Server server = getServer();
 
-    private final List<String> incompatible = ImmutableList.of("ViaRewind", "NeroChat", "PermissionsEx", "AntiCmds");
+    private final List<String> incompatible = List.of("ViaRewind", "NeroChat", "PermissionsEx", "AntiCmds");
 
     @Override
     public void onEnable() {
