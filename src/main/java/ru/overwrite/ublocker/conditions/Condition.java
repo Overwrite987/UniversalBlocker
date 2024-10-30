@@ -6,10 +6,10 @@ import java.util.regex.Matcher;
 
 public record Condition(ConditionType type, String operator, String context) {
 
-    private static final Pattern ACTION_PATTERN = Pattern.compile("\\[(\\w+)](?: ?(.*))");
+    private static final Pattern CONDITION_PATTERN = Pattern.compile("\\[(\\w+)] ?(.*)");
 
     public static Condition fromString(String str) {
-        Matcher matcher = ACTION_PATTERN.matcher(str);
+        Matcher matcher = CONDITION_PATTERN.matcher(str);
         if (!matcher.matches()) return null;
         ConditionType type = ConditionType.fromString(matcher.group(1));
         if (type == null) return null;
