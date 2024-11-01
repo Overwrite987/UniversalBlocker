@@ -67,9 +67,6 @@ public class Main extends JavaPlugin {
                 : this.getDataFolder().getAbsolutePath();
         pluginConfig.setupExcluded(config);
         this.setupProxy(settings);
-        if (pm.isPluginEnabled("WorldGuard")) {
-            ConditionChecker.worldguard = true;
-        }
         if (settings.getBoolean("enable_chat_module")) {
             pluginConfig.setupChat(path);
             pm.registerEvents(new BanWords(this), this);

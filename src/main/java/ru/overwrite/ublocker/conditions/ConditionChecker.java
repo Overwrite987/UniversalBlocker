@@ -9,7 +9,19 @@ import ru.overwrite.ublocker.utils.WGUtils;
 
 public class ConditionChecker {
 
-    public static boolean worldguard = false;
+    private static Boolean hasWorldGuard = null;
+
+    public static boolean hasWorldGuard() {
+        if (hasWorldGuard == null) {
+            try {
+                Class.forName("com.sk89q.worldguard.protection.flags.registry.FlagConflictException");
+                hasWorldGuard = true;
+            } catch (ClassNotFoundException ex) {
+                hasWorldGuard = false;
+            }
+        }
+        return hasWorldGuard;
+    }
 
     public static boolean isMeetsRequirements(Player p, List<Condition> conditions) {
         if (conditions == null || conditions.isEmpty()) {
@@ -23,7 +35,7 @@ public class ConditionChecker {
             switch (condition.type()) {
                 // Дальше идет типа говнокод, потом переделаю
                 case REGION:
-                    if (!worldguard) return false;
+                    if (!hasWorldGuard()) return false;
 
                     List<String> regions = WGUtils.getRegions(p.getLocation());
                     boolean containsRegion = regions.contains(context);
