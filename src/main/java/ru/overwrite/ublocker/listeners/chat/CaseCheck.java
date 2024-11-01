@@ -34,9 +34,8 @@ public class CaseCheck implements Listener {
         if (isAdmin(p))
             return;
         String message = e.getMessage();
-        String messageToCheck = message.replace(" ", "");
         int threshold = caseCheckSettings.maxUpperCasePercent();
-        if (checkCase(messageToCheck, threshold)) {
+        if (checkCase(message, threshold)) {
             if (caseCheckSettings.strictCheck()) {
                 cancelChatEvent(p, message, e);
                 return;
