@@ -7,7 +7,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -119,14 +118,12 @@ public class CommandBlocker implements Listener {
         for (Action action : actions) {
             switch (action.type()) {
                 case BLOCK: {
-                    List<String> contextList = action.context().contains(",")
-                            ? List.of(action.context().split(","))
-                            : List.of(action.context());
+                    List<String> contextList = Utils.getContextList(action.context());
                     if (contextList.get(0).isBlank()) {
                         e.setCancelled(true);
                         break;
                     }
-                    String executedCommandBase = command.contains(" ") ? Utils.cutCommand(command) : command;
+                    String executedCommandBase = Utils.cutCommand(command);
                     if (contextList.contains("single") && com.equals(executedCommandBase)) {
                         e.setCancelled(true);
                         break;
@@ -144,14 +141,12 @@ public class CommandBlocker implements Listener {
                 case LITE_BLOCK: {
                     plugin.getLogger().info("LITE_BLOCK");
                     String[] coAction = action.context().split("perm=");
-                    List<String> contextList = coAction[0].contains(",")
-                            ? List.of(coAction[0].trim().split(","))
-                            : List.of(coAction[0].trim());
+                    List<String> contextList = Utils.getContextList(coAction[0]);
                     if (contextList.get(0).isBlank()) {
                         e.setCancelled(true);
                         break;
                     }
-                    String executedCommandBase = command.contains(" ") ? Utils.cutCommand(command) : command;
+                    String executedCommandBase = Utils.cutCommand(command);
                     if (contextList.contains("single") && com.equals(executedCommandBase)) {
                         if (!p.hasPermission(coAction[1])) {
                             e.setCancelled(true);
@@ -172,14 +167,12 @@ public class CommandBlocker implements Listener {
                     if (command.split(" ").length <= 1) {
                         break;
                     }
-                    List<String> contextList = action.context().contains(",")
-                            ? List.of(action.context().split(","))
-                            : List.of(action.context());
+                    List<String> contextList = Utils.getContextList(action.context());
                     if (contextList.get(0).isBlank()) {
                         e.setCancelled(true);
                         break;
                     }
-                    String executedCommandBase = command.contains(" ") ? Utils.cutCommand(command) : command;
+                    String executedCommandBase = Utils.cutCommand(command);
                     if (contextList.contains("single") && com.equals(executedCommandBase)) {
                         e.setCancelled(true);
                         break;
@@ -199,14 +192,12 @@ public class CommandBlocker implements Listener {
                         break;
                     }
                     String[] coAction = action.context().split("perm=");
-                    List<String> contextList = coAction[0].contains(",")
-                            ? List.of(coAction[0].trim().split(","))
-                            : List.of(coAction[0].trim());
+                    List<String> contextList = Utils.getContextList(coAction[0]);
                     if (contextList.get(0).isBlank()) {
                         e.setCancelled(true);
                         break;
                     }
-                    String executedCommandBase = command.contains(" ") ? Utils.cutCommand(command) : command;
+                    String executedCommandBase = Utils.cutCommand(command);
                     if (contextList.contains("single") && com.equals(executedCommandBase)) {
                         if (!p.hasPermission(coAction[1])) {
                             e.setCancelled(true);
@@ -260,7 +251,7 @@ public class CommandBlocker implements Listener {
                         break;
                     runner.runAsync(() -> {
                         String[] sound = action.context().split(";");
-                        p.playSound(p.getLocation(), Sound.valueOf(sound[0]), Float.parseFloat(sound[1]), Float.parseFloat(sound[2]));
+                        Utils.sendSound(sound, p);
                     });
                     break;
                 }
@@ -279,7 +270,6 @@ public class CommandBlocker implements Listener {
                     runner.runAsync(() -> {
                         String[] coAction = action.context().split("perm=");
                         String perm = coAction[1];
-
 
                         String notifyMessage = Utils.replaceEach(Utils.colorize(coAction[0]), searchList, replacementList);
 
@@ -302,10 +292,10 @@ public class CommandBlocker implements Listener {
                         break;
                     runner.runAsync(() -> {
                         String[] coAction = action.context().split("perm=");
-                        String[] sound = coAction[0].split(";");
+                        String[] sound = coAction[0].trim().split(";");
                         for (Player ps : Bukkit.getOnlinePlayers()) {
                             if (ps.hasPermission(coAction[1])) {
-                                ps.playSound(ps.getLocation(), Sound.valueOf(sound[0]), Float.parseFloat(sound[1]), Float.parseFloat(sound[2]));
+                                Utils.sendSound(sound, ps);
                             }
                         }
                     });

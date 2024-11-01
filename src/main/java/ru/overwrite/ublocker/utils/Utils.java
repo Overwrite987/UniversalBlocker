@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -86,6 +87,12 @@ public final class Utils {
 
     private static String getHoverText(String str) {
         return isHovertexted(str) ? str.split("ht=")[1] : "";
+    }
+
+    public static List<String> getContextList(String context) {
+        return context.contains(",")
+                ? List.of(context.trim().split(","))
+                : List.of(context.trim());
     }
 
     private static final char COLOR_CHAR = '§';

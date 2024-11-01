@@ -101,13 +101,11 @@ public class ConsoleBlocker implements Listener {
         for (Action action : actions) {
             switch (action.type()) {
                 case BLOCK_CONSOLE: {
-                    List<String> contextList = action.context().contains(",")
-                            ? List.of(action.context().split(","))
-                            : List.of(action.context());
+                    List<String> contextList = Utils.getContextList(action.context());
                     if (contextList.get(0).isBlank()) {
                         return true;
                     }
-                    String executedCommandBase = command.contains(" ") ? Utils.cutCommand(command) : command;
+                    String executedCommandBase = Utils.cutCommand(command);
                     if (contextList.contains("single") && com.equals(executedCommandBase)) {
                         return true;
                     }

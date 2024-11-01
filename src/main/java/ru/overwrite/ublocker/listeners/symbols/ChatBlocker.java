@@ -161,7 +161,7 @@ public class ChatBlocker implements Listener {
                         break;
                     runner.runAsync(() -> {
                         String[] sound = action.context().split(";");
-                        p.playSound(p.getLocation(), Sound.valueOf(sound[0]), Float.parseFloat(sound[1]), Float.parseFloat(sound[2]));
+                        Utils.sendSound(sound, p);
                     });
                     break;
                 }
@@ -202,10 +202,10 @@ public class ChatBlocker implements Listener {
                         break;
                     runner.runAsync(() -> {
                         String[] coAction = action.context().split("perm=");
-                        String[] sound = coAction[0].split(";");
+                        String[] sound = coAction[0].trim().split(";");
                         for (Player ps : Bukkit.getOnlinePlayers()) {
                             if (ps.hasPermission(coAction[1])) {
-                                ps.playSound(ps.getLocation(), Sound.valueOf(sound[0]), Float.parseFloat(sound[1]), Float.parseFloat(sound[2]));
+                                Utils.sendSound(sound, ps);
                             }
                         }
                     });

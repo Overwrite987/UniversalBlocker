@@ -16,6 +16,7 @@ import com.destroystokyo.paper.event.server.AsyncTabCompleteEvent;
 import ru.overwrite.ublocker.Main;
 import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.blockgroups.CommandGroup;
+import ru.overwrite.ublocker.utils.Utils;
 import ru.overwrite.ublocker.utils.configuration.Config;
 
 public class TabComplete implements Listener {
@@ -103,13 +104,11 @@ public class TabComplete implements Listener {
         for (Action action : actions) {
             switch (action.type()) {
                 case BLOCK_TAB_COMPLETE: {
-                    List<String> contextList = action.context().contains(",")
-                            ? List.of(action.context().split(","))
-                            : List.of(action.context());
+                    List<String> contextList = Utils.getContextList(action.context());
                     if (contextList.get(0).isBlank()) {
                         return true;
                     }
-                    String executedCommandBase = command.contains(" ") ? command.split(" ")[0] : command;
+                    String executedCommandBase = Utils.cutCommand(command);
                     if (contextList.contains("single") && com.equals(executedCommandBase)) {
                         return true;
                     }
@@ -124,13 +123,11 @@ public class TabComplete implements Listener {
                 }
                 case LITE_BLOCK_TAB_COMPLETE: {
                     String[] coAction = action.context().split("perm=");
-                    List<String> contextList = coAction[0].contains(",")
-                            ? List.of(coAction[0].trim().split(","))
-                            : List.of(coAction[0].trim());
+                    List<String> contextList = Utils.getContextList(coAction[0]);
                     if (contextList.isEmpty()) {
                         return true;
                     }
-                    String executedCommandBase = command.contains(" ") ? command.split(" ")[0] : command;
+                    String executedCommandBase = Utils.cutCommand(command);
                     if (contextList.contains("single") && com.equals(executedCommandBase)) {
                         if (!p.hasPermission(coAction[1])) {
                             return true;
