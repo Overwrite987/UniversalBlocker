@@ -15,6 +15,7 @@ import ru.overwrite.ublocker.Main;
 import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.blockgroups.CommandGroup;
 import ru.overwrite.ublocker.conditions.ConditionChecker;
+import ru.overwrite.ublocker.utils.Utils;
 import ru.overwrite.ublocker.utils.configuration.Config;
 
 public class CommandHider implements Listener {
@@ -79,7 +80,7 @@ public class CommandHider implements Listener {
                     return com.equals(command);
                 }
                 case LITE_HIDE: {
-                    String perm = action.context();
+                    String perm = Utils.getPermOrDefault(action.context(), "ublocker.bypass.commands");
                     if (p.hasPermission(perm)) {
                         return false;
                     }

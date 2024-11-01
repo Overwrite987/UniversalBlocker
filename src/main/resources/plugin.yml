@@ -18,3 +18,5 @@ permissions:
       ublocker.bypass.commandchars: true
       ublocker.bypass.numbers: true
       ublocker.bypass.case: true
+      ublocker.bypass.commands: true
+      ublocker.bypass.symbols: true

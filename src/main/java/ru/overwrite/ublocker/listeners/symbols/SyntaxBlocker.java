@@ -108,7 +108,7 @@ public class SyntaxBlocker implements Listener {
                     break;
                 }
                 case LITE_BLOCK: {
-                    String perm = action.context();
+                    String perm = Utils.getPermOrDefault(action.context(), "ublocker.bypass.symbols");
                     if (!p.hasPermission(perm)) {
                         e.setCancelled(true);
                     }

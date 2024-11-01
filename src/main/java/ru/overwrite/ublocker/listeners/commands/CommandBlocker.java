@@ -134,7 +134,7 @@ public class CommandBlocker implements Listener {
                     break;
                 }
                 case LITE_BLOCK: {
-                    String perm = action.context();
+                    String perm = Utils.getPermOrDefault(action.context(), "ublocker.bypass.commands");
                     if (p.hasPermission(perm)) {
                         break;
                     }
@@ -176,7 +176,7 @@ public class CommandBlocker implements Listener {
                     if (command.split(" ").length <= 1) {
                         break;
                     }
-                    String perm = action.context();
+                    String perm = Utils.getPermOrDefault(action.context(), "ublocker.bypass.commands");
                     if (p.hasPermission(perm)) {
                         break;
                     }
