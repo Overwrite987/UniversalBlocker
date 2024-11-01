@@ -29,10 +29,10 @@ public class SymbolGroup {
 
     private final List<String> blockFactor;
 
-    public SymbolGroup(String groupId, BlockType blockType, String[] blockFactor, List<String> symbolsToBlock, List<String> excludedCommand, List<Condition> conditionsToCheck, List<Action> actionsToExecute) {
+    public SymbolGroup(String groupId, BlockType blockType, List<String> blockFactor, List<String> symbolsToBlock, List<String> excludedCommand, List<Condition> conditionsToCheck, List<Action> actionsToExecute) {
         this.groupId = groupId;
         this.blockType = blockType;
-        this.blockFactor = List.of(blockFactor);
+        this.blockFactor = blockFactor;
         setupBlockingList(symbolsToBlock);
         setupExcludedCommands(excludedCommand);
         this.conditionsToCheck = conditionsToCheck;

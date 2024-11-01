@@ -62,7 +62,7 @@ public class ConsoleBlocker implements Listener {
                 if (actions.isEmpty()) {
                     continue;
                 }
-                if (shouldBlockCommand(com, command, aliases, actions)) {
+                if (shouldBlockCommand(group, com, command, aliases, actions)) {
                     e.setCancelled(true);
                     break;
                 }
@@ -84,12 +84,12 @@ public class ConsoleBlocker implements Listener {
                     aliases.add(comInMap.getName());
                 }
                 if (aliases.contains(matcher.group())) {
-                    if (shouldBlockCommand(matcher.group(), command, aliases, actions)) {
+                    if (shouldBlockCommand(group, matcher.group(), command, aliases, actions)) {
                         e.setCancelled(true);
                         break;
                     }
                 }
-                if (shouldBlockCommand(matcher.group(), command, aliases, actions)) {
+                if (shouldBlockCommand(group, matcher.group(), command, aliases, actions)) {
                     e.setCancelled(true);
                     break;
                 }
@@ -97,26 +97,19 @@ public class ConsoleBlocker implements Listener {
         }
     }
 
-    private boolean shouldBlockCommand(String com, String command, List<String> aliases, List<Action> actions) {
+    private boolean shouldBlockCommand(CommandGroup group, String com, String command, List<String> aliases, List<Action> actions) {
         for (Action action : actions) {
             switch (action.type()) {
                 case BLOCK_CONSOLE: {
-                    List<String> contextList = Utils.getContextList(action.context());
-                    if (contextList.get(0).isBlank()) {
-                        return true;
-                    }
                     String executedCommandBase = Utils.cutCommand(command);
-                    if (contextList.contains("single") && com.equals(executedCommandBase)) {
-                        return true;
-                    }
-                    if (contextList.contains("aliases")) {
+                    if (group.isBlockAliases()) {
                         for (String alias : aliases) {
                             if (com.equalsIgnoreCase(alias)) {
                                 return true;
                             }
                         }
                     }
-                    break;
+                    return com.equals(executedCommandBase);
                 }
                 case LOG: {
                     String[] coAction = action.context().split("file=");

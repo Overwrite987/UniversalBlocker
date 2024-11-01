@@ -89,12 +89,6 @@ public final class Utils {
         return isHovertexted(str) ? str.split("ht=")[1] : "";
     }
 
-    public static List<String> getContextList(String context) {
-        return context.contains(",")
-                ? List.of(context.trim().split(","))
-                : List.of(context.trim());
-    }
-
     private static final char COLOR_CHAR = '§';
 
     public static String colorize(String message) {
@@ -153,6 +147,13 @@ public final class Utils {
     public static String cutCommand(String str) {
         int index = str.indexOf(' ');
         return index == -1 ? str : str.substring(0, index);
+    }
+
+    public static String getPermOrDefault(String perm, String defaultPerm) {
+        if (perm.isBlank()) {
+            return defaultPerm;
+        }
+        return perm;
     }
 
     public static String replaceEach(String text, String[] searchList, String[] replacementList) {

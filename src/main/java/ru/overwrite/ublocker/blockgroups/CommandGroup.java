@@ -24,9 +24,12 @@ public class CommandGroup {
 
     private final List<Action> actionsToExecute;
 
-    public CommandGroup(String groupId, BlockType blockType, List<String> commandsToBlock, List<Condition> conditionsToCheck, List<Action> actionsToExecute) {
+    private final boolean blockAliases;
+
+    public CommandGroup(String groupId, BlockType blockType, boolean blockAliases, List<String> commandsToBlock, List<Condition> conditionsToCheck, List<Action> actionsToExecute) {
         this.groupId = groupId;
         this.blockType = blockType;
+        this.blockAliases = blockAliases;
         setupBlockingList(commandsToBlock);
         this.conditionsToCheck = conditionsToCheck;
         this.actionsToExecute = actionsToExecute;

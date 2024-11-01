@@ -71,7 +71,7 @@ public class TabComplete implements Listener {
                 if (!aliases.isEmpty() && !aliases.contains(comInMap.getName())) {
                     aliases.add(comInMap.getName());
                 }
-                if (shouldBlockTabComplete(p, buffer, buffer, aliases, actions) || aliases.contains(buffer)) {
+                if (shouldBlockTabComplete(group, p, buffer, buffer, aliases, actions) || aliases.contains(buffer)) {
                     e.setCancelled(true);
                     break;
                 }
@@ -92,7 +92,7 @@ public class TabComplete implements Listener {
                 if (!aliases.isEmpty()) {
                     aliases.add(comInMap.getName());
                 }
-                if (shouldBlockTabComplete(p, matcher.group(), buffer, aliases, actions) || aliases.contains(matcher.group())) {
+                if (shouldBlockTabComplete(group, p, matcher.group(), buffer, aliases, actions) || aliases.contains(matcher.group())) {
                     e.setCancelled(true);
                     break;
                 }
@@ -100,49 +100,34 @@ public class TabComplete implements Listener {
         }
     }
 
-    private boolean shouldBlockTabComplete(Player p, String com, String command, List<String> aliases, List<Action> actions) {
+    private boolean shouldBlockTabComplete(CommandGroup group, Player p, String com, String command, List<String> aliases, List<Action> actions) {
         for (Action action : actions) {
             switch (action.type()) {
                 case BLOCK_TAB_COMPLETE: {
-                    List<String> contextList = Utils.getContextList(action.context());
-                    if (contextList.get(0).isBlank()) {
-                        return true;
-                    }
                     String executedCommandBase = Utils.cutCommand(command);
-                    if (contextList.contains("single") && com.equals(executedCommandBase)) {
-                        return true;
-                    }
-                    if (contextList.contains("aliases")) {
+                    if (group.isBlockAliases()) {
                         for (String alias : aliases) {
                             if (com.equalsIgnoreCase(alias)) {
                                 return true;
                             }
                         }
                     }
-                    break;
+                    return com.equals(executedCommandBase);
                 }
                 case LITE_BLOCK_TAB_COMPLETE: {
-                    String[] coAction = action.context().split("perm=");
-                    if (p.hasPermission(coAction[1])) {
-                        break;
-                    }
-                    List<String> contextList = Utils.getContextList(coAction[0]);
-                    if (contextList.isEmpty()) {
-                        return true;
+                    String perm = action.context();
+                    if (p.hasPermission(perm)) {
+                        return false;
                     }
                     String executedCommandBase = Utils.cutCommand(command);
-                    if (contextList.contains("single") && com.equals(executedCommandBase)) {
-                        return true;
-
-                    }
-                    if (contextList.contains("aliases")) {
+                    if (group.isBlockAliases()) {
                         for (String alias : aliases) {
                             if (Bukkit.getCommandMap().getCommand(com).getAliases().contains(alias)) {
                                 return true;
                             }
                         }
                     }
-                    break;
+                    return com.equals(executedCommandBase);
                 }
                 default:
                     break;

@@ -1,5 +1,6 @@
 package ru.overwrite.ublocker.listeners.commands;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -12,8 +13,8 @@ import org.bukkit.event.player.PlayerCommandSendEvent;
 
 import ru.overwrite.ublocker.Main;
 import ru.overwrite.ublocker.actions.Action;
+import ru.overwrite.ublocker.blockgroups.CommandGroup;
 import ru.overwrite.ublocker.conditions.ConditionChecker;
-import ru.overwrite.ublocker.utils.Utils;
 import ru.overwrite.ublocker.utils.configuration.Config;
 
 public class CommandHider implements Listener {
@@ -32,79 +33,64 @@ public class CommandHider implements Listener {
         if (plugin.isExcluded(p))
             return;
         e.getCommands().removeIf(command -> {
-            Command comInMap = Bukkit.getCommandMap().getCommand(command);
-            if (comInMap == null) {
-                return false;
-            }
-            List<String> aliases = new ArrayList<>(comInMap.getAliases());
-            if (!aliases.isEmpty() && !aliases.contains(comInMap.getName())) {
-                aliases.add(comInMap.getName());
-            }
-            List<Action> actions = pluginConfig.commandHideStringActions.get(command);
-            if (actions != null) {
-                if (!ConditionChecker.isMeetsRequirements(p, pluginConfig.commandHideStringConditions.get(command))) {
-                    return false;
-                }
-                return shouldHideCommand(p, command, command, aliases, actions);
-            } else {
-                // Если в конфиге нет действий для этой команды,
-                // то проверяем алиасы и присваиваем соответствующие действия
-                for (String alias : aliases) {
-                    List<Action> actionsForAlias = pluginConfig.commandHideStringActions.get(alias);
-                    if (actionsForAlias != null) {
-                        if (!ConditionChecker.isMeetsRequirements(p, pluginConfig.commandHideStringConditions.get(command))) {
-                            return false;
-                        }
-                        // Присвоить действия для этой команды из плагин конфига
-                        pluginConfig.commandHideStringActions.put(command, actionsForAlias);
-                        return shouldHideCommand(p, command, alias, aliases, actionsForAlias);
-                    }
+            for (CommandGroup group : pluginConfig.commandHideGroupSet) {
+                if (checkStringBlock(p, command, group)) {
+                    return true;
                 }
             }
             return false;
         });
     }
 
-    private boolean shouldHideCommand(Player p, String com, String command, List<String> aliases, List<Action> actions) {
+    private boolean checkStringBlock(Player p, String command, CommandGroup group) {
+        for (String com : group.getCommandsToBlockString()) {
+            Command comInMap = Bukkit.getCommandMap().getCommand(com);
+            List<String> aliases = comInMap == null ? Collections.emptyList() : new ArrayList<>(comInMap.getAliases());
+            if (!aliases.isEmpty() && !aliases.contains(comInMap.getName())) {
+                aliases.add(comInMap.getName());
+            }
+            if (command.equalsIgnoreCase(com) || aliases.contains(command)) {
+                List<Action> actions = group.getActionsToExecute();
+                if (actions.isEmpty()) {
+                    continue;
+                }
+                if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
+                    continue;
+                }
+                if (shouldHideCommand(group, p, com, command, aliases, actions)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean shouldHideCommand(CommandGroup group, Player p, String com, String command, List<String> aliases, List<Action> actions) {
         for (Action action : actions) {
             switch (action.type()) {
                 case HIDE: {
-                    List<String> contextList = Utils.getContextList(action.context());
-                    if (contextList.get(0).isBlank()) {
-                        return true;
-                    }
-                    if (contextList.contains("single") && com.equals(command)) {
-                        return true;
-                    }
-                    if (contextList.contains("aliases")) {
+                    if (group.isBlockAliases()) {
                         for (String alias : aliases) {
                             if (com.equalsIgnoreCase(alias)) {
                                 return true;
                             }
                         }
                     }
-                    break;
+                    return com.equals(command);
                 }
                 case LITE_HIDE: {
-                    String[] coAction = action.context().split("perm=");
-                    if (p.hasPermission(coAction[1])) {
-                        break;
+                    String perm = action.context();
+                    if (p.hasPermission(perm)) {
+                        return false;
                     }
-                    List<String> contextList = Utils.getContextList(coAction[0]);
-                    if (contextList.get(0).isBlank()) {
-                        return true;
-                    }
-                    if (contextList.contains("single") && com.equals(command)) {
-                        return true;
-                    }
-                    if (contextList.contains("aliases")) {
+                    if (group.isBlockAliases()) {
                         for (String alias : aliases) {
                             if (com.equalsIgnoreCase(alias)) {
                                 return true;
                             }
                         }
                     }
-                    break;
+                    return com.equals(command);
                 }
                 default:
                     break;
