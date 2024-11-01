@@ -16,7 +16,7 @@ import org.bukkit.event.server.ServerCommandEvent;
 import ru.overwrite.ublocker.Main;
 import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.blockgroups.CommandGroup;
-import ru.overwrite.ublocker.utils.Config;
+import ru.overwrite.ublocker.utils.configuration.Config;
 import ru.overwrite.ublocker.utils.Utils;
 
 public class ConsoleBlocker implements Listener {

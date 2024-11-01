@@ -1,7 +1,6 @@
 package ru.overwrite.ublocker.listeners.chat;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -13,32 +12,32 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import ru.overwrite.ublocker.Main;
-import ru.overwrite.ublocker.utils.Config;
 import ru.overwrite.ublocker.utils.Utils;
+import ru.overwrite.ublocker.utils.configuration.data.CaseCheckSettings;
 
 @Deprecated(forRemoval = true) // Звёздочка об этом позаботится
 public class CaseCheck implements Listener {
 
     private final Main plugin;
-    private final Config pluginConfig;
-    public static boolean enabled = false;
+    private final CaseCheckSettings caseCheckSettings;
 
     public CaseCheck(Main plugin) {
         this.plugin = plugin;
-        this.pluginConfig = plugin.getPluginConfig();
+        this.caseCheckSettings = plugin.getPluginConfig().getCaseCheckSettings();
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onCaseCheck(AsyncPlayerChatEvent e) {
-        if (!enabled) return;
+        if (caseCheckSettings == null) return;
+
         Player p = e.getPlayer();
         if (isAdmin(p))
             return;
         String message = e.getMessage();
         String messageToCheck = message.replace(" ", "");
-        int threshold = pluginConfig.maxcuppercasepercent;
+        int threshold = caseCheckSettings.maxUpperCasePercent();
         if (checkCase(messageToCheck, threshold)) {
-            if (pluginConfig.strict_case_check) {
+            if (caseCheckSettings.strictCheck()) {
                 cancelChatEvent(p, message, e);
                 return;
             }
@@ -62,29 +61,22 @@ public class CaseCheck implements Listener {
 
     private void cancelChatEvent(Player p, String message, Cancellable e) {
         e.setCancelled(true);
-        p.sendMessage(pluginConfig.case_check_message.replace("%limit%", Integer.toString(pluginConfig.maxcuppercasepercent)));
-        if (pluginConfig.case_check_enable_sounds) {
-            p.playSound(p.getLocation(),
-                    Sound.valueOf(pluginConfig.case_check_sound_id),
-                    pluginConfig.case_check_sound_volume,
-                    pluginConfig.case_check_sound_pitch);
+        p.sendMessage(caseCheckSettings.message().replace("%limit%", Integer.toString(caseCheckSettings.maxUpperCasePercent())));
+        if (caseCheckSettings.enableSounds()) {
+            Utils.sendSound(caseCheckSettings.sound(), p);
         }
-        if (pluginConfig.case_check_notify) {
+        if (caseCheckSettings.notifyEnabled()) {
+            String[] replacementList = {p.getName(), Integer.toString(caseCheckSettings.maxUpperCasePercent()), message};
 
-            String[] replacementList = {p.getName(), Integer.toString(pluginConfig.maxcuppercasepercent), message};
-
-            String notifyMessage = Utils.replaceEach(pluginConfig.case_check_notify_message, searchList, replacementList);
+            String notifyMessage = Utils.replaceEach(caseCheckSettings.notifyMessage(), searchList, replacementList);
 
             final Component comp = Utils.createHoverMessage(notifyMessage);
 
             for (Player admin : Bukkit.getOnlinePlayers()) {
                 if (admin.hasPermission("ublocker.admin")) {
                     admin.sendMessage(comp);
-                    if (pluginConfig.case_check_notify_sounds) {
-                        admin.playSound(admin.getLocation(),
-                                Sound.valueOf(pluginConfig.case_check_notify_sound_id),
-                                pluginConfig.case_check_notify_sound_volume,
-                                pluginConfig.case_check_notify_sound_pitch);
+                    if (caseCheckSettings.notifySoundsEnabled()) {
+                        Utils.sendSound(caseCheckSettings.notifySound(), admin);
                     }
                 }
             }

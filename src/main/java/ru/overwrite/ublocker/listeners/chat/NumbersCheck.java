@@ -4,7 +4,6 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -15,28 +14,28 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import ru.overwrite.ublocker.Main;
-import ru.overwrite.ublocker.utils.Config;
 import ru.overwrite.ublocker.utils.Utils;
+import ru.overwrite.ublocker.utils.configuration.data.NumberCheckSettings;
 
 public class NumbersCheck implements Listener {
 
     private final Main plugin;
-    private final Config pluginConfig;
-    public static boolean enabled = false;
+    private final NumberCheckSettings numberCheckSettings;
 
     public NumbersCheck(Main plugin) {
         this.plugin = plugin;
-        this.pluginConfig = plugin.getPluginConfig();
+        this.numberCheckSettings = plugin.getPluginConfig().getNumberCheckSettings();
     }
 
     private static final Pattern IP_PATTERN = Pattern.compile("(\\d+\\.){3}");
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onChatNumber(AsyncPlayerChatEvent e) {
-        if (!enabled) return;
+        if (numberCheckSettings == null) return;
+
         String message = e.getMessage();
         Player p = e.getPlayer();
-        if (pluginConfig.strict_numbers_check) {
+        if (numberCheckSettings.strictCheck()) {
             int count = 0;
             for (int a = 0, b = message.length(); a < b; a++) {
                 char c = message.charAt(a);
@@ -44,7 +43,7 @@ public class NumbersCheck implements Listener {
                     count++;
                 }
             }
-            if (count > pluginConfig.maxmsgnumbers && !isAdmin(p)) {
+            if (count > numberCheckSettings.maxNumbers() && !isAdmin(p)) {
                 cancelChatEvent(p, message, e);
             }
         } else {
@@ -57,7 +56,7 @@ public class NumbersCheck implements Listener {
                     digitsCount += part.length();
                 }
             }
-            if (digitsCount > pluginConfig.maxmsgnumbers && !isAdmin(p)) {
+            if (digitsCount > numberCheckSettings.maxNumbers() && !isAdmin(p)) {
                 cancelChatEvent(p, message, e);
             }
         }
@@ -67,29 +66,22 @@ public class NumbersCheck implements Listener {
 
     private void cancelChatEvent(Player p, String message, Cancellable e) {
         e.setCancelled(true);
-        p.sendMessage(pluginConfig.numbers_check_message.replace("%limit%", Integer.toString(pluginConfig.maxmsgnumbers)));
-        if (pluginConfig.numbers_check_enable_sounds) {
-            p.playSound(p.getLocation(),
-                    Sound.valueOf(pluginConfig.numbers_check_sound_id),
-                    pluginConfig.numbers_check_sound_volume,
-                    pluginConfig.numbers_check_sound_pitch);
+        p.sendMessage(numberCheckSettings.message().replace("%limit%", Integer.toString(numberCheckSettings.maxNumbers())));
+        if (numberCheckSettings.enableSounds()) {
+            Utils.sendSound(numberCheckSettings.sound(), p);
         }
-        if (pluginConfig.numbers_check_notify) {
+        if (numberCheckSettings.notifyEnabled()) {
+            String[] replacementList = {p.getName(), Integer.toString(numberCheckSettings.maxNumbers()), message};
 
-            String[] replacementList = {p.getName(), Integer.toString(pluginConfig.maxmsgnumbers), message};
-
-            String notifyMessage = Utils.replaceEach(pluginConfig.numbers_check_notify_message, searchList, replacementList);
+            String notifyMessage = Utils.replaceEach(numberCheckSettings.notifyMessage(), searchList, replacementList);
 
             final Component comp = Utils.createHoverMessage(notifyMessage);
 
             for (Player admin : Bukkit.getOnlinePlayers()) {
                 if (admin.hasPermission("ublocker.admin")) {
                     admin.sendMessage(comp);
-                    if (pluginConfig.numbers_check_notify_sounds) {
-                        admin.playSound(admin.getLocation(),
-                                Sound.valueOf(pluginConfig.numbers_check_notify_sound_id),
-                                pluginConfig.numbers_check_notify_sound_volume,
-                                pluginConfig.numbers_check_notify_sound_pitch);
+                    if (numberCheckSettings.notifySoundsEnabled()) {
+                        Utils.sendSound(numberCheckSettings.notifySound(), p);
                     }
                 }
             }

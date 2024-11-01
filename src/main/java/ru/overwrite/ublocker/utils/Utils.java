@@ -4,12 +4,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import it.unimi.dsi.fastutil.chars.CharOpenHashSet;
@@ -17,6 +19,7 @@ import it.unimi.dsi.fastutil.chars.CharSet;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.jetbrains.annotations.NotNull;
 import ru.overwrite.ublocker.Main;
 
 public final class Utils {
@@ -40,13 +43,28 @@ public final class Utils {
         FOLIA = folia;
     }
 
-    public static void sendTitleMessage(String[] titleMessages, Player p) {
+    public static void sendTitleMessage(@NotNull String[] titleMessages, @NotNull Player p) {
+        if (titleMessages.length > 5) {
+            Bukkit.getConsoleSender().sendMessage("Unable to send title. " + Arrays.toString(titleMessages));
+            return;
+        }
         String title = titleMessages[0];
-        String subtitle = titleMessages[1];
-        int fadeIn = Integer.parseInt(titleMessages[2]);
-        int stay = Integer.parseInt(titleMessages[3]);
-        int fadeOut = Integer.parseInt(titleMessages[4]);
+        String subtitle = titleMessages.length >= 2 ? titleMessages[1] : "";
+        int fadeIn = titleMessages.length >= 3 ? Integer.parseInt(titleMessages[2]) : 10;
+        int stay = titleMessages.length >= 4 ? Integer.parseInt(titleMessages[3]) : 70;
+        int fadeOut = titleMessages.length == 5 ? Integer.parseInt(titleMessages[4]) : 20;
         p.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
+    }
+
+    public static void sendSound(@NotNull String[] soundArgs, @NotNull Player p) {
+        if (soundArgs.length > 3) {
+            Bukkit.getConsoleSender().sendMessage("Unable to send sound. " + Arrays.toString(soundArgs));
+            return;
+        }
+        Sound sound = Sound.valueOf(soundArgs[0]);
+        float volume = soundArgs.length >= 2 ? Float.parseFloat(soundArgs[1]) : 1.0f;
+        float pitch = soundArgs.length == 3 ? Float.parseFloat(soundArgs[2]) : 1.0f;
+        p.playSound(p.getLocation(), sound, volume, pitch);
     }
 
     public static Component createHoverMessage(String message) {
@@ -58,7 +76,7 @@ public final class Utils {
                 .hoverEvent(hover);
     }
 
-    private static Boolean isHovertexted(String str) {
+    private static boolean isHovertexted(String str) {
         return str.contains("ht=");
     }
 

@@ -9,7 +9,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import org.jetbrains.annotations.NotNull;
-import ru.overwrite.ublocker.utils.Config;
+import ru.overwrite.ublocker.utils.configuration.Config;
 import ru.overwrite.ublocker.utils.Utils;
 
 public class CommandClass implements CommandExecutor {

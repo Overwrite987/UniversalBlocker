@@ -4,7 +4,6 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -15,32 +14,32 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import ru.overwrite.ublocker.Main;
-import ru.overwrite.ublocker.utils.Config;
 import ru.overwrite.ublocker.utils.Utils;
+import ru.overwrite.ublocker.utils.configuration.data.BanWordsSettings;
 
 public class BanWords implements Listener {
 
     private final Main plugin;
-    private final Config pluginConfig;
-    public static boolean enabled = false; // Это нужно чем-то потенциально заменить
+    private final BanWordsSettings banWordsSettings;
 
     public BanWords(Main plugin) {
         this.plugin = plugin;
-        this.pluginConfig = plugin.getPluginConfig();
+        this.banWordsSettings = plugin.getPluginConfig().getBanWordsSettings();
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onChat(AsyncPlayerChatEvent e) {
-        if (!enabled) return;
+        if (banWordsSettings == null) return;
+
         Player p = e.getPlayer();
         if (isAdmin(p))
             return;
         String message = e.getMessage().toLowerCase();
-        switch (pluginConfig.banwordmode) {
+        switch (banWordsSettings.mode()) {
             case STRING: {
-                for (String banword : pluginConfig.ban_words_string) {
+                for (String banword : banWordsSettings.banWordsString()) {
                     if (message.contains(banword) && !isAdmin(p)) {
-                        if (pluginConfig.ban_words_block) {
+                        if (banWordsSettings.block()) {
                             e.setCancelled(true);
                             executeBlockActions(p, banword, message, e);
                         } else {
@@ -53,10 +52,10 @@ public class BanWords implements Listener {
                 break;
             }
             case PATTERN: {
-                for (Pattern banword : pluginConfig.ban_words_pattern) {
+                for (Pattern banword : banWordsSettings.banWordsPattern()) {
                     Matcher matrcher = banword.matcher(message);
                     if (matrcher.find() && !isAdmin(p)) {
-                        if (pluginConfig.ban_words_block) {
+                        if (banWordsSettings.block()) {
                             e.setCancelled(true);
                             executeBlockActions(p, matrcher.group(), message, e);
                         } else {
@@ -72,12 +71,9 @@ public class BanWords implements Listener {
     }
 
     private void executeBlockActions(Player p, String banword, String message, Cancellable e) {
-        p.sendMessage(pluginConfig.ban_words_message.replace("%word%", banword));
-        if (pluginConfig.ban_words_enable_sounds) {
-            p.playSound(p.getLocation(),
-                    Sound.valueOf(pluginConfig.ban_words_sound_id),
-                    pluginConfig.ban_words_sound_volume,
-                    pluginConfig.ban_words_sound_pitch);
+        p.sendMessage(banWordsSettings.message().replace("%word%", banword));
+        if (banWordsSettings.enableSounds()) {
+            Utils.sendSound(banWordsSettings.sound(), p);
         }
         notifyAdmins(p, banword, message);
     }
@@ -85,21 +81,18 @@ public class BanWords implements Listener {
     private final String[] searchList = {"%player%", "%word%", "%msg%"};
 
     private void notifyAdmins(Player p, String banword, String message) {
-        if (pluginConfig.ban_words_notify) {
+        if (banWordsSettings.notifyEnabled()) {
             String[] replacementList = {p.getName(), banword, message};
 
-            String notifyMessage = Utils.replaceEach(pluginConfig.ban_words_notify_message, searchList, replacementList);
+            String notifyMessage = Utils.replaceEach(banWordsSettings.notifyMessage(), searchList, replacementList);
 
             final Component comp = Utils.createHoverMessage(notifyMessage);
 
             for (Player admin : Bukkit.getOnlinePlayers()) {
                 if (admin.hasPermission("ublocker.admin")) {
                     admin.sendMessage(comp);
-                    if (pluginConfig.ban_words_notify_sounds) {
-                        admin.playSound(admin.getLocation(),
-                                Sound.valueOf(pluginConfig.ban_words_notify_sound_id),
-                                pluginConfig.ban_words_notify_sound_volume,
-                                pluginConfig.ban_words_notify_sound_pitch);
+                    if (banWordsSettings.notifySoundsEnabled()) {
+                        Utils.sendSound(banWordsSettings.notifySound(), admin);
                     }
                 }
             }

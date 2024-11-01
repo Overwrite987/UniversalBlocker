@@ -27,6 +27,7 @@ import ru.overwrite.ublocker.task.BukkitRunner;
 import ru.overwrite.ublocker.task.PaperRunner;
 import ru.overwrite.ublocker.task.Runner;
 import ru.overwrite.ublocker.utils.*;
+import ru.overwrite.ublocker.utils.configuration.Config;
 
 public class Main extends JavaPlugin {
 

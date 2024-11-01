@@ -16,7 +16,7 @@ import com.destroystokyo.paper.event.server.AsyncTabCompleteEvent;
 import ru.overwrite.ublocker.Main;
 import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.blockgroups.CommandGroup;
-import ru.overwrite.ublocker.utils.Config;
+import ru.overwrite.ublocker.utils.configuration.Config;
 
 public class TabComplete implements Listener {
 

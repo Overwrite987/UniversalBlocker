@@ -1,7 +1,6 @@
 package ru.overwrite.ublocker.listeners.chat;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -13,25 +12,27 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import ru.overwrite.ublocker.Main;
 import ru.overwrite.ublocker.task.Runner;
-import ru.overwrite.ublocker.utils.Config;
 import ru.overwrite.ublocker.utils.Utils;
+import ru.overwrite.ublocker.utils.configuration.data.CommandCharsSettings;
+
+import java.util.function.Predicate;
 
 public class CommandFilter implements Listener {
 
     private final Main plugin;
-    private final Config pluginConfig;
+    private final CommandCharsSettings commandCharsSettings;
     private final Runner runner;
-    public static boolean enabled = false;
 
     public CommandFilter(Main plugin) {
         this.plugin = plugin;
-        this.pluginConfig = plugin.getPluginConfig();
+        this.commandCharsSettings = plugin.getPluginConfig().getCommandCharsSettings();
         this.runner = plugin.getRunner();
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void oncommandMessage(PlayerCommandPreprocessEvent e) {
-        if (!enabled) return;
+        if (commandCharsSettings == null) return;
+
         Player p = e.getPlayer();
         if (isAdmin(p))
             return;
@@ -46,29 +47,22 @@ public class CommandFilter implements Listener {
     private void cancelCommandEvent(Player p, String message, Cancellable e) {
         e.setCancelled(true);
         runner.runAsync(() -> {
-            p.sendMessage(pluginConfig.allowed_command_chars_message);
-            if (pluginConfig.allowed_command_chars_enable_sounds) {
-                p.playSound(p.getLocation(),
-                        Sound.valueOf(pluginConfig.allowed_command_chars_sound_id),
-                        pluginConfig.allowed_command_chars_sound_volume,
-                        pluginConfig.allowed_command_chars_sound_pitch);
+            p.sendMessage(commandCharsSettings.message());
+            if (commandCharsSettings.enableSounds()) {
+                Utils.sendSound(commandCharsSettings.sound(), p);
             }
-            if (pluginConfig.allowed_command_chars_notify) {
-
+            if (commandCharsSettings.notifyEnabled()) {
                 String[] replacementList = {p.getName(), getFirstBlockedChar(message), message};
 
-                String notifyMessage = Utils.replaceEach(pluginConfig.allowed_command_chars_notify_message, searchList, replacementList);
+                String notifyMessage = Utils.replaceEach(commandCharsSettings.notifyMessage(), searchList, replacementList);
 
                 final Component comp = Utils.createHoverMessage(notifyMessage);
 
                 for (Player admin : Bukkit.getOnlinePlayers()) {
                     if (admin.hasPermission("ublocker.admin")) {
                         admin.sendMessage(comp);
-                        if (pluginConfig.allowed_command_chars_notify_sounds) {
-                            admin.playSound(admin.getLocation(),
-                                    Sound.valueOf(pluginConfig.allowed_command_chars_notify_sound_id),
-                                    pluginConfig.allowed_command_chars_notify_sound_volume,
-                                    pluginConfig.allowed_command_chars_notify_sound_pitch);
+                        if (commandCharsSettings.notifySoundsEnabled()) {
+                            Utils.sendSound(commandCharsSettings.notifySound(), admin);
                         }
                     }
                 }
@@ -81,46 +75,35 @@ public class CommandFilter implements Listener {
     }
 
     private boolean containsBlockedChars(String message) {
-        switch (pluginConfig.allowed_command_chars_mode) {
+        switch (commandCharsSettings.mode()) {
             case STRING: {
                 char[] characters = message.toCharArray();
                 for (char character : characters) {
-                    if (pluginConfig.allowed_command_chars_string.indexOf(character) == -1)
+                    if (commandCharsSettings.string().indexOf(character) == -1)
                         return true;
                 }
                 break;
 
             }
             case PATTERN: {
-                return !pluginConfig.allowed_command_chars_pattern.matcher(message).matches();
+                return !commandCharsSettings.pattern().matcher(message).matches();
             }
         }
         return false;
     }
 
     private String getFirstBlockedChar(String message) {
-        switch (pluginConfig.allowed_command_chars_mode) {
-            case STRING: {
-                char[] characters = message.toLowerCase().toCharArray();
-                for (char character : characters) {
-                    if (pluginConfig.allowed_command_chars_string.indexOf(character) == -1) {
-                        return Character.toString(character);
-                    }
-                }
-                break;
+        return switch (commandCharsSettings.mode()) {
+            case STRING -> Character.toString(message.codePoints()
+                    .filter(codePoint -> commandCharsSettings.string().indexOf(codePoint) == -1).findFirst()
+                    .getAsInt());
+            case PATTERN -> {
+                Predicate<String> allowedCharsPattern = commandCharsSettings.pattern().asMatchPredicate();
+                yield Character.toString(
+                        message.codePoints().filter(codePoint -> !allowedCharsPattern.test(Character.toString(codePoint)))
+                                .findFirst().getAsInt());
             }
-            case PATTERN: {
-                String allowedCharsPattern = pluginConfig.allowed_command_chars_pattern.pattern();
-                char[] characters = message.toLowerCase().toCharArray();
-                for (char character : characters) {
-                    if (!Character.toString(character).matches(allowedCharsPattern)) {
-                        return Character.toString(character);
-                    }
-                }
-                break;
-            }
-        }
-        return "";
+        };
     }
 
     private boolean isAdmin(Player player) {

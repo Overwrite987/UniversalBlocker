@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -17,25 +16,25 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import ru.overwrite.ublocker.Main;
 import ru.overwrite.ublocker.task.Runner;
-import ru.overwrite.ublocker.utils.Config;
 import ru.overwrite.ublocker.utils.Utils;
+import ru.overwrite.ublocker.utils.configuration.data.SignCharsSettings;
 
 public class SignFilter implements Listener {
 
     private final Main plugin;
-    private final Config pluginConfig;
+    private final SignCharsSettings signCharsSettings;
     private final Runner runner;
-    public static boolean enabled = false;
 
     public SignFilter(Main plugin) {
         this.plugin = plugin;
-        this.pluginConfig = plugin.getPluginConfig();
+        this.signCharsSettings = plugin.getPluginConfig().getSignCharsSettings();
         this.runner = plugin.getRunner();
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onSignMessage(SignChangeEvent e) {
-        if (!enabled) return;
+        if (signCharsSettings == null) return;
+
         Player p = e.getPlayer();
         if (isAdmin(p))
             return;
@@ -59,29 +58,22 @@ public class SignFilter implements Listener {
     private void cancelSignEvent(Player p, String message, Cancellable e) {
         e.setCancelled(true);
         runner.runAsync(() -> {
-            p.sendMessage(pluginConfig.allowed_sign_chars_message);
-            if (pluginConfig.allowed_sign_chars_enable_sounds) {
-                p.playSound(p.getLocation(),
-                        Sound.valueOf(pluginConfig.allowed_sign_chars_sound_id),
-                        pluginConfig.allowed_sign_chars_sound_volume,
-                        pluginConfig.allowed_sign_chars_sound_pitch);
+            p.sendMessage(signCharsSettings.message());
+            if (signCharsSettings.enableSounds()) {
+                Utils.sendSound(signCharsSettings.sound(), p);
             }
-            if (pluginConfig.allowed_sign_chars_notify) {
-
+            if (signCharsSettings.notifyEnabled()) {
                 String[] replacementList = {p.getName(), getFirstBlockedChar(message), message};
 
-                String notifyMessage = Utils.replaceEach(pluginConfig.allowed_sign_chars_notify_message, searchList, replacementList);
+                String notifyMessage = Utils.replaceEach(signCharsSettings.notifyMessage(), searchList, replacementList);
 
                 final Component comp = Utils.createHoverMessage(notifyMessage);
 
                 for (Player admin : Bukkit.getOnlinePlayers()) {
                     if (admin.hasPermission("ublocker.admin")) {
                         admin.sendMessage(comp);
-                        if (pluginConfig.allowed_sign_chars_notify_sounds) {
-                            admin.playSound(admin.getLocation(),
-                                    Sound.valueOf(pluginConfig.allowed_sign_chars_notify_sound_id),
-                                    pluginConfig.allowed_sign_chars_notify_sound_volume,
-                                    pluginConfig.allowed_sign_chars_notify_sound_pitch);
+                        if (signCharsSettings.notifySoundsEnabled()) {
+                            Utils.sendSound(signCharsSettings.notifySound(), admin);
                         }
                     }
                 }
@@ -94,30 +86,30 @@ public class SignFilter implements Listener {
     }
 
     private boolean containsBlockedChars(String message) {
-        switch (pluginConfig.allowed_sign_chars_mode) {
+        switch (signCharsSettings.mode()) {
             case STRING: {
                 char[] characters = message.toCharArray();
                 for (char character : characters) {
-                    if (pluginConfig.allowed_sign_chars_string.indexOf(character) == -1) {
+                    if (signCharsSettings.string().indexOf(character) == -1) {
                         return true;
                     }
                 }
                 break;
             }
             case PATTERN: {
-                return !pluginConfig.allowed_sign_chars_pattern.matcher(message).matches();
+                return !signCharsSettings.pattern().matcher(message).matches();
             }
         }
         return false;
     }
 
     private String getFirstBlockedChar(String message) {
-        return switch (pluginConfig.allowed_sign_chars_mode) {
+        return switch (signCharsSettings.mode()) {
             case STRING -> Character.toString(message.codePoints()
-                    .filter(codePoint -> pluginConfig.allowed_sign_chars_string.indexOf(codePoint) == -1).findFirst()
+                    .filter(codePoint -> signCharsSettings.string().indexOf(codePoint) == -1).findFirst()
                     .getAsInt());
             case PATTERN -> {
-                Predicate<String> allowedCharsPattern = pluginConfig.allowed_sign_chars_pattern.asMatchPredicate();
+                Predicate<String> allowedCharsPattern = signCharsSettings.pattern().asMatchPredicate();
                 yield Character.toString(
                         message.codePoints().filter(codePoint -> !allowedCharsPattern.test(Character.toString(codePoint)))
                                 .findFirst().getAsInt());

@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerCommandSendEvent;
 import ru.overwrite.ublocker.Main;
 import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.conditions.ConditionChecker;
-import ru.overwrite.ublocker.utils.Config;
+import ru.overwrite.ublocker.utils.configuration.Config;
 
 public class CommandHider implements Listener {
 
