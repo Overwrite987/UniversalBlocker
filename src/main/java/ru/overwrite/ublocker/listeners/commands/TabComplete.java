@@ -123,19 +123,21 @@ public class TabComplete implements Listener {
                 }
                 case LITE_BLOCK_TAB_COMPLETE: {
                     String[] coAction = action.context().split("perm=");
+                    if (p.hasPermission(coAction[1])) {
+                        break;
+                    }
                     List<String> contextList = Utils.getContextList(coAction[0]);
                     if (contextList.isEmpty()) {
                         return true;
                     }
                     String executedCommandBase = Utils.cutCommand(command);
                     if (contextList.contains("single") && com.equals(executedCommandBase)) {
-                        if (!p.hasPermission(coAction[1])) {
-                            return true;
-                        }
+                        return true;
+
                     }
                     if (contextList.contains("aliases")) {
                         for (String alias : aliases) {
-                            if (Bukkit.getCommandMap().getCommand(com).getAliases().contains(alias) && !p.hasPermission(coAction[1])) {
+                            if (Bukkit.getCommandMap().getCommand(com).getAliases().contains(alias)) {
                                 return true;
                             }
                         }

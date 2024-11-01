@@ -77,8 +77,7 @@ public class CommandFilter implements Listener {
     private boolean containsBlockedChars(String message) {
         switch (commandCharsSettings.mode()) {
             case STRING: {
-                char[] characters = message.toCharArray();
-                for (char character : characters) {
+                for (char character : message.toCharArray()) {
                     if (commandCharsSettings.string().indexOf(character) == -1)
                         return true;
                 }

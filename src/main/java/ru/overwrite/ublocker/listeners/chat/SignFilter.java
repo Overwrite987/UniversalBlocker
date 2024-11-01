@@ -88,8 +88,7 @@ public class SignFilter implements Listener {
     private boolean containsBlockedChars(String message) {
         switch (signCharsSettings.mode()) {
             case STRING: {
-                char[] characters = message.toCharArray();
-                for (char character : characters) {
+                for (char character : message.toCharArray()) {
                     if (signCharsSettings.string().indexOf(character) == -1) {
                         return true;
                     }

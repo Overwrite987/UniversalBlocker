@@ -81,8 +81,7 @@ public class BookChecker implements Listener {
     private boolean containsBlockedChars(String message) {
         switch (bookCharsSettings.mode()) {
             case STRING: {
-                char[] characters = message.toLowerCase().toCharArray();
-                for (char character : characters) {
+                for (char character : message.toCharArray()) {
                     if (bookCharsSettings.string().indexOf(character) == -1)
                         return true;
                 }

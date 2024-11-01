@@ -72,8 +72,7 @@ public class ChatFilter implements Listener {
     private boolean containsBlockedChars(String message) {
         switch (chatCharsSettings.mode()) {
             case STRING: {
-                char[] characters = message.toCharArray();
-                for (char character : characters) {
+                for (char character : message.toCharArray()) {
                     if (chatCharsSettings.string().indexOf(character) == -1) {
                         return true;
                     }

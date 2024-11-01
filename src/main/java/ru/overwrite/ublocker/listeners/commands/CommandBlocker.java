@@ -141,6 +141,9 @@ public class CommandBlocker implements Listener {
                 case LITE_BLOCK: {
                     plugin.getLogger().info("LITE_BLOCK");
                     String[] coAction = action.context().split("perm=");
+                    if (p.hasPermission(coAction[1])) {
+                        break;
+                    }
                     List<String> contextList = Utils.getContextList(coAction[0]);
                     if (contextList.get(0).isBlank()) {
                         e.setCancelled(true);
@@ -148,14 +151,13 @@ public class CommandBlocker implements Listener {
                     }
                     String executedCommandBase = Utils.cutCommand(command);
                     if (contextList.contains("single") && com.equals(executedCommandBase)) {
-                        if (!p.hasPermission(coAction[1])) {
-                            e.setCancelled(true);
-                            break;
-                        }
+                        e.setCancelled(true);
+                        break;
+
                     }
                     if (contextList.contains("aliases")) {
                         for (String alias : aliases) {
-                            if (executedCommandBase.replace("/", "").equalsIgnoreCase(alias) && !p.hasPermission(coAction[1])) {
+                            if (executedCommandBase.replace("/", "").equalsIgnoreCase(alias)) {
                                 e.setCancelled(true);
                                 break;
                             }

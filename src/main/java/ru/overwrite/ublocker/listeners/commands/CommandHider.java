@@ -87,18 +87,19 @@ public class CommandHider implements Listener {
                 }
                 case LITE_HIDE: {
                     String[] coAction = action.context().split("perm=");
+                    if (p.hasPermission(coAction[1])) {
+                        break;
+                    }
                     List<String> contextList = Utils.getContextList(coAction[0]);
                     if (contextList.get(0).isBlank()) {
                         return true;
                     }
                     if (contextList.contains("single") && com.equals(command)) {
-                        if (!p.hasPermission(coAction[1])) {
-                            return true;
-                        }
+                        return true;
                     }
                     if (contextList.contains("aliases")) {
                         for (String alias : aliases) {
-                            if (com.equalsIgnoreCase(alias) && !p.hasPermission(coAction[1])) {
+                            if (com.equalsIgnoreCase(alias)) {
                                 return true;
                             }
                         }
