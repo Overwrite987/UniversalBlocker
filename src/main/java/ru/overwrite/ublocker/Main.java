@@ -31,7 +31,7 @@ import ru.overwrite.ublocker.utils.configuration.Config;
 
 public class Main extends JavaPlugin {
 
-    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("[dd-MM-yyy] HH:mm:ss -");
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("[dd-MM-yyy] HH:mm:ss -");
 
     @Setter
     private String path;

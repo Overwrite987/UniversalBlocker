@@ -22,7 +22,6 @@ import ru.overwrite.ublocker.blockgroups.BlockType;
 import ru.overwrite.ublocker.blockgroups.CommandGroup;
 import ru.overwrite.ublocker.blockgroups.SymbolGroup;
 import ru.overwrite.ublocker.conditions.*;
-import ru.overwrite.ublocker.listeners.chat.*;
 import ru.overwrite.ublocker.utils.Utils;
 import ru.overwrite.ublocker.utils.configuration.data.*;
 
@@ -34,21 +33,18 @@ public class Config {
         this.plugin = plugin;
     }
 
-    public FileConfiguration chat;
-    public FileConfiguration symbols;
-    public FileConfiguration commands;
-
     public Set<CommandGroup> commandBlockGroupSet;
+
     public Set<SymbolGroup> symbolBlockGroupSet;
 
-    public Map<String, List<Action>> commandHide_string_actions;
+    public Map<String, List<Action>> commandHideStringActions;
 
-    public Map<String, List<Condition>> commandHide_string_conditions;
+    public Map<String, List<Condition>> commandHideStringConditions;
 
     public Set<String> excludedplayers;
 
     public void setupChat(String path) {
-        chat = getFile(path, "chat.yml");
+        final FileConfiguration chat = getFile(path, "chat.yml");
         final ConfigurationSection settings = chat.getConfigurationSection("chat_settings");
         setupChatChars(settings.getConfigurationSection("allowed_chat_chars"));
         setupBookChars(settings.getConfigurationSection("allowed_book_chars"));
@@ -98,7 +94,6 @@ public class Config {
             default -> throw new IllegalArgumentException("Invalid mode in sign character settings.");
         }
 
-        // Присваиваем новое значение для chatCharSettings
         this.chatCharsSettings = new ChatCharsSettings(
                 message,
                 enableSounds,
@@ -153,7 +148,6 @@ public class Config {
             default -> throw new IllegalArgumentException("Invalid mode in sign character settings.");
         }
 
-        // Присваиваем новое значение для bookCharsSettings
         this.bookCharsSettings = new BookCharsSettings(
                 message,
                 enableSounds,
@@ -208,7 +202,6 @@ public class Config {
             default -> throw new IllegalArgumentException("Invalid mode in sign character settings.");
         }
 
-        // Присваиваем новое значение для signCharsSettings
         this.signCharsSettings = new SignCharsSettings(
                 message,
                 enableSounds,
@@ -262,7 +255,6 @@ public class Config {
             default -> throw new IllegalArgumentException("Invalid mode in sign character settings.");
         }
 
-        // Присваиваем новое значение для commandCharsSettings
         this.commandCharsSettings = new CommandCharsSettings(
                 message,
                 enableSounds,
@@ -303,7 +295,6 @@ public class Config {
         boolean notifySoundsEnabled = numbersCheckNotify.getBoolean("sound.enable");
         String[] notifySound = numbersCheckNotify.getString("sound.value").split(";");
 
-        // Присваиваем новое значение для numberCheckSettings
         this.numberCheckSettings = new NumberCheckSettings(
                 maxNumbers,
                 strictCheck,
@@ -343,7 +334,6 @@ public class Config {
         boolean notifySoundsEnabled = caseCheckNotify.getBoolean("sound.enable");
         String[] notifySound = caseCheckNotify.getString("sound.value").split(";");
 
-        // Присваиваем новое значение для caseCheckSettings
         this.caseCheckSettings = new CaseCheckSettings(
                 maxUpperCasePercent,
                 strictCheck,
@@ -401,7 +391,6 @@ public class Config {
         boolean notifySoundsEnabled = banWordsNotify.getBoolean("sound.enable");
         String[] notifySoundValue = banWordsNotify.getString("sound.value").split(";");
 
-        // Присваиваем новое значение для banWordsSettings
         this.banWordsSettings = new BanWordsSettings(
                 mode,
                 banWordsString,
@@ -423,10 +412,10 @@ public class Config {
     }
 
     public void setupCommands(String path) {
-        commands = getFile(path, "commands.yml");
+        final FileConfiguration commands = getFile(path, "commands.yml");
         commandBlockGroupSet = new ObjectOpenHashSet<>();
-        commandHide_string_conditions = new Object2ObjectOpenHashMap<>();
-        commandHide_string_actions = new Object2ObjectOpenHashMap<>();
+        commandHideStringConditions = new Object2ObjectOpenHashMap<>();
+        commandHideStringActions = new Object2ObjectOpenHashMap<>();
         for (String cmds : commands.getConfigurationSection("commands").getKeys(false)) {
             final ConfigurationSection section = commands.getConfigurationSection("commands." + cmds);
             BlockType blockType = BlockType.valueOf(section.getString("mode").toUpperCase());
@@ -449,15 +438,15 @@ public class Config {
             if (shouldAddToHideList) {
                 for (String s : section.getStringList("commands")) {
                     String newCmd = s.replace("/", "");
-                    commandHide_string_conditions.put(newCmd, conditionList);
-                    commandHide_string_actions.put(newCmd, actionList);
+                    commandHideStringConditions.put(newCmd, conditionList);
+                    commandHideStringActions.put(newCmd, actionList);
                 }
             }
         }
     }
 
     public void setupSymbols(String path) {
-        symbols = getFile(path, "symbols.yml");
+        final FileConfiguration symbols = getFile(path, "symbols.yml");
         symbolBlockGroupSet = new ObjectOpenHashSet<>();
         for (String smbls : symbols.getConfigurationSection("symbols").getKeys(false)) {
             final ConfigurationSection section = symbols.getConfigurationSection("symbols." + smbls);

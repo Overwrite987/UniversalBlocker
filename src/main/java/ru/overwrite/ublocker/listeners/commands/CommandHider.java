@@ -40,9 +40,9 @@ public class CommandHider implements Listener {
             if (!aliases.isEmpty() && !aliases.contains(comInMap.getName())) {
                 aliases.add(comInMap.getName());
             }
-            List<Action> actions = pluginConfig.commandHide_string_actions.get(command);
+            List<Action> actions = pluginConfig.commandHideStringActions.get(command);
             if (actions != null) {
-                if (!ConditionChecker.isMeetsRequirements(p, pluginConfig.commandHide_string_conditions.get(command))) {
+                if (!ConditionChecker.isMeetsRequirements(p, pluginConfig.commandHideStringConditions.get(command))) {
                     return false;
                 }
                 return shouldHideCommand(p, command, command, aliases, actions);
@@ -50,13 +50,13 @@ public class CommandHider implements Listener {
                 // Если в конфиге нет действий для этой команды,
                 // то проверяем алиасы и присваиваем соответствующие действия
                 for (String alias : aliases) {
-                    List<Action> actionsForAlias = pluginConfig.commandHide_string_actions.get(alias);
+                    List<Action> actionsForAlias = pluginConfig.commandHideStringActions.get(alias);
                     if (actionsForAlias != null) {
-                        if (!ConditionChecker.isMeetsRequirements(p, pluginConfig.commandHide_string_conditions.get(command))) {
+                        if (!ConditionChecker.isMeetsRequirements(p, pluginConfig.commandHideStringConditions.get(command))) {
                             return false;
                         }
                         // Присвоить действия для этой команды из плагин конфига
-                        pluginConfig.commandHide_string_actions.put(command, actionsForAlias);
+                        pluginConfig.commandHideStringActions.put(command, actionsForAlias);
                         return shouldHideCommand(p, command, alias, aliases, actionsForAlias);
                     }
                 }
