@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,8 +25,6 @@ import ru.overwrite.ublocker.Main;
 public final class Utils {
 
     public static String SERIALIZER;
-
-    public static final int SUB_VERSION = Integer.parseInt(Bukkit.getBukkitVersion().split("-")[0].split("\\.")[1]);
 
     private static final Pattern HEX_PATTERN = Pattern.compile("&#([a-fA-F\\d]{6})");
 
@@ -94,22 +91,21 @@ public final class Utils {
     public static String colorize(String message) {
         switch (SERIALIZER) {
             case "LEGACY": {
-                if (SUB_VERSION >= 16) {
-                    final Matcher matcher = HEX_PATTERN.matcher(message);
-                    final StringBuilder builder = new StringBuilder(message.length() + 32);
-                    while (matcher.find()) {
-                        final String group = matcher.group(1);
-                        matcher.appendReplacement(builder,
-                                COLOR_CHAR + "x" +
-                                        COLOR_CHAR + group.charAt(0) +
-                                        COLOR_CHAR + group.charAt(1) +
-                                        COLOR_CHAR + group.charAt(2) +
-                                        COLOR_CHAR + group.charAt(3) +
-                                        COLOR_CHAR + group.charAt(4) +
-                                        COLOR_CHAR + group.charAt(5));
-                    }
-                    message = matcher.appendTail(builder).toString();
+                final Matcher matcher = HEX_PATTERN.matcher(message);
+                final StringBuilder builder = new StringBuilder(message.length() + 32);
+                while (matcher.find()) {
+                    final String group = matcher.group(1);
+                    matcher.appendReplacement(builder,
+                            COLOR_CHAR + "x" +
+                                    COLOR_CHAR + group.charAt(0) +
+                                    COLOR_CHAR + group.charAt(1) +
+                                    COLOR_CHAR + group.charAt(2) +
+                                    COLOR_CHAR + group.charAt(3) +
+                                    COLOR_CHAR + group.charAt(4) +
+                                    COLOR_CHAR + group.charAt(5));
                 }
+                message = matcher.appendTail(builder).toString();
+
                 return translateAlternateColorCodes('&', message);
             }
             case "MINIMESSAGE": {
