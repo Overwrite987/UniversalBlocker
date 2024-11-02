@@ -1,8 +1,8 @@
 package ru.overwrite.ublocker.utils;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Location;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
@@ -13,7 +13,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 public class WGUtils {
 
     public static List<String> getRegions(Location location) {
-        List<String> regions = new ArrayList<>();
+        List<String> regions = new ObjectArrayList<>();
         if (getApplicableRegions(location) == null || getApplicableRegions(location).size() == 0) {
             return regions;
         }

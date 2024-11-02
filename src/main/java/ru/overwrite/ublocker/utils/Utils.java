@@ -180,7 +180,8 @@ public final class Utils {
 
     public static void checkUpdates(Main plugin, Consumer<String> consumer) {
         plugin.getRunner().runAsync(() -> {
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(
                     new URL("https://raw.githubusercontent.com/Overwrite987/UniversalBlocker/master/VERSION")
                             .openStream()))) {
                 consumer.accept(reader.readLine().trim());

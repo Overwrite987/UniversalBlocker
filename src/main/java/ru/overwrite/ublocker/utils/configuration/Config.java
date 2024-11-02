@@ -2,11 +2,11 @@ package ru.overwrite.ublocker.utils.configuration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 import lombok.Getter;
@@ -415,11 +415,11 @@ public class Config {
             final ConfigurationSection section = commands.getConfigurationSection("commands." + cmds);
             BlockType blockType = BlockType.valueOf(section.getString("mode").toUpperCase());
             boolean blockAliases = section.getBoolean("block_aliases") && blockType.equals(BlockType.STRING); // Не будет работать с паттернами
-            List<Condition> conditionList = new ArrayList<>();
+            List<Condition> conditionList = new ObjectArrayList<>();
             for (String s : section.getStringList("conditions")) {
                 conditionList.add(Condition.fromString(s));
             }
-            List<Action> actionList = new ArrayList<>();
+            List<Action> actionList = new ObjectArrayList<>();
             for (String s : section.getStringList("actions")) {
                 actionList.add(Action.fromString(s));
             }
@@ -444,7 +444,7 @@ public class Config {
                 }
             }
             if (shouldAddToHideList) {
-                List<String> commandList = new ArrayList<>();
+                List<String> commandList = new ObjectArrayList<>();
                 for (String s : section.getStringList("commands")) {
                     String newCmd = s.replace("/", "");
                     commandList.add(newCmd);
@@ -470,11 +470,11 @@ public class Config {
             final ConfigurationSection section = symbols.getConfigurationSection("symbols." + smbls);
             BlockType blockType = BlockType.valueOf(section.getString("mode").toUpperCase());
             List<String> blockFactor = getBlockFactorList(section.getString("block_factor", ""));
-            List<Condition> conditionList = new ArrayList<>();
+            List<Condition> conditionList = new ObjectArrayList<>();
             for (String s : section.getStringList("conditions")) {
                 conditionList.add(Condition.fromString(s));
             }
-            List<Action> actionList = new ArrayList<>();
+            List<Action> actionList = new ObjectArrayList<>();
             for (String s : section.getStringList("actions")) {
                 actionList.add(Action.fromString(s));
             }

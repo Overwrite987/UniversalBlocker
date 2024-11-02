@@ -52,7 +52,7 @@ public class ConsoleBlocker implements Listener {
     private void checkStringBlock(ServerCommandEvent e, String command, CommandGroup group) {
         for (String com : group.getCommandsToBlockString()) {
             Command comInMap = Bukkit.getCommandMap().getCommand(com.replace("/", ""));
-            List<String> aliases = comInMap == null ? Collections.emptyList() : new ArrayList<>(comInMap.getAliases());
+            List<String> aliases = comInMap == null ? Collections.emptyList() : comInMap.getAliases();
             if (!aliases.isEmpty() && !aliases.contains(comInMap.getName())) {
                 aliases.add(comInMap.getName());
             }
@@ -79,7 +79,7 @@ public class ConsoleBlocker implements Listener {
             Matcher matcher = pattern.matcher(Utils.cutCommand(command).replace("/", ""));
             if (matcher.matches()) {
                 Command comInMap = Bukkit.getCommandMap().getCommand(matcher.group());
-                List<String> aliases = comInMap == null ? Collections.emptyList() : new ArrayList<>(comInMap.getAliases());
+                List<String> aliases = comInMap == null ? Collections.emptyList() : comInMap.getAliases();
                 if (!aliases.isEmpty()) {
                     aliases.add(comInMap.getName());
                 }

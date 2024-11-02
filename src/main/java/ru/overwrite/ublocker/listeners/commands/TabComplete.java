@@ -67,7 +67,7 @@ public class TabComplete implements Listener {
                     continue;
                 }
                 Command comInMap = Bukkit.getCommandMap().getCommand(buffer);
-                List<String> aliases = comInMap == null ? Collections.emptyList() : new ArrayList<>(comInMap.getAliases());
+                List<String> aliases = comInMap == null ? Collections.emptyList() : comInMap.getAliases();
                 if (!aliases.isEmpty() && !aliases.contains(comInMap.getName())) {
                     aliases.add(comInMap.getName());
                 }
@@ -88,7 +88,7 @@ public class TabComplete implements Listener {
             Matcher matcher = pattern.matcher(buffer.split(" ")[0]);
             if (matcher.matches()) {
                 Command comInMap = Bukkit.getCommandMap().getCommand(matcher.group());
-                List<String> aliases = comInMap == null ? Collections.emptyList() : new ArrayList<>(comInMap.getAliases());
+                List<String> aliases = comInMap == null ? Collections.emptyList() : comInMap.getAliases();
                 if (!aliases.isEmpty()) {
                     aliases.add(comInMap.getName());
                 }

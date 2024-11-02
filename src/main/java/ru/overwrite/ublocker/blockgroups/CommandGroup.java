@@ -1,8 +1,8 @@
 package ru.overwrite.ublocker.blockgroups;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -16,9 +16,9 @@ public class CommandGroup {
 
     private final BlockType blockType;
 
-    private final List<String> commandsToBlockString = new ArrayList<>();
+    private final List<String> commandsToBlockString = new ObjectArrayList<>();
 
-    private final List<Pattern> commandsToBlockPattern = new ArrayList<>();
+    private final List<Pattern> commandsToBlockPattern = new ObjectArrayList<>();
 
     private final List<Condition> conditionsToCheck;
 

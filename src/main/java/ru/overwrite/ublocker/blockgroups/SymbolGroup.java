@@ -1,9 +1,9 @@
 package ru.overwrite.ublocker.blockgroups;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.conditions.Condition;
@@ -15,13 +15,13 @@ public class SymbolGroup {
 
     private final BlockType blockType;
 
-    private final List<String> symbolsToBlock = new ArrayList<>();
+    private final List<String> symbolsToBlock = new ObjectArrayList<>();
 
-    private final List<Pattern> patternsToBlock = new ArrayList<>();
+    private final List<Pattern> patternsToBlock = new ObjectArrayList<>();
 
-    private final List<String> excludedCommandsString = new ArrayList<>();
+    private final List<String> excludedCommandsString = new ObjectArrayList<>();
 
-    private final List<Pattern> excludedCommandsPattern = new ArrayList<>();
+    private final List<Pattern> excludedCommandsPattern = new ObjectArrayList<>();
 
     private final List<Condition> conditionsToCheck;
 
