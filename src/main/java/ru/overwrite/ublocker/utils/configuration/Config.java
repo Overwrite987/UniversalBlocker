@@ -37,7 +37,7 @@ public class Config {
 
     public Set<CommandGroup> commandHideGroupSet;
 
-    public Set<String> excludedplayers;
+    public Set<String> excludedPlayers;
 
     public void setupChat(String path) {
         final FileConfiguration chat = getFile(path, "chat.yml");
@@ -499,7 +499,17 @@ public class Config {
     }
 
     public void setupExcluded(FileConfiguration config) {
-        excludedplayers = new ObjectOpenHashSet<>(config.getStringList("excluded_players"));
+        excludedPlayers = new ObjectOpenHashSet<>(config.getStringList("excluded_players"));
+    }
+
+    public void clearEverything() {
+        this.banWordsSettings = null;
+        this.bookCharsSettings = null;
+        this.caseCheckSettings = null;
+        this.chatCharsSettings = null;
+        this.commandCharsSettings = null;
+        this.numberCheckSettings = null;
+        this.signCharsSettings = null;
     }
 
     public FileConfiguration getFile(String path, String fileName) {

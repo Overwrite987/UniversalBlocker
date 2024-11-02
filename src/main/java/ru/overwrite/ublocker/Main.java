@@ -19,7 +19,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import lombok.Getter;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import ru.overwrite.ublocker.conditions.ConditionChecker;
 import ru.overwrite.ublocker.listeners.chat.*;
 import ru.overwrite.ublocker.listeners.commands.*;
 import ru.overwrite.ublocker.listeners.symbols.*;
@@ -158,7 +157,7 @@ public class Main extends JavaPlugin {
     }
 
     public boolean isExcluded(Player p) {
-        return !pluginConfig.excludedplayers.isEmpty() && pluginConfig.excludedplayers.contains(p.getName());
+        return !pluginConfig.excludedPlayers.isEmpty() && pluginConfig.excludedPlayers.contains(p.getName());
     }
 
     private void loggerInfo(String logMessage) {

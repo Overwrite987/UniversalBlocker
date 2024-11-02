@@ -22,13 +22,13 @@ public class CommandClass implements CommandExecutor {
         this.pluginConfig = plugin.getPluginConfig();
     }
 
-    public boolean onCommand(CommandSender sender, @NotNull Command cmd, @NotNull String commandlabel, String[] args) {
+    public boolean onCommand(CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
         if (!sender.hasPermission("ublocker.admin")) {
             sender.sendMessage("§6❖ §7Running §c§lUniversalBlocker §c§l" + plugin.getDescription().getVersion() + "§7 by §5OverwriteMC");
             return true;
         }
         if (args.length == 0) {
-            sender.sendMessage("§6/" + commandlabel + " reload - перезагрузить конфиг");
+            sender.sendMessage("§6/" + label + " reload - перезагрузить конфиг");
             return true;
         }
         if (args[0].equalsIgnoreCase("reload")) {
@@ -41,6 +41,7 @@ public class CommandClass implements CommandExecutor {
                     ? settings.getString("custom_plugin_folder.path")
                     : plugin.getDataFolder().getAbsolutePath();
             plugin.setPath(path);
+            pluginConfig.clearEverything();
             if (settings.getBoolean("enable_chat_module")) {
                 pluginConfig.setupChat(path);
             }
