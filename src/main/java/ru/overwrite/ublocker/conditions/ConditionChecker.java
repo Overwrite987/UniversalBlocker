@@ -32,44 +32,43 @@ public class ConditionChecker {
             final String context = condition.context();
             final String operator = condition.operator();
 
+            boolean meetsCondition;
             switch (condition.type()) {
-                // Дальше идет типа говнокод, потом переделаю
-                case REGION:
+                case REGION: {
                     if (!hasWorldGuard()) return false;
 
                     List<String> regions = WGUtils.getRegions(p.getLocation());
-                    boolean containsRegion = regions.contains(context);
-
-                    if ((operator.equals("==") && !containsRegion) ||
-                            (operator.equals("!=") && containsRegion)) {
-                        return false;
-                    }
+                    meetsCondition = evaluateCondition(operator, regions.contains(context));
                     break;
-
-                case WORLD:
+                }
+                case WORLD: {
                     String worldName = p.getWorld().getName();
-
-                    if ((operator.equals("==") && !worldName.equals(context)) ||
-                            (operator.equals("!=") && worldName.equals(context))) {
-                        return false;
-                    }
+                    meetsCondition = evaluateCondition(operator, worldName.equals(context));
                     break;
-
-                case GAMEMODE:
+                }
+                case GAMEMODE: {
                     GameMode playerMode = p.getGameMode();
                     GameMode conditionMode = GameMode.valueOf(context);
-
-                    if ((operator.equals("==") && playerMode != conditionMode) ||
-                            (operator.equals("!=") && playerMode == conditionMode)) {
-                        return false;
-                    }
+                    meetsCondition = evaluateCondition(operator, playerMode == conditionMode);
                     break;
-
+                }
                 default:
-                    break;
+                    continue;
+            }
+
+            if (!meetsCondition) {
+                return false;
             }
         }
         return true;
+    }
+
+    private static boolean evaluateCondition(String operator, boolean conditionMet) {
+        return switch (operator) {
+            case "==" -> conditionMet;
+            case "!=" -> !conditionMet;
+            default -> throw new IllegalArgumentException("Unsupported operator: " + operator);
+        };
     }
 
 }
