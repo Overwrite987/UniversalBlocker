@@ -14,8 +14,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import it.unimi.dsi.fastutil.chars.CharOpenHashSet;
-import it.unimi.dsi.fastutil.chars.CharSet;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -118,26 +116,29 @@ public final class Utils {
         }
     }
 
-    private static final CharSet CODES = new CharOpenHashSet(
-            new char[]{
-                    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-                    'a', 'b', 'c', 'd', 'e', 'f',
-                    'A', 'B', 'C', 'D', 'E', 'F',
-                    'k', 'l', 'm', 'n', 'o', 'r', 'x',
-                    'K', 'L', 'M', 'N', 'O', 'R', 'X'}
-    );
-
-    private static String translateAlternateColorCodes(char altColorChar, String textToTranslate) {
+    public static String translateAlternateColorCodes(char altColorChar, String textToTranslate) {
         char[] b = textToTranslate.toCharArray();
 
-        for (int i = 0, length = b.length - 1; i < length - 1; ++i) {
-            if (b[i] == altColorChar && CODES.contains(b[i + 1])) {
+        for (int i = 0, length = b.length - 1; i < length; ++i) {
+            if (b[i] == altColorChar && isValidColorCharacter(b[i + 1])) {
                 b[i++] = '§';
                 b[i] = Character.toLowerCase(b[i]);
             }
         }
 
         return new String(b);
+    }
+
+    private static boolean isValidColorCharacter(char c) {
+        return (c >= '0' && c <= '9') ||
+                (c >= 'a' && c <= 'f') ||
+                c == 'r' ||
+                (c >= 'k' && c <= 'o') ||
+                c == 'x' ||
+                (c >= 'A' && c <= 'F') ||
+                c == 'R' ||
+                (c >= 'K' && c <= 'O') ||
+                c == 'X';
     }
 
     public static String cutCommand(String str) {
