@@ -15,22 +15,24 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import ru.overwrite.ublocker.Main;
 import ru.overwrite.ublocker.utils.Utils;
+import ru.overwrite.ublocker.utils.configuration.Config;
 import ru.overwrite.ublocker.utils.configuration.data.NumberCheckSettings;
 
 public class NumbersCheck implements Listener {
 
     private final Main plugin;
-    private final NumberCheckSettings numberCheckSettings;
+    private final Config pluginConfig;
 
     public NumbersCheck(Main plugin) {
         this.plugin = plugin;
-        this.numberCheckSettings = plugin.getPluginConfig().getNumberCheckSettings();
+        this.pluginConfig = plugin.getPluginConfig();
     }
 
     private static final Pattern IP_PATTERN = Pattern.compile("(\\d+\\.){3}");
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onChatNumber(AsyncPlayerChatEvent e) {
+        NumberCheckSettings numberCheckSettings = pluginConfig.getNumberCheckSettings();
         if (numberCheckSettings == null) return;
 
         String message = e.getMessage();
@@ -65,6 +67,7 @@ public class NumbersCheck implements Listener {
     private final String[] searchList = {"%player%", "%limit%", "%msg%"};
 
     private void cancelChatEvent(Player p, String message, Cancellable e) {
+        NumberCheckSettings numberCheckSettings = pluginConfig.getNumberCheckSettings();
         e.setCancelled(true);
         p.sendMessage(numberCheckSettings.message().replace("%limit%", Integer.toString(numberCheckSettings.maxNumbers())));
         if (numberCheckSettings.enableSounds()) {

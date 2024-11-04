@@ -14,20 +14,22 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import ru.overwrite.ublocker.Main;
 import ru.overwrite.ublocker.utils.Utils;
+import ru.overwrite.ublocker.utils.configuration.Config;
 import ru.overwrite.ublocker.utils.configuration.data.ChatCharsSettings;
 
 public class ChatFilter implements Listener {
 
     private final Main plugin;
-    private final ChatCharsSettings chatCharsSettings;
+    private final Config pluginConfig;
 
     public ChatFilter(Main plugin) {
         this.plugin = plugin;
-        this.chatCharsSettings = plugin.getPluginConfig().getChatCharsSettings();
+        this.pluginConfig = plugin.getPluginConfig();
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onChatMessage(AsyncPlayerChatEvent e) {
+        ChatCharsSettings chatCharsSettings = pluginConfig.getChatCharsSettings();
         if (chatCharsSettings == null) return;
 
         Player p = e.getPlayer();
@@ -42,6 +44,7 @@ public class ChatFilter implements Listener {
     private final String[] searchList = {"%player%", "%symbol%", "%msg%"};
 
     private void cancelChatEvent(Player p, String message, Cancellable e) {
+        ChatCharsSettings chatCharsSettings = pluginConfig.getChatCharsSettings();
         e.setCancelled(true);
         p.sendMessage(chatCharsSettings.message());
         if (chatCharsSettings.enableSounds()) {
@@ -70,6 +73,7 @@ public class ChatFilter implements Listener {
     }
 
     private boolean containsBlockedChars(String message) {
+        ChatCharsSettings chatCharsSettings = pluginConfig.getChatCharsSettings();
         switch (chatCharsSettings.mode()) {
             case STRING: {
                 for (char character : message.toCharArray()) {
@@ -87,6 +91,7 @@ public class ChatFilter implements Listener {
     }
 
     private String getFirstBlockedChar(String message) {
+        ChatCharsSettings chatCharsSettings = pluginConfig.getChatCharsSettings();
         return switch (chatCharsSettings.mode()) {
             case STRING -> Character.toString(message.codePoints()
                     .filter(codePoint -> chatCharsSettings.string().indexOf(codePoint) == -1).findFirst()

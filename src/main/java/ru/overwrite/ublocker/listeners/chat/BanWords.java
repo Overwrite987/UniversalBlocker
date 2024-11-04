@@ -15,20 +15,22 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import ru.overwrite.ublocker.Main;
 import ru.overwrite.ublocker.utils.Utils;
+import ru.overwrite.ublocker.utils.configuration.Config;
 import ru.overwrite.ublocker.utils.configuration.data.BanWordsSettings;
 
 public class BanWords implements Listener {
 
     private final Main plugin;
-    private final BanWordsSettings banWordsSettings;
+    private final Config pluginConfig;
 
     public BanWords(Main plugin) {
         this.plugin = plugin;
-        this.banWordsSettings = plugin.getPluginConfig().getBanWordsSettings();
+        this.pluginConfig = plugin.getPluginConfig();
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onChat(AsyncPlayerChatEvent e) {
+        BanWordsSettings banWordsSettings = pluginConfig.getBanWordsSettings();
         if (banWordsSettings == null) return;
 
         Player p = e.getPlayer();
@@ -71,6 +73,7 @@ public class BanWords implements Listener {
     }
 
     private void executeBlockActions(Player p, String banword, String message, Cancellable e) {
+        BanWordsSettings banWordsSettings = pluginConfig.getBanWordsSettings();
         p.sendMessage(banWordsSettings.message().replace("%word%", banword));
         if (banWordsSettings.enableSounds()) {
             Utils.sendSound(banWordsSettings.sound(), p);
@@ -81,6 +84,7 @@ public class BanWords implements Listener {
     private final String[] searchList = {"%player%", "%word%", "%msg%"};
 
     private void notifyAdmins(Player p, String banword, String message) {
+        BanWordsSettings banWordsSettings = pluginConfig.getBanWordsSettings();
         if (banWordsSettings.notifyEnabled()) {
             String[] replacementList = {p.getName(), banword, message};
 

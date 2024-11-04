@@ -13,6 +13,7 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import ru.overwrite.ublocker.Main;
 import ru.overwrite.ublocker.task.Runner;
 import ru.overwrite.ublocker.utils.Utils;
+import ru.overwrite.ublocker.utils.configuration.Config;
 import ru.overwrite.ublocker.utils.configuration.data.CommandCharsSettings;
 
 import java.util.function.Predicate;
@@ -20,17 +21,18 @@ import java.util.function.Predicate;
 public class CommandFilter implements Listener {
 
     private final Main plugin;
-    private final CommandCharsSettings commandCharsSettings;
+    private final Config pluginConfig;
     private final Runner runner;
 
     public CommandFilter(Main plugin) {
         this.plugin = plugin;
-        this.commandCharsSettings = plugin.getPluginConfig().getCommandCharsSettings();
+        this.pluginConfig = plugin.getPluginConfig();
         this.runner = plugin.getRunner();
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void oncommandMessage(PlayerCommandPreprocessEvent e) {
+        CommandCharsSettings commandCharsSettings = pluginConfig.getCommandCharsSettings();
         if (commandCharsSettings == null) return;
 
         Player p = e.getPlayer();
@@ -47,6 +49,7 @@ public class CommandFilter implements Listener {
     private void cancelCommandEvent(Player p, String message, Cancellable e) {
         e.setCancelled(true);
         runner.runAsync(() -> {
+            CommandCharsSettings commandCharsSettings = pluginConfig.getCommandCharsSettings();
             p.sendMessage(commandCharsSettings.message());
             if (commandCharsSettings.enableSounds()) {
                 Utils.sendSound(commandCharsSettings.sound(), p);
@@ -75,6 +78,7 @@ public class CommandFilter implements Listener {
     }
 
     private boolean containsBlockedChars(String message) {
+        CommandCharsSettings commandCharsSettings = pluginConfig.getCommandCharsSettings();
         switch (commandCharsSettings.mode()) {
             case STRING: {
                 for (char character : message.toCharArray()) {
@@ -92,6 +96,7 @@ public class CommandFilter implements Listener {
     }
 
     private String getFirstBlockedChar(String message) {
+        CommandCharsSettings commandCharsSettings = pluginConfig.getCommandCharsSettings();
         return switch (commandCharsSettings.mode()) {
             case STRING -> Character.toString(message.codePoints()
                     .filter(codePoint -> commandCharsSettings.string().indexOf(codePoint) == -1).findFirst()

@@ -17,22 +17,24 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import ru.overwrite.ublocker.Main;
 import ru.overwrite.ublocker.task.Runner;
 import ru.overwrite.ublocker.utils.Utils;
+import ru.overwrite.ublocker.utils.configuration.Config;
 import ru.overwrite.ublocker.utils.configuration.data.SignCharsSettings;
 
 public class SignFilter implements Listener {
 
     private final Main plugin;
-    private final SignCharsSettings signCharsSettings;
+    private final Config pluginConfig;
     private final Runner runner;
 
     public SignFilter(Main plugin) {
         this.plugin = plugin;
-        this.signCharsSettings = plugin.getPluginConfig().getSignCharsSettings();
+        this.pluginConfig = plugin.getPluginConfig();
         this.runner = plugin.getRunner();
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onSignMessage(SignChangeEvent e) {
+        SignCharsSettings signCharsSettings = pluginConfig.getSignCharsSettings();
         if (signCharsSettings == null) return;
 
         Player p = e.getPlayer();
@@ -58,6 +60,7 @@ public class SignFilter implements Listener {
     private void cancelSignEvent(Player p, String message, Cancellable e) {
         e.setCancelled(true);
         runner.runAsync(() -> {
+            SignCharsSettings signCharsSettings = pluginConfig.getSignCharsSettings();
             p.sendMessage(signCharsSettings.message());
             if (signCharsSettings.enableSounds()) {
                 Utils.sendSound(signCharsSettings.sound(), p);
@@ -86,6 +89,7 @@ public class SignFilter implements Listener {
     }
 
     private boolean containsBlockedChars(String message) {
+        SignCharsSettings signCharsSettings = pluginConfig.getSignCharsSettings();
         switch (signCharsSettings.mode()) {
             case STRING: {
                 for (char character : message.toCharArray()) {
@@ -103,6 +107,7 @@ public class SignFilter implements Listener {
     }
 
     private String getFirstBlockedChar(String message) {
+        SignCharsSettings signCharsSettings = pluginConfig.getSignCharsSettings();
         return switch (signCharsSettings.mode()) {
             case STRING -> Character.toString(message.codePoints()
                     .filter(codePoint -> signCharsSettings.string().indexOf(codePoint) == -1).findFirst()

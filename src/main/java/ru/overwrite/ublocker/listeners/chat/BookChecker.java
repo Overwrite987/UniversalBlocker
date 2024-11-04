@@ -16,22 +16,24 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import ru.overwrite.ublocker.Main;
 import ru.overwrite.ublocker.task.Runner;
 import ru.overwrite.ublocker.utils.Utils;
+import ru.overwrite.ublocker.utils.configuration.Config;
 import ru.overwrite.ublocker.utils.configuration.data.BookCharsSettings;
 
 public class BookChecker implements Listener {
 
     private final Main plugin;
-    private final BookCharsSettings bookCharsSettings;
+    private final Config pluginConfig;
     private final Runner runner;
 
     public BookChecker(Main plugin) {
         this.plugin = plugin;
-        this.bookCharsSettings = plugin.getPluginConfig().getBookCharsSettings();
+        this.pluginConfig = plugin.getPluginConfig();
         this.runner = plugin.getRunner();
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onBookEvent(PlayerEditBookEvent e) {
+        BookCharsSettings bookCharsSettings = pluginConfig.getBookCharsSettings();
         if (bookCharsSettings == null) return;
 
         Player p = e.getPlayer();
@@ -51,6 +53,7 @@ public class BookChecker implements Listener {
     private void cancelBookEvent(Player p, String message, Cancellable e) {
         e.setCancelled(true);
         runner.runAsync(() -> {
+            BookCharsSettings bookCharsSettings = pluginConfig.getBookCharsSettings();
             p.sendMessage(bookCharsSettings.message());
             if (bookCharsSettings.enableSounds()) {
                 Utils.sendSound(bookCharsSettings.sound(), p);
@@ -79,6 +82,7 @@ public class BookChecker implements Listener {
     }
 
     private boolean containsBlockedChars(String message) {
+        BookCharsSettings bookCharsSettings = pluginConfig.getBookCharsSettings();
         switch (bookCharsSettings.mode()) {
             case STRING: {
                 for (char character : message.toCharArray()) {
@@ -96,6 +100,7 @@ public class BookChecker implements Listener {
     }
 
     private String getFirstBlockedChar(String message) {
+        BookCharsSettings bookCharsSettings = pluginConfig.getBookCharsSettings();
         return switch (bookCharsSettings.mode()) {
             case STRING -> Character.toString(message.codePoints()
                     .filter(codePoint -> bookCharsSettings.string().indexOf(codePoint) == -1).findFirst()

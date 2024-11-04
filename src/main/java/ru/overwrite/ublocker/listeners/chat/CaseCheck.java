@@ -13,21 +13,23 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import ru.overwrite.ublocker.Main;
 import ru.overwrite.ublocker.utils.Utils;
+import ru.overwrite.ublocker.utils.configuration.Config;
 import ru.overwrite.ublocker.utils.configuration.data.CaseCheckSettings;
 
 @Deprecated(forRemoval = true) // Звёздочка об этом позаботится
 public class CaseCheck implements Listener {
 
     private final Main plugin;
-    private final CaseCheckSettings caseCheckSettings;
+    private final Config pluginConfig;
 
     public CaseCheck(Main plugin) {
         this.plugin = plugin;
-        this.caseCheckSettings = plugin.getPluginConfig().getCaseCheckSettings();
+        this.pluginConfig = plugin.getPluginConfig();
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onCaseCheck(AsyncPlayerChatEvent e) {
+        CaseCheckSettings caseCheckSettings = pluginConfig.getCaseCheckSettings();
         if (caseCheckSettings == null) return;
 
         Player p = e.getPlayer();
@@ -59,6 +61,7 @@ public class CaseCheck implements Listener {
     private final String[] searchList = {"%player%", "%limit%", "%msg%"};
 
     private void cancelChatEvent(Player p, String message, Cancellable e) {
+        CaseCheckSettings caseCheckSettings = pluginConfig.getCaseCheckSettings();
         e.setCancelled(true);
         p.sendMessage(caseCheckSettings.message().replace("%limit%", Integer.toString(caseCheckSettings.maxUpperCasePercent())));
         if (caseCheckSettings.enableSounds()) {
