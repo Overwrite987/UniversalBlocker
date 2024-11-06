@@ -13,8 +13,8 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import ru.overwrite.ublocker.Main;
 import ru.overwrite.ublocker.utils.Utils;
-import ru.overwrite.ublocker.utils.configuration.Config;
-import ru.overwrite.ublocker.utils.configuration.data.CaseCheckSettings;
+import ru.overwrite.ublocker.configuration.Config;
+import ru.overwrite.ublocker.configuration.data.CaseCheckSettings;
 
 @Deprecated(forRemoval = true) // Звёздочка об этом позаботится
 public class CaseCheck implements Listener {

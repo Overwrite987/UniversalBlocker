@@ -1,7 +1,7 @@
-package ru.overwrite.ublocker.utils.configuration.data;
+package ru.overwrite.ublocker.configuration.data;
 
-public record CaseCheckSettings(
-        int maxUpperCasePercent,
+public record NumberCheckSettings(
+        int maxNumbers,
         boolean strictCheck,
         String message,
         boolean enableSounds,

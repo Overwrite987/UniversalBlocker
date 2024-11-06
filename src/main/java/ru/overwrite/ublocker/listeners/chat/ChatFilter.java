@@ -14,8 +14,8 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import ru.overwrite.ublocker.Main;
 import ru.overwrite.ublocker.utils.Utils;
-import ru.overwrite.ublocker.utils.configuration.Config;
-import ru.overwrite.ublocker.utils.configuration.data.ChatCharsSettings;
+import ru.overwrite.ublocker.configuration.Config;
+import ru.overwrite.ublocker.configuration.data.ChatCharsSettings;
 
 public class ChatFilter implements Listener {
 

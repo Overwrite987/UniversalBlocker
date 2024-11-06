@@ -1,6 +1,5 @@
 package ru.overwrite.ublocker.listeners.commands;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -17,7 +16,7 @@ import ru.overwrite.ublocker.Main;
 import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.blockgroups.CommandGroup;
 import ru.overwrite.ublocker.utils.Utils;
-import ru.overwrite.ublocker.utils.configuration.Config;
+import ru.overwrite.ublocker.configuration.Config;
 
 public class TabComplete implements Listener {
 

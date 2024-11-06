@@ -1,7 +1,6 @@
 package ru.overwrite.ublocker.listeners.commands;
 
 import java.util.Collections;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,7 +21,7 @@ import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.blockgroups.CommandGroup;
 import ru.overwrite.ublocker.conditions.ConditionChecker;
 import ru.overwrite.ublocker.task.Runner;
-import ru.overwrite.ublocker.utils.configuration.Config;
+import ru.overwrite.ublocker.configuration.Config;
 import ru.overwrite.ublocker.utils.Utils;
 
 public class CommandBlocker implements Listener {

@@ -2,7 +2,6 @@ package ru.overwrite.ublocker.listeners.commands;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -16,7 +15,7 @@ import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.blockgroups.CommandGroup;
 import ru.overwrite.ublocker.conditions.ConditionChecker;
 import ru.overwrite.ublocker.utils.Utils;
-import ru.overwrite.ublocker.utils.configuration.Config;
+import ru.overwrite.ublocker.configuration.Config;
 
 public class CommandHider implements Listener {
 

@@ -1,4 +1,4 @@
-package ru.overwrite.ublocker.utils.configuration;
+package ru.overwrite.ublocker.configuration;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +21,7 @@ import ru.overwrite.ublocker.blockgroups.CommandGroup;
 import ru.overwrite.ublocker.blockgroups.SymbolGroup;
 import ru.overwrite.ublocker.conditions.*;
 import ru.overwrite.ublocker.utils.Utils;
-import ru.overwrite.ublocker.utils.configuration.data.*;
+import ru.overwrite.ublocker.configuration.data.*;
 
 public class Config {
 

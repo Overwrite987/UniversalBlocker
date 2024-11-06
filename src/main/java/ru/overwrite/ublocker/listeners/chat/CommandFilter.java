@@ -13,8 +13,8 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import ru.overwrite.ublocker.Main;
 import ru.overwrite.ublocker.task.Runner;
 import ru.overwrite.ublocker.utils.Utils;
-import ru.overwrite.ublocker.utils.configuration.Config;
-import ru.overwrite.ublocker.utils.configuration.data.CommandCharsSettings;
+import ru.overwrite.ublocker.configuration.Config;
+import ru.overwrite.ublocker.configuration.data.CommandCharsSettings;
 
 import java.util.function.Predicate;
 
