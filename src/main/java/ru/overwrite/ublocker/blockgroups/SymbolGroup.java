@@ -9,7 +9,7 @@ import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.conditions.Condition;
 
 @Getter
-public class SymbolGroup {
+public final class SymbolGroup {
 
     private final String groupId;
 

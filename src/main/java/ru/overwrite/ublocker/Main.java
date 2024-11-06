@@ -28,7 +28,7 @@ import ru.overwrite.ublocker.task.Runner;
 import ru.overwrite.ublocker.utils.*;
 import ru.overwrite.ublocker.configuration.Config;
 
-public class Main extends JavaPlugin {
+public final class Main extends JavaPlugin {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("[dd-MM-yyy] HH:mm:ss -");
 

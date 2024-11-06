@@ -10,7 +10,7 @@ import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.conditions.Condition;
 
 @Getter
-public class CommandGroup {
+public final class CommandGroup {
 
     private final String groupId;
 
@@ -55,5 +55,4 @@ public class CommandGroup {
             }
         }
     }
-
 }
