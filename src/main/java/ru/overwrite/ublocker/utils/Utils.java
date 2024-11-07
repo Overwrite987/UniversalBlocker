@@ -5,10 +5,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -63,25 +66,38 @@ public final class Utils {
         p.playSound(p.getLocation(), sound, volume, pitch);
     }
 
-    public static Component createHoverMessage(String message) {
-        String formattedNotifyMessage = Utils.getHoverTextedMessage(message);
-        String hovertext = Utils.getHoverText(message);
-        HoverEvent<Component> hover = HoverEvent.showText(LegacyComponentSerializer.legacySection().deserialize(hovertext));
+    public static Component createHoverMessage(String message, String hoverText) {
+        HoverEvent<Component> hover = HoverEvent.showText(LegacyComponentSerializer.legacySection().deserialize(hoverText));
         return LegacyComponentSerializer.legacySection()
-                .deserialize(formattedNotifyMessage.replace(hovertext, ""))
+                .deserialize(message)
                 .hoverEvent(hover);
     }
 
-    private static boolean isHovertexted(String str) {
-        return str.contains("ht=");
+    public static String extractMessage(String message, String[] markers) {
+        IntList indices = new IntArrayList();
+
+        for (String marker : markers) {
+            int index = message.indexOf(marker);
+            if (index != -1) {
+                indices.add(index);
+            }
+        }
+
+        int endIndex = indices.isEmpty() ? message.length() : Collections.min(indices);
+
+        return message.substring(0, endIndex).trim();
     }
 
-    private static String getHoverTextedMessage(String str) {
-        return isHovertexted(str) ? str.split("ht=")[0] : str;
-    }
-
-    private static String getHoverText(String str) {
-        return isHovertexted(str) ? str.split("ht=")[1] : "";
+    public static String extractValue(String message, String prefix, String suffix) {
+        int startIndex = message.indexOf(prefix);
+        if (startIndex != -1) {
+            startIndex += prefix.length();
+            int endIndex = message.indexOf(suffix, startIndex);
+            if (endIndex != -1) {
+                return message.substring(startIndex, endIndex);
+            }
+        }
+        return "";  // Возвращаем пустую строку, если ключ не найден
     }
 
     private static final char COLOR_CHAR = '§';
@@ -183,8 +199,8 @@ public final class Utils {
         plugin.getRunner().runAsync(() -> {
             try (BufferedReader reader = new BufferedReader(
                     new InputStreamReader(
-                    new URL("https://raw.githubusercontent.com/Overwrite987/UniversalBlocker/master/VERSION")
-                            .openStream()))) {
+                            new URL("https://raw.githubusercontent.com/Overwrite987/UniversalBlocker/master/VERSION")
+                                    .openStream()))) {
                 consumer.accept(reader.readLine().trim());
             } catch (IOException exception) {
                 plugin.getLogger().warning("Can't check for updates: " + exception.getMessage());

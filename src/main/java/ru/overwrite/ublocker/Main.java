@@ -22,9 +22,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import ru.overwrite.ublocker.listeners.chat.*;
 import ru.overwrite.ublocker.listeners.commands.*;
 import ru.overwrite.ublocker.listeners.symbols.*;
-import ru.overwrite.ublocker.task.BukkitRunner;
-import ru.overwrite.ublocker.task.PaperRunner;
-import ru.overwrite.ublocker.task.Runner;
+import ru.overwrite.ublocker.task.*;
 import ru.overwrite.ublocker.utils.*;
 import ru.overwrite.ublocker.configuration.Config;
 

@@ -53,8 +53,8 @@ symbols:
       - '[MESSAGE] &7&l(&c&l!&7&l) &3Символ &8(&4%symbol%&8) &3запрещено использовать в командах!'
       - '[TITLE] &7&l(&c&l!&7&l) &6&lОшибка &7&l(&c&l!&7&l);&fСимвол %symbol% заблокирован!;10;50;15'
       - '[SOUND] ENTITY_ITEM_BREAK;1.0;1.0'
-      - '[NOTIFY] &7&l(&c&l!&7&l) &cИгрок &3%player% &cиспользовал запрещеннный символ! ht=&7Использованная написанная команда: &4%cmd%, &7Заблокированный компонент: &4%symbol% perm=ublocker.notify.symbol1'
-      - '[NOTIFY_SOUND] BLOCK_NOTE_BLOCK_PLING;1.0;1.0 perm=ublocker.notify.symbol1'
+      - '[NOTIFY] &7&l(&c&l!&7&l) &cИгрок &3%player% &cиспользовал запрещеннный символ! ht={&7Использованная написанная команда: &4%cmd%, &7Заблокированный компонент: &4%symbol%} perm={ublocker.notify.symbol1}'
+      - '[NOTIFY_SOUND] BLOCK_NOTE_BLOCK_PLING;1.0;1.0 perm={ublocker.notify.symbol1}'
     # Условия выполнения действий
     # Если указаны пустым или не указаны вовсе - блокировка будет выполняться вне зависимости от них
     conditions:
@@ -76,8 +76,8 @@ symbols:
       - '[MESSAGE] &7&l(&c&l!&7&l) &3Символ &8(&4%symbol%&8) &3запрещено использовать в командах!'
       - '[TITLE] &7&l(&c&l!&7&l) &6&lОшибка &7&l(&c&l!&7&l);&fСимвол %symbol% заблокирован!;10;50;15'
       - '[SOUND] ENTITY_ITEM_BREAK;1.0;1.0'
-      - '[NOTIFY] &7&l(&c&l!&7&l) &cИгрок &3%player% &cиспользовал запрещеннный символ! ht=&7Использованная написанная команда: &4%cmd%, &7Заблокированный компонент: %symbol% perm=ublocker.notify.symbol1'
-      - '[NOTIFY_SOUND] BLOCK_NOTE_BLOCK_PLING;1.0;1.0 perm=ublocker.notify.symbol1'
+      - '[NOTIFY] &7&l(&c&l!&7&l) &cИгрок &3%player% &cиспользовал запрещеннный символ! ht={&7Использованная написанная команда: &4%cmd%, &7Заблокированный компонент: %symbol%} perm={ublocker.notify.symbol1}'
+      - '[NOTIFY_SOUND] BLOCK_NOTE_BLOCK_PLING;1.0;1.0 perm={ublocker.notify.symbol1}'
     excluded_commands:
       - '/login'
       - '/register'

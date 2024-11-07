@@ -55,11 +55,11 @@ commands:
       - '[LITE_HIDE] ublocker.bypass.commands'
       - '[LITE_BLOCK] ublocker.bypass.commands'
       - '[LITE_BLOCK_TAB_COMPLETE] ublocker.bypass.commands'
-      - '[MESSAGE] &7&l(&c&l!&7&l) &3Команда &8(&4%cmd%&8) &3не доступна с вашим уровнем доступа! ht=&7Данная команда была заблокирована по причине: &4так надо'
+      - '[MESSAGE] &7&l(&c&l!&7&l) &3Команда &8(&4%cmd%&8) &3не доступна с вашим уровнем доступа! ht={&7Данная команда была заблокирована по причине: &4так надо}'
       - '[TITLE] &7&l(&c&l!&7&l) &6&lОшибка &7&l(&c&l!&7&l);&fКоманда &6%cmd% &fзаблокирована!;10;50;15'
       - '[SOUND] ENTITY_ITEM_BREAK;1.0;1.0'
-      - '[NOTIFY] &7&l(&c&l!&7&l) &cИгрок &3%player% &cиспользовал запрещеннную команду &8(&4%cmd%&8)! ht=&7Использованная команда: &4%fullcmd% perm=ublocker.notify.commands'
-      - '[NOTIFY_SOUND] BLOCK_NOTE_BLOCK_PLING;1.0;1.0 perm=ublocker.notify.commands'
+      - '[NOTIFY] &7&l(&c&l!&7&l) &cИгрок &3%player% &cиспользовал запрещеннную команду &8(&4%cmd%&8)! ht={&7Использованная команда: &4%fullcmd%} perm={ublocker.notify.commands}'
+      - '[NOTIFY_SOUND] BLOCK_NOTE_BLOCK_PLING;1.0;1.0 perm={ublocker.notify.commands}'
   regex_example:
     mode: 'PATTERN'
     commands:
@@ -69,11 +69,11 @@ commands:
       - '[HIDE]'
       - '[BLOCK_TAB_COMPLETE]'
       - '[BLOCK]'
-      - '[MESSAGE] &7&l(&c&l!&7&l) &3Команда &8(&4%cmd%&8) &3не доступна с вашим уровнем доступа! ht=&7Данная команда была заблокирована по причине: &4так надо'
+      - '[MESSAGE] &7&l(&c&l!&7&l) &3Команда &8(&4%cmd%&8) &3не доступна с вашим уровнем доступа! ht={&7Данная команда была заблокирована по причине: &4так надо}'
       - '[TITLE] &7&l(&c&l!&7&l) &6&lОшибка &7&l(&c&l!&7&l);&fКоманда &6/%cmd% заблокирована!;10;50;15'
       - '[SOUND] ENTITY_ITEM_BREAK;1.0;1.0'
-      - '[NOTIFY] &7&l(&c&l!&7&l) &cИгрок &3%player% &cиспользовал запрещеннную команду! ht=&7Использованная команда: &4%cmd% perm=ublocker.notify.commands'
-      - '[NOTIFY_SOUND] BLOCK_NOTE_BLOCK_PLING;1.0;1.0 perm=ublocker.notify.commands'
+      - '[NOTIFY] &7&l(&c&l!&7&l) &cИгрок &3%player% &cиспользовал запрещеннную команду! ht={&7Использованная команда: &4%cmd%} perm={ublocker.notify.commands}'
+      - '[NOTIFY_SOUND] BLOCK_NOTE_BLOCK_PLING;1.0;1.0 perm={ublocker.notify.commands}'
   # Пример блокировки в отдельных мирах.
   condition_example:
     mode: 'STRING'
@@ -85,7 +85,7 @@ commands:
       - '[WORLD] == nether' # блокируем в аду
       - '[REGION] == pvp'
     actions:
-      - '[LITE_BLOCK] single,aliases perm=ublocker.bypass.commands.nether'
+      - '[LITE_BLOCK] perm=ublocker.bypass.commands.nether'
       - '[MESSAGE] &7&l(&c&l!&7&l) &cКоманда в мире %world% заблокирована!'
   # Пример блоксинтакса. Блокирует все команды с двоеточием. Оставьте как есть, если вам необходимо блокировать такие команды.
   # На данном примере заполнители single и aliases не требуются.

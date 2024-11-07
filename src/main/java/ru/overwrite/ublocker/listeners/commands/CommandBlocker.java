@@ -198,9 +198,12 @@ public class CommandBlocker implements Listener {
                     if (!e.isCancelled())
                         break;
                     runner.runAsync(() -> {
-                        String message = Utils.replaceEach(Utils.colorize(action.context()), searchList, replacementList);
+                        String formattedMessage = Utils.replaceEach(Utils.colorize(action.context()), searchList, replacementList);
 
-                        final Component comp = Utils.createHoverMessage(message);
+                        String message = Utils.extractMessage(formattedMessage, new String[]{"ht={"});
+                        String hoverText = Utils.extractValue(formattedMessage, "ht={", "}");
+
+                        final Component comp = Utils.createHoverMessage(message, hoverText);
 
                         p.sendMessage(comp);
                     });
@@ -240,20 +243,22 @@ public class CommandBlocker implements Listener {
                     break;
                 }
                 case LOG: {
-                    String[] coAction = action.context().split("file=");
-                    plugin.logAction(Utils.replaceEach(coAction[0], searchList, replacementList), coAction[1]);
+                    String logMessage = Utils.extractMessage(action.context(), new String[]{"file={"});
+                    String file = Utils.extractValue(action.context(), "file={", "}");
+                    plugin.logAction(Utils.replaceEach(logMessage, searchList, replacementList), file);
                     break;
                 }
                 case NOTIFY: {
                     if (!e.isCancelled())
                         break;
                     runner.runAsync(() -> {
-                        String[] coAction = action.context().split("perm=");
-                        String perm = coAction[1];
+                        String formattedMessage = Utils.replaceEach(Utils.colorize(action.context()), searchList, replacementList);
 
-                        String notifyMessage = Utils.replaceEach(Utils.colorize(coAction[0]), searchList, replacementList);
+                        String message = Utils.extractMessage(formattedMessage, new String[]{"ht={", "perm={"});
+                        String hoverText = Utils.extractValue(formattedMessage, "ht={", "}");
+                        String perm = Utils.extractValue(formattedMessage, "perm={", "}");
 
-                        final Component comp = Utils.createHoverMessage(notifyMessage);
+                        final Component comp = Utils.createHoverMessage(message, hoverText);
 
                         for (Player ps : Bukkit.getOnlinePlayers()) {
                             if (ps.hasPermission(perm)) {
@@ -271,10 +276,10 @@ public class CommandBlocker implements Listener {
                     if (!e.isCancelled())
                         break;
                     runner.runAsync(() -> {
-                        String[] coAction = action.context().split("perm=");
-                        String[] sound = coAction[0].trim().split(";");
+                        String perm = Utils.extractValue(action.context(), "perm={", "}");
+                        String[] sound = Utils.extractMessage(action.context(), new String[]{"perm={"}).split(";");
                         for (Player ps : Bukkit.getOnlinePlayers()) {
-                            if (ps.hasPermission(coAction[1])) {
+                            if (ps.hasPermission(perm)) {
                                 Utils.sendSound(sound, ps);
                             }
                         }
