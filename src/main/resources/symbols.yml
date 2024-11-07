@@ -49,7 +49,7 @@ symbols:
       - "-uu"
     # Действия из описанных выше инструкций
     actions:
-      - '[LITE_BLOCK] ublocker.bypass.symbols'
+      - '[LITE_BLOCK] perm={ublocker.bypass.symbols1}'
       - '[MESSAGE] &7&l(&c&l!&7&l) &3Символ &8(&4%symbol%&8) &3запрещено использовать в командах!'
       - '[TITLE] &7&l(&c&l!&7&l) &6&lОшибка &7&l(&c&l!&7&l);&fСимвол %symbol% заблокирован!;10;50;15'
       - '[SOUND] ENTITY_ITEM_BREAK;1.0;1.0'
@@ -72,7 +72,7 @@ symbols:
       - '.*'
       - '**'
     actions:
-      - '[LITE_BLOCK] ublocker.bypass.symbols'
+      - '[LITE_BLOCK] perm={ublocker.bypass.symbols2}'
       - '[MESSAGE] &7&l(&c&l!&7&l) &3Символ &8(&4%symbol%&8) &3запрещено использовать в командах!'
       - '[TITLE] &7&l(&c&l!&7&l) &6&lОшибка &7&l(&c&l!&7&l);&fСимвол %symbol% заблокирован!;10;50;15'
       - '[SOUND] ENTITY_ITEM_BREAK;1.0;1.0'

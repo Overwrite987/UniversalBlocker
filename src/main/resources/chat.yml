@@ -78,7 +78,7 @@ chat_settings:
       value: ENTITY_ITEM_BREAK;1.0;1.0
     notify:
       enable: true
-      message: '&7&l(&c&l!&7&l) &cИгрок &3%player% &cпытался написать запрещенные символы в команде &8(&4%symbol%&8). ht=&7Сообщение игрока: &c%msg%'
+      message: '&7&l(&c&l!&7&l) &cИгрок &3%player% &cпытался написать запрещенные символы в команде &8(&4%symbol%&8). ht={&7Сообщение игрока: &c%msg%}'
       sound:
         enable: true
         value: BLOCK_NOTE_BLOCK_PLING;1.0;1.0

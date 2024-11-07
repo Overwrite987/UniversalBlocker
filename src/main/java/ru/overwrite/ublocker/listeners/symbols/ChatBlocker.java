@@ -103,7 +103,9 @@ public class ChatBlocker implements Listener {
                     break;
                 }
                 case LITE_BLOCK: {
-                    String perm = Utils.getPermOrDefault(action.context(), "ublocker.bypass.symbols");
+                    String perm = Utils.getPermOrDefault(
+                            Utils.extractValue(action.context(), "perm={", "}"),
+                            "ublocker.bypass.symbols");
                     if (!p.hasPermission(perm)) {
                         e.setCancelled(true);
                     }

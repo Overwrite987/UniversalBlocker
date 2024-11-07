@@ -79,7 +79,9 @@ public class CommandHider implements Listener {
                     return com.equals(command);
                 }
                 case LITE_HIDE: {
-                    String perm = Utils.getPermOrDefault(action.context(), "ublocker.bypass.commands");
+                    String perm = Utils.getPermOrDefault(
+                            Utils.extractValue(action.context(), "perm={", "}"),
+                            "ublocker.bypass.commands");
                     if (p.hasPermission(perm)) {
                         return false;
                     }
