@@ -67,7 +67,7 @@ public class CommandBlocker implements Listener {
                 aliases.add(comInMap.getName());
             }
             String executedCommandBase = Utils.cutCommand(command);
-            if (executedCommandBase.equalsIgnoreCase(com) || aliases.contains(executedCommandBase.replace("/", ""))) {
+            if (executedCommandBase.equalsIgnoreCase(com) || aliases.contains(executedCommandBase.substring(1))) {
                 List<Action> actions = group.getActionsToExecute();
                 if (actions.isEmpty()) {
                     continue;
@@ -120,7 +120,7 @@ public class CommandBlocker implements Listener {
                     String executedCommandBase = Utils.cutCommand(command);
                     if (group.isBlockAliases()) {
                         for (String alias : aliases) {
-                            if (executedCommandBase.replace("/", "").equalsIgnoreCase(alias)) {
+                            if (executedCommandBase.substring(1).equalsIgnoreCase(alias)) {
                                 e.setCancelled(true);
                                 break;
                             }
@@ -140,7 +140,7 @@ public class CommandBlocker implements Listener {
                     String executedCommandBase = Utils.cutCommand(command);
                     if (group.isBlockAliases()) {
                         for (String alias : aliases) {
-                            if (executedCommandBase.replace("/", "").equalsIgnoreCase(alias)) {
+                            if (executedCommandBase.substring(1).equalsIgnoreCase(alias)) {
                                 e.setCancelled(true);
                                 break;
                             }
@@ -159,7 +159,7 @@ public class CommandBlocker implements Listener {
                     String executedCommandBase = Utils.cutCommand(command);
                     if (group.isBlockAliases()) {
                         for (String alias : aliases) {
-                            if (executedCommandBase.replace("/", "").equalsIgnoreCase(alias)) {
+                            if (executedCommandBase.substring(1).equalsIgnoreCase(alias)) {
                                 e.setCancelled(true);
                                 break;
                             }
@@ -182,7 +182,7 @@ public class CommandBlocker implements Listener {
                     String executedCommandBase = Utils.cutCommand(command);
                     if (group.isBlockAliases()) {
                         for (String alias : aliases) {
-                            if (executedCommandBase.replace("/", "").equalsIgnoreCase(alias)) {
+                            if (executedCommandBase.substring(1).equalsIgnoreCase(alias)) {
                                 e.setCancelled(true);
                                 break;
                             }
@@ -200,10 +200,10 @@ public class CommandBlocker implements Listener {
                     runner.runAsync(() -> {
                         String formattedMessage = Utils.replaceEach(Utils.colorize(action.context()), searchList, replacementList);
 
-                        String message = Utils.extractMessage(formattedMessage, new String[]{"ht={"});
+                        String notifyMessage = Utils.extractMessage(formattedMessage, new String[]{"ht={"});
                         String hoverText = Utils.extractValue(formattedMessage, "ht={", "}");
 
-                        final Component comp = Utils.createHoverMessage(message, hoverText);
+                        final Component comp = Utils.createHoverMessage(notifyMessage, hoverText);
 
                         p.sendMessage(comp);
                     });

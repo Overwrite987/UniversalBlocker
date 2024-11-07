@@ -56,7 +56,7 @@ public class ConsoleBlocker implements Listener {
                 aliases.add(comInMap.getName());
             }
             String executedCommandBase = command.contains(" ") ? Utils.cutCommand(command) : command;
-            if (executedCommandBase.equalsIgnoreCase(com) || aliases.contains(executedCommandBase.replace("/", ""))) {
+            if (executedCommandBase.equalsIgnoreCase(com) || aliases.contains(executedCommandBase.substring(1))) {
                 List<Action> actions = group.getActionsToExecute();
                 if (actions.isEmpty()) {
                     continue;
