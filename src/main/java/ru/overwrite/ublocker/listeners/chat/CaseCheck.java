@@ -70,9 +70,12 @@ public class CaseCheck implements Listener {
         if (caseCheckSettings.notifyEnabled()) {
             String[] replacementList = {p.getName(), Integer.toString(caseCheckSettings.maxUpperCasePercent()), message};
 
-            String notifyMessage = Utils.replaceEach(caseCheckSettings.notifyMessage(), searchList, replacementList);
+            String formattedMessage = Utils.replaceEach(caseCheckSettings.notifyMessage(), searchList, replacementList);
 
-            final Component comp = Utils.createHoverMessage(notifyMessage);
+            String notifyMessage = Utils.extractMessage(formattedMessage, new String[]{"ht={"});
+            String hoverText = Utils.extractValue(formattedMessage, "ht={", "}");
+
+            final Component comp = Utils.createHoverMessage(notifyMessage, hoverText);
 
             for (Player admin : Bukkit.getOnlinePlayers()) {
                 if (admin.hasPermission("ublocker.admin")) {

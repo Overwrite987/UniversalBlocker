@@ -68,9 +68,12 @@ public class SignFilter implements Listener {
             if (signCharsSettings.notifyEnabled()) {
                 String[] replacementList = {p.getName(), getFirstBlockedChar(message), message};
 
-                String notifyMessage = Utils.replaceEach(signCharsSettings.notifyMessage(), searchList, replacementList);
+                String formattedMessage = Utils.replaceEach(signCharsSettings.notifyMessage(), searchList, replacementList);
 
-                final Component comp = Utils.createHoverMessage(notifyMessage);
+                String notifyMessage = Utils.extractMessage(formattedMessage, new String[]{"ht={"});
+                String hoverText = Utils.extractValue(formattedMessage, "ht={", "}");
+
+                final Component comp = Utils.createHoverMessage(notifyMessage, hoverText);
 
                 for (Player admin : Bukkit.getOnlinePlayers()) {
                     if (admin.hasPermission("ublocker.admin")) {

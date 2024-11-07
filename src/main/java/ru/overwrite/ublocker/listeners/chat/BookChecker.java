@@ -61,9 +61,12 @@ public class BookChecker implements Listener {
             if (bookCharsSettings.notifyEnabled()) {
                 String[] replacementList = {p.getName(), getFirstBlockedChar(message)};
 
-                String notifyMessage = Utils.replaceEach(bookCharsSettings.notifyMessage(), searchList, replacementList);
+                String formattedMessage = Utils.replaceEach(bookCharsSettings.notifyMessage(), searchList, replacementList);
 
-                final Component comp = Utils.createHoverMessage(notifyMessage);
+                String notifyMessage = Utils.extractMessage(formattedMessage, new String[]{"ht={"});
+                String hoverText = Utils.extractValue(formattedMessage, "ht={", "}");
+
+                final Component comp = Utils.createHoverMessage(notifyMessage, hoverText);
 
                 for (Player admin : Bukkit.getOnlinePlayers()) {
                     if (admin.hasPermission("ublocker.admin")) {
