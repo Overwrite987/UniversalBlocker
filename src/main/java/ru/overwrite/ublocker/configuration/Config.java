@@ -402,7 +402,6 @@ public class Config {
         );
     }
 
-
     private boolean isNullSection(ConfigurationSection section) {
         return section == null;
     }

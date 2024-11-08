@@ -97,7 +97,7 @@ public final class Utils {
                 return message.substring(startIndex, endIndex);
             }
         }
-        return "";  // Возвращаем пустую строку, если ключ не найден
+        return "";
     }
 
     private static final char COLOR_CHAR = '§';
@@ -163,7 +163,7 @@ public final class Utils {
     }
 
     public static String getPermOrDefault(String perm, String defaultPerm) {
-        if (perm.isBlank()) {
+        if (perm.isEmpty() || perm.isBlank()) {
             return defaultPerm;
         }
         return perm;

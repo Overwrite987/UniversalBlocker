@@ -115,20 +115,6 @@ public class ChatBlocker implements Listener {
                     if (!e.isCancelled())
                         break;
                     runner.runAsync(() -> {
-                        // String hovertext = plugin.getHoverText(coAction);
-                        // HoverEvent hover = new HoverEvent(Action.SHOW_TEXT, new
-                        // Text(Utils.colorize(hovertext)
-                        // .replace("%world%", p.getWorld().getName())
-                        // .replace("%symbol%", symbol)
-                        // .replace("%cmd%", command)));
-                        // BaseComponent[] comp = TextComponent.fromLegacyText(Utils.colorize(message
-                        // .replace("%world%", p.getWorld().getName())
-                        // .replace("%symbol%", symbol)
-                        // .replace("%cmd%", command)
-                        // .replace(hovertext, "")));
-                        // for (BaseComponent component : comp) {
-                        // component.setHoverEvent(hover);
-                        // }
                         String formattedMessage = Utils.replaceEach(Utils.colorize(action.context()), searchList, replacementList);
 
                         String messageToPlayer = Utils.extractMessage(formattedMessage, new String[]{"ht={"});
