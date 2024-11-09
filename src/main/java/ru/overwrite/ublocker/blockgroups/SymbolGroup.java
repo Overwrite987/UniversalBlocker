@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import lombok.Getter;
 import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.conditions.Condition;
@@ -15,26 +16,32 @@ public final class SymbolGroup {
 
     private final BlockType blockType;
 
-    private final List<String> symbolsToBlock = new ObjectArrayList<>();
+    private final ObjectList<String> symbolsToBlock = new ObjectArrayList<>();
 
-    private final List<Pattern> patternsToBlock = new ObjectArrayList<>();
+    private final ObjectList<Pattern> patternsToBlock = new ObjectArrayList<>();
 
-    private final List<String> excludedCommandsString = new ObjectArrayList<>();
+    private final ObjectList<String> excludedCommandsString = new ObjectArrayList<>();
 
-    private final List<Pattern> excludedCommandsPattern = new ObjectArrayList<>();
+    private final ObjectList<Pattern> excludedCommandsPattern = new ObjectArrayList<>();
 
-    private final List<Condition> conditionsToCheck;
+    private final ObjectList<Condition> conditionsToCheck;
 
-    private final List<Action> actionsToExecute;
+    private final ObjectList<Action> actionsToExecute;
 
-    private final List<String> blockFactor;
+    private final ObjectList<String> blockFactor;
 
-    public SymbolGroup(String groupId, BlockType blockType, List<String> blockFactor, List<String> symbolsToBlock, List<String> excludedCommand, List<Condition> conditionsToCheck, List<Action> actionsToExecute) {
+    public SymbolGroup(String groupId,
+                       BlockType blockType,
+                       ObjectList<String> blockFactor,
+                       ObjectList<String> symbolsToBlock,
+                       ObjectList<String> excludedCommand,
+                       ObjectList<Condition> conditionsToCheck,
+                       ObjectList<Action> actionsToExecute) {
         this.groupId = groupId;
         this.blockType = blockType;
         this.blockFactor = blockFactor;
-        setupBlockingList(symbolsToBlock);
-        setupExcludedCommands(excludedCommand);
+        this.setupBlockingList(symbolsToBlock);
+        this.setupExcludedCommands(excludedCommand);
         this.conditionsToCheck = conditionsToCheck;
         this.actionsToExecute = actionsToExecute;
     }

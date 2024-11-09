@@ -1,9 +1,9 @@
 package ru.overwrite.ublocker.listeners.symbols;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -62,7 +62,7 @@ public class SyntaxBlocker implements Listener {
 
     private void checkStringBlock(PlayerCommandPreprocessEvent e, Player p, String command, SymbolGroup group) {
         for (String symbol : group.getSymbolsToBlock()) {
-            List<Action> actions = group.getActionsToExecute();
+            ObjectList<Action> actions = group.getActionsToExecute();
             if (actions.isEmpty()) {
                 continue;
             }
@@ -80,7 +80,7 @@ public class SyntaxBlocker implements Listener {
 
     private void checkPatternBlock(PlayerCommandPreprocessEvent e, Player p, String command, SymbolGroup group) {
         for (Pattern pattern : group.getPatternsToBlock()) {
-            List<Action> actions = group.getActionsToExecute();
+            ObjectList<Action> actions = group.getActionsToExecute();
             if (actions.isEmpty()) {
                 continue;
             }
@@ -99,7 +99,7 @@ public class SyntaxBlocker implements Listener {
 
     private final String[] searchList = {"%player%", "%world%", "%symbol%", "%cmd%"};
 
-    private void executeActions(Cancellable e, Player p, String command, String symbol, List<Action> actions, String world) {
+    private void executeActions(Cancellable e, Player p, String command, String symbol, ObjectList<Action> actions, String world) {
         final String[] replacementList = {p.getName(), world, symbol, command};
         for (Action action : actions) {
             switch (action.type()) {
@@ -214,11 +214,11 @@ public class SyntaxBlocker implements Listener {
         }
     }
 
-    private boolean startWithExcludedString(String command, List<String> excludedSet) {
-        if (excludedSet.isEmpty()) {
+    private boolean startWithExcludedString(String command, ObjectList<String> excludedList) {
+        if (excludedList.isEmpty()) {
             return false;
         }
-        for (String excluded : excludedSet) {
+        for (String excluded : excludedList) {
             if (command.startsWith(excluded + " ")) {
                 return true;
             }
@@ -226,11 +226,11 @@ public class SyntaxBlocker implements Listener {
         return false;
     }
 
-    private boolean startWithExcludedPattern(String command, List<Pattern> excludedSet) {
-        if (excludedSet.isEmpty()) {
+    private boolean startWithExcludedPattern(String command, ObjectList<Pattern> excludedList) {
+        if (excludedList.isEmpty()) {
             return false;
         }
-        for (Pattern excluded : excludedSet) {
+        for (Pattern excluded : excludedList) {
             Matcher matcher = excluded.matcher(command);
             if (matcher.lookingAt()) {
                 return true;

@@ -1,6 +1,7 @@
 package ru.overwrite.ublocker.blockgroups;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import lombok.Getter;
 
 import java.util.List;
@@ -16,21 +17,26 @@ public final class CommandGroup {
 
     private final BlockType blockType;
 
-    private final List<String> commandsToBlockString = new ObjectArrayList<>();
+    private final ObjectList<String> commandsToBlockString = new ObjectArrayList<>();
 
-    private final List<Pattern> commandsToBlockPattern = new ObjectArrayList<>();
+    private final ObjectList<Pattern> commandsToBlockPattern = new ObjectArrayList<>();
 
-    private final List<Condition> conditionsToCheck;
+    private final ObjectList<Condition> conditionsToCheck;
 
-    private final List<Action> actionsToExecute;
+    private final ObjectList<Action> actionsToExecute;
 
     private final boolean blockAliases;
 
-    public CommandGroup(String groupId, BlockType blockType, boolean blockAliases, List<String> commandsToBlock, List<Condition> conditionsToCheck, List<Action> actionsToExecute) {
+    public CommandGroup(String groupId,
+                        BlockType blockType,
+                        boolean blockAliases,
+                        ObjectList<String> commandsToBlock,
+                        ObjectList<Condition> conditionsToCheck,
+                        ObjectList<Action> actionsToExecute) {
         this.groupId = groupId;
         this.blockType = blockType;
         this.blockAliases = blockAliases;
-        setupBlockingList(commandsToBlock);
+        this.setupBlockingList(commandsToBlock);
         this.conditionsToCheck = conditionsToCheck;
         this.actionsToExecute = actionsToExecute;
     }

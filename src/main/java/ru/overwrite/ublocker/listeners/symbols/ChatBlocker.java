@@ -1,9 +1,9 @@
 package ru.overwrite.ublocker.listeners.symbols;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -63,7 +63,7 @@ public class ChatBlocker implements Listener {
 
     private void checkStringBlock(AsyncPlayerChatEvent e, Player p, String message, SymbolGroup group) {
         for (String symbol : group.getSymbolsToBlock()) {
-            List<Action> actions = group.getActionsToExecute();
+            ObjectList<Action> actions = group.getActionsToExecute();
             if (actions.isEmpty()) {
                 continue;
             }
@@ -78,7 +78,7 @@ public class ChatBlocker implements Listener {
 
     private void checkPatternBlock(AsyncPlayerChatEvent e, Player p, String message, SymbolGroup group) {
         for (Pattern pattern : group.getPatternsToBlock()) {
-            List<Action> actions = group.getActionsToExecute();
+            ObjectList<Action> actions = group.getActionsToExecute();
             if (actions.isEmpty()) {
                 continue;
             }
@@ -94,7 +94,7 @@ public class ChatBlocker implements Listener {
 
     private final String[] searchList = {"%player%", "%world%", "%symbol%", "%msg%"};
 
-    private void executeActions(Cancellable e, Player p, String message, String symbol, List<Action> actions, String world) {
+    private void executeActions(Cancellable e, Player p, String message, String symbol, ObjectList<Action> actions, String world) {
         final String[] replacementList = {p.getName(), world, message, symbol};
         for (Action action : actions) {
             switch (action.type()) {

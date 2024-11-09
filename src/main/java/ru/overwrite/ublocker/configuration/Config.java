@@ -2,13 +2,13 @@ package ru.overwrite.ublocker.configuration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -31,13 +31,13 @@ public class Config {
         this.plugin = plugin;
     }
 
-    public Set<CommandGroup> commandBlockGroupSet;
+    public ObjectSet<CommandGroup> commandBlockGroupSet;
 
-    public Set<SymbolGroup> symbolBlockGroupSet;
+    public ObjectSet<SymbolGroup> symbolBlockGroupSet;
 
-    public Set<CommandGroup> commandHideGroupSet;
+    public ObjectSet<CommandGroup> commandHideGroupSet;
 
-    public Set<String> excludedPlayers;
+    public ObjectSet<String> excludedPlayers;
 
     public void setupChat(String path) {
         final FileConfiguration chat = getFile(path, "chat.yml");
@@ -356,8 +356,8 @@ public class Config {
         }
 
         BlockType mode;
-        Set<String> banWordsString = new ObjectOpenHashSet<>();
-        Set<Pattern> banWordsPattern = new ObjectOpenHashSet<>();
+        ObjectSet<String> banWordsString = new ObjectOpenHashSet<>();
+        ObjectSet<Pattern> banWordsPattern = new ObjectOpenHashSet<>();
         switch (banWords.getString("mode").toUpperCase()) {
             case "STRING":
                 mode = BlockType.STRING;
@@ -410,29 +410,29 @@ public class Config {
         final FileConfiguration commands = getFile(path, "commands.yml");
         commandBlockGroupSet = new ObjectOpenHashSet<>();
         commandHideGroupSet = new ObjectOpenHashSet<>();
-        for (String cmds : commands.getConfigurationSection("commands").getKeys(false)) {
-            final ConfigurationSection section = commands.getConfigurationSection("commands." + cmds);
+        for (String commandsID : commands.getConfigurationSection("commands").getKeys(false)) {
+            final ConfigurationSection section = commands.getConfigurationSection("commands." + commandsID);
             BlockType blockType = BlockType.valueOf(section.getString("mode").toUpperCase());
             boolean blockAliases = section.getBoolean("block_aliases") && blockType.equals(BlockType.STRING); // Не будет работать с паттернами
-            List<Condition> conditionList = new ObjectArrayList<>();
+            ObjectList<Condition> conditionList = new ObjectArrayList<>();
             for (String s : section.getStringList("conditions")) {
                 conditionList.add(Condition.fromString(s));
             }
-            List<Action> actionList = new ObjectArrayList<>();
+            ObjectList<Action> actionList = new ObjectArrayList<>();
             for (String s : section.getStringList("actions")) {
                 actionList.add(Action.fromString(s));
             }
             commandBlockGroupSet.add(
                     new CommandGroup(
-                            cmds,
+                            commandsID,
                             blockType,
                             blockAliases,
-                            section.getStringList("commands"),
+                            new ObjectArrayList<>(section.getStringList("commands")),
                             conditionList,
                             actionList
                     )
             );
-            if (!blockAliases) {
+            if (!blockType.equals(BlockType.STRING)) {
                 return;
             }
             boolean shouldAddToHideList = false;
@@ -443,14 +443,14 @@ public class Config {
                 }
             }
             if (shouldAddToHideList) {
-                List<String> commandList = new ObjectArrayList<>();
+                ObjectList<String> commandList = new ObjectArrayList<>();
                 for (String s : section.getStringList("commands")) {
                     String newCmd = s.replace("/", "");
                     commandList.add(newCmd);
                 }
                 commandHideGroupSet.add(
                         new CommandGroup(
-                                cmds,
+                                commandsID,
                                 blockType,
                                 blockAliases,
                                 commandList,
@@ -465,25 +465,25 @@ public class Config {
     public void setupSymbols(String path) {
         final FileConfiguration symbols = getFile(path, "symbols.yml");
         symbolBlockGroupSet = new ObjectOpenHashSet<>();
-        for (String smbls : symbols.getConfigurationSection("symbols").getKeys(false)) {
-            final ConfigurationSection section = symbols.getConfigurationSection("symbols." + smbls);
+        for (String symbolsID : symbols.getConfigurationSection("symbols").getKeys(false)) {
+            final ConfigurationSection section = symbols.getConfigurationSection("symbols." + symbolsID);
             BlockType blockType = BlockType.valueOf(section.getString("mode").toUpperCase());
-            List<String> blockFactor = getBlockFactorList(section.getString("block_factor", ""));
-            List<Condition> conditionList = new ObjectArrayList<>();
+            ObjectList<String> blockFactor = getBlockFactorList(section.getString("block_factor", ""));
+            ObjectList<Condition> conditionList = new ObjectArrayList<>();
             for (String s : section.getStringList("conditions")) {
                 conditionList.add(Condition.fromString(s));
             }
-            List<Action> actionList = new ObjectArrayList<>();
+            ObjectList<Action> actionList = new ObjectArrayList<>();
             for (String s : section.getStringList("actions")) {
                 actionList.add(Action.fromString(s));
             }
             symbolBlockGroupSet.add(
                     new SymbolGroup(
-                            smbls,
+                            symbolsID,
                             blockType,
                             blockFactor,
-                            section.getStringList("symbols"),
-                            section.getStringList("excluded_commands"),
+                            new ObjectArrayList<>(section.getStringList("symbols")),
+                            new ObjectArrayList<>(section.getStringList("excluded_commands")),
                             conditionList,
                             actionList
                     )
@@ -491,10 +491,10 @@ public class Config {
         }
     }
 
-    private List<String> getBlockFactorList(String str) {
+    private ObjectList<String> getBlockFactorList(String str) {
         return str.contains(";")
-                ? List.of(str.trim().split(";"))
-                : List.of(str.trim());
+                ? ObjectList.of(str.trim().split(";"))
+                : ObjectList.of(str.trim());
     }
 
     public void setupExcluded(FileConfiguration config) {

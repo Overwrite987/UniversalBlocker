@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import org.bukkit.event.Listener;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -61,7 +62,7 @@ public class TabComplete implements Listener {
     private void checkStringBlock(AsyncTabCompleteEvent e, Player p, String buffer, CommandGroup group) {
         for (String command : group.getCommandsToBlockString()) {
             if (buffer.equalsIgnoreCase(command + " ")) {
-                List<Action> actions = group.getActionsToExecute();
+                ObjectList<Action> actions = group.getActionsToExecute();
                 if (actions.isEmpty()) {
                     continue;
                 }
@@ -80,7 +81,7 @@ public class TabComplete implements Listener {
 
     private void checkPatternBlock(AsyncTabCompleteEvent e, Player p, String buffer, CommandGroup group) {
         for (Pattern pattern : group.getCommandsToBlockPattern()) {
-            List<Action> actions = group.getActionsToExecute();
+            ObjectList<Action> actions = group.getActionsToExecute();
             if (actions.isEmpty()) {
                 continue;
             }

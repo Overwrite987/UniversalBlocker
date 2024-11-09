@@ -138,7 +138,7 @@ public final class Utils {
         for (int i = 0, length = b.length - 1; i < length; ++i) {
             if (b[i] == altColorChar && isValidColorCharacter(b[i + 1])) {
                 b[i++] = '§';
-                b[i] = Character.toLowerCase(b[i]);
+                b[i] |= 0x20;
             }
         }
 

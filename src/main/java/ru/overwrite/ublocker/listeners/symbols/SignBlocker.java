@@ -1,9 +1,9 @@
 package ru.overwrite.ublocker.listeners.symbols;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -66,7 +66,7 @@ public class SignBlocker implements Listener {
 
     private void checkStringBlock(SignChangeEvent e, Player p, String line0, String line1, String line2, String line3, SymbolGroup group) {
         for (String symbol : group.getSymbolsToBlock()) {
-            List<Action> actions = group.getActionsToExecute();
+            ObjectList<Action> actions = group.getActionsToExecute();
             if (actions.isEmpty()) {
                 continue;
             }
@@ -81,7 +81,7 @@ public class SignBlocker implements Listener {
 
     private void checkPatternBlock(SignChangeEvent e, Player p, String combined, String line0, String line1, String line2, String line3, SymbolGroup group) {
         for (Pattern pattern : group.getPatternsToBlock()) {
-            List<Action> actions = group.getActionsToExecute();
+            ObjectList<Action> actions = group.getActionsToExecute();
             if (actions.isEmpty()) {
                 continue;
             }
@@ -97,7 +97,7 @@ public class SignBlocker implements Listener {
 
     private final String[] searchList = {"%player%", "%world%", "%symbol%", "%line0%", "%line1%", "%line2%", "%line3%"};
 
-    private void executeActions(Cancellable e, Player p, String line0, String line1, String line2, String line3, String symbol, List<Action> actions, String world) {
+    private void executeActions(Cancellable e, Player p, String line0, String line1, String line2, String line3, String symbol, ObjectList<Action> actions, String world) {
         final String[] replacementList = {p.getName(), world, symbol, line0, line1, line2, line3};
         for (Action action : actions) {
             switch (action.type()) {

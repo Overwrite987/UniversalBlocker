@@ -1,7 +1,6 @@
 package ru.overwrite.ublocker.conditions;
 
-import java.util.List;
-
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
@@ -23,7 +22,7 @@ public class ConditionChecker {
         return hasWorldGuard;
     }
 
-    public static boolean isMeetsRequirements(Player p, List<Condition> conditions) {
+    public static boolean isMeetsRequirements(Player p, ObjectList<Condition> conditions) {
         if (conditions == null || conditions.isEmpty()) {
             return true;
         }
@@ -37,7 +36,7 @@ public class ConditionChecker {
                 case REGION: {
                     if (!hasWorldGuard()) return false;
 
-                    List<String> regions = WGUtils.getRegions(p.getLocation());
+                    ObjectList<String> regions = WGUtils.getRegions(p.getLocation());
                     meetsCondition = evaluateCondition(operator, regions.contains(context));
                     break;
                 }

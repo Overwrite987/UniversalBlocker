@@ -3,6 +3,7 @@ package ru.overwrite.ublocker.listeners.commands;
 import java.util.Collections;
 import java.util.List;
 
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
@@ -50,7 +51,7 @@ public class CommandHider implements Listener {
                 aliases.add(comInMap.getName());
             }
             if (command.equalsIgnoreCase(com) || aliases.contains(command)) {
-                List<Action> actions = group.getActionsToExecute();
+                ObjectList<Action> actions = group.getActionsToExecute();
                 if (actions.isEmpty()) {
                     continue;
                 }
