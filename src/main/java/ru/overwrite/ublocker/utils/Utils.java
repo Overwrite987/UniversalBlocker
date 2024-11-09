@@ -196,7 +196,7 @@ public final class Utils {
     }
 
     public static void checkUpdates(Main plugin, Consumer<String> consumer) {
-        plugin.getRunner().runAsync(() -> {
+        plugin.getRunner().runDelayedAsync(() -> {
             try (BufferedReader reader = new BufferedReader(
                     new InputStreamReader(
                             new URL("https://raw.githubusercontent.com/Overwrite987/UniversalBlocker/master/VERSION")
@@ -205,6 +205,6 @@ public final class Utils {
             } catch (IOException exception) {
                 plugin.getLogger().warning("Can't check for updates: " + exception.getMessage());
             }
-        });
+        }, 20);
     }
 }
