@@ -1,8 +1,7 @@
 package ru.overwrite.ublocker.actions;
 
-import java.util.Map;
-import java.util.stream.Stream;
-import java.util.stream.Collectors;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 public enum ActionType {
 
@@ -25,7 +24,13 @@ public enum ActionType {
     NOTIFY_SOUND,
     LOG;
 
-    private static final Map<String, ActionType> BY_NAME = Stream.of(values()).collect(Collectors.toMap(Enum::name, en -> en));
+    private static final Object2ObjectMap<String, ActionType> BY_NAME = new Object2ObjectOpenHashMap<>();
+
+    static {
+        for (ActionType actionType : values()) {
+            BY_NAME.put(actionType.name(), actionType);
+        }
+    }
 
     public static ActionType fromString(String str) {
         return BY_NAME.get(str.toUpperCase());
