@@ -55,15 +55,15 @@ public class BanWords implements Listener {
             }
             case PATTERN: {
                 for (Pattern banword : banWordsSettings.banWordsPattern()) {
-                    Matcher matrcher = banword.matcher(message);
-                    if (matrcher.find() && !isAdmin(p)) {
+                    Matcher matcher = banword.matcher(message);
+                    if (matcher.find() && !isAdmin(p)) {
                         if (banWordsSettings.block()) {
                             e.setCancelled(true);
-                            executeBlockActions(p, matrcher.group(), message, e);
+                            executeBlockActions(p, matcher.group(), message, e);
                         } else {
-                            notifyAdmins(p, matrcher.group(), message);
-                            String censored = "*".repeat(matrcher.group().length());
-                            e.setMessage(message.replace(matrcher.group(), censored));
+                            notifyAdmins(p, matcher.group(), message);
+                            String censored = "*".repeat(matcher.group().length());
+                            e.setMessage(message.replace(matcher.group(), censored));
                         }
                     }
                 }
