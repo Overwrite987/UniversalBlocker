@@ -1,12 +1,12 @@
 package ru.overwrite.ublocker;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import lombok.Setter;
 import org.bstats.bukkit.Metrics;
@@ -28,7 +28,7 @@ import ru.overwrite.ublocker.configuration.Config;
 
 public final class Main extends JavaPlugin {
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("[dd-MM-yyy] HH:mm:ss -");
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("'['dd-MM-yyyy']' HH:mm:ss -");
 
     @Setter
     private String path;
@@ -167,7 +167,7 @@ public final class Main extends JavaPlugin {
     }
 
     public void logAction(String key, String fileName) {
-        runner.runAsync(() -> logToFile(key.replace("%date%", DATE_FORMAT.format(new Date())), fileName));
+        runner.runAsync(() -> logToFile(key.replace("%date%", LocalDateTime.now().format(TIME_FORMATTER)), fileName));
     }
 
     public void logToFile(String message, String fileName) {
