@@ -7,8 +7,8 @@ import java.util.regex.Pattern;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-
 import it.unimi.dsi.fastutil.objects.ObjectSet;
+
 import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -415,12 +415,12 @@ public class Config {
             BlockType blockType = BlockType.valueOf(section.getString("mode").toUpperCase());
             boolean blockAliases = section.getBoolean("block_aliases") && blockType.equals(BlockType.STRING); // Не будет работать с паттернами
             ObjectList<Condition> conditionList = new ObjectArrayList<>();
-            for (String s : section.getStringList("conditions")) {
-                conditionList.add(Condition.fromString(s));
+            for (String condition : section.getStringList("conditions")) {
+                conditionList.add(Condition.fromString(condition));
             }
             ObjectList<Action> actionList = new ObjectArrayList<>();
-            for (String s : section.getStringList("actions")) {
-                actionList.add(Action.fromString(s));
+            for (String action : section.getStringList("actions")) {
+                actionList.add(Action.fromString(action));
             }
             commandBlockGroupSet.add(
                     new CommandGroup(
@@ -444,8 +444,8 @@ public class Config {
             }
             if (shouldAddToHideList) {
                 ObjectList<String> commandList = new ObjectArrayList<>();
-                for (String s : section.getStringList("commands")) {
-                    String newCmd = s.replace("/", "");
+                for (String command : section.getStringList("commands")) {
+                    String newCmd = command.replace("/", "");
                     commandList.add(newCmd);
                 }
                 commandHideGroupSet.add(
@@ -470,12 +470,12 @@ public class Config {
             BlockType blockType = BlockType.valueOf(section.getString("mode").toUpperCase());
             ObjectList<String> blockFactor = getBlockFactorList(section.getString("block_factor", ""));
             ObjectList<Condition> conditionList = new ObjectArrayList<>();
-            for (String s : section.getStringList("conditions")) {
-                conditionList.add(Condition.fromString(s));
+            for (String condition : section.getStringList("conditions")) {
+                conditionList.add(Condition.fromString(condition));
             }
             ObjectList<Action> actionList = new ObjectArrayList<>();
-            for (String s : section.getStringList("actions")) {
-                actionList.add(Action.fromString(s));
+            for (String action : section.getStringList("actions")) {
+                actionList.add(Action.fromString(action));
             }
             symbolBlockGroupSet.add(
                     new SymbolGroup(
