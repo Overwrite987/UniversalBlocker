@@ -66,6 +66,11 @@ public final class Utils {
         p.playSound(p.getLocation(), sound, volume, pitch);
     }
 
+    public static final String[] HOVER_MARKER = new String[]{"ht={"};
+    public static final String[] PERM_MARKER = new String[]{"perm={"};
+    public static final String[] FILE_MARKER = new String[]{"file={"};
+    public static final String[] NOTIFY_MARKERS = new String[]{"ht={", "perm={"};
+
     public static Component createHoverMessage(String message, String hoverText) {
         HoverEvent<Component> hover = HoverEvent.showText(LegacyComponentSerializer.legacySection().deserialize(hoverText));
         return LegacyComponentSerializer.legacySection()
@@ -75,16 +80,13 @@ public final class Utils {
 
     public static String extractMessage(String message, String[] markers) {
         IntList indices = new IntArrayList();
-
         for (String marker : markers) {
             int index = message.indexOf(marker);
             if (index != -1) {
                 indices.add(index);
             }
         }
-
         int endIndex = indices.isEmpty() ? message.length() : Collections.min(indices);
-
         return message.substring(0, endIndex).trim();
     }
 

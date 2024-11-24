@@ -122,7 +122,7 @@ public class SyntaxBlocker implements Listener {
                     runner.runAsync(() -> {
                         String formattedMessage = Utils.replaceEach(Utils.colorize(action.context()), searchList, replacementList);
 
-                        String messageToPlayer = Utils.extractMessage(formattedMessage, new String[]{"ht={"});
+                        String messageToPlayer = Utils.extractMessage(formattedMessage, Utils.HOVER_MARKER);
                         String hoverText = Utils.extractValue(formattedMessage, "ht={", "}");
 
                         final Component comp = Utils.createHoverMessage(messageToPlayer, hoverText);
@@ -165,7 +165,7 @@ public class SyntaxBlocker implements Listener {
                     break;
                 }
                 case LOG: {
-                    String logMessage = Utils.extractMessage(action.context(), new String[]{"file={"});
+                    String logMessage = Utils.extractMessage(action.context(), Utils.FILE_MARKER);
                     String file = Utils.extractValue(action.context(), "file={", "}");
                     plugin.logAction(Utils.replaceEach(logMessage, searchList, replacementList), file);
                     break;
@@ -176,7 +176,7 @@ public class SyntaxBlocker implements Listener {
                     runner.runAsync(() -> {
                         String formattedMessage = Utils.replaceEach(Utils.colorize(action.context()), searchList, replacementList);
 
-                        String notifyMessage = Utils.extractMessage(formattedMessage, new String[]{"ht={", "perm={"});
+                        String notifyMessage = Utils.extractMessage(formattedMessage, Utils.NOTIFY_MARKERS);
                         String hoverText = Utils.extractValue(formattedMessage, "ht={", "}");
                         String perm = Utils.getPermOrDefault(Utils.extractValue(formattedMessage, "perm={", "}"), "ublocker.admin");
 
@@ -199,7 +199,7 @@ public class SyntaxBlocker implements Listener {
                         break;
                     runner.runAsync(() -> {
                         String perm = Utils.extractValue(action.context(), "perm={", "}");
-                        String[] sound = Utils.extractMessage(action.context(), new String[]{"perm={"}).split(";");
+                        String[] sound = Utils.extractMessage(action.context(), Utils.PERM_MARKER).split(";");
                         for (Player ps : Bukkit.getOnlinePlayers()) {
                             if (ps.hasPermission(perm)) {
                                 Utils.sendSound(sound, ps);

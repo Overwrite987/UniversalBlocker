@@ -78,7 +78,7 @@ public class NumbersCheck implements Listener {
 
             String formattedMessage = Utils.replaceEach(numberCheckSettings.notifyMessage(), searchList, replacementList);
 
-            String notifyMessage = Utils.extractMessage(formattedMessage, new String[]{"ht={"});
+            String notifyMessage = Utils.extractMessage(formattedMessage, Utils.HOVER_MARKER);
             String hoverText = Utils.extractValue(formattedMessage, "ht={", "}");
 
             final Component comp = Utils.createHoverMessage(notifyMessage, hoverText);
