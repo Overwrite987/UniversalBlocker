@@ -43,7 +43,7 @@ public final class Main extends JavaPlugin {
     @Getter
     private PluginMessage pluginMessage;
 
-    public final Server server = getServer();
+    private final Server server = getServer();
 
     private final List<String> incompatible = ImmutableList.of("ViaRewind", "NeroChat", "PermissionsEx", "AntiCmds");
 
@@ -120,11 +120,11 @@ public final class Main extends JavaPlugin {
         for (String inc : incompatible) {
             if (pm.isPluginEnabled(inc)) {
                 loggerInfo(" ");
-                loggerInfo("§6============= §6! WARNING ! §c=============");
+                loggerInfo("§c============= §6! WARNING ! §c=============");
                 loggerInfo("§eНа сервере установлен плагин, который не совместим с §cUniversalBlocker!");
                 loggerInfo("§eНазвание: §6" + inc);
                 loggerInfo("§eУдалите данный плагин, для корректной работы §cUniversalBlocker!");
-                loggerInfo("§6============= §6! WARNING ! §c=============");
+                loggerInfo("§c============= §6! WARNING ! §c=============");
                 loggerInfo(" ");
                 this.setEnabled(false);
                 return false;
