@@ -112,8 +112,9 @@ public class ConsoleBlocker implements Listener {
                     return com.equals(executedCommandBase);
                 }
                 case LOG: {
-                    String[] coAction = action.context().split("file=");
-                    plugin.logAction(coAction[0], coAction[1]);
+                    String logMessage = Utils.extractMessage(action.context(), Utils.FILE_MARKER);
+                    String file = Utils.extractValue(action.context(), "file={", "}");
+                    plugin.logAction(logMessage, file);
                     break;
                 }
                 default:
