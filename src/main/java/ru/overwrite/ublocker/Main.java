@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import com.google.common.collect.ImmutableList;
 import lombok.Setter;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Server;
@@ -44,7 +45,7 @@ public final class Main extends JavaPlugin {
 
     public final Server server = getServer();
 
-    private final List<String> incompatible = List.of("ViaRewind", "NeroChat", "PermissionsEx", "AntiCmds");
+    private final List<String> incompatible = ImmutableList.of("ViaRewind", "NeroChat", "PermissionsEx", "AntiCmds");
 
     @Override
     public void onEnable() {
