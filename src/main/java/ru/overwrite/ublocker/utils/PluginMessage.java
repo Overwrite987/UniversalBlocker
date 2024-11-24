@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import ru.overwrite.ublocker.Main;
 import ru.overwrite.ublocker.task.Runner;
 
-public class PluginMessage implements PluginMessageListener {
+public final class PluginMessage implements PluginMessageListener {
 
     private final Main plugin;
     private final Runner runner;

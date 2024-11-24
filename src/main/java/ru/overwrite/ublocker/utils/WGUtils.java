@@ -9,7 +9,7 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
-public class WGUtils {
+public final class WGUtils {
 
     public static ObjectList<String> getRegions(Location location) {
         ObjectList<String> regions = new ObjectArrayList<>();
