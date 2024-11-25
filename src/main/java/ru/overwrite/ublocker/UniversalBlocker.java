@@ -18,31 +18,36 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import lombok.Getter;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import ru.overwrite.ublocker.listeners.chat.*;
 import ru.overwrite.ublocker.listeners.commands.*;
 import ru.overwrite.ublocker.listeners.symbols.*;
 import ru.overwrite.ublocker.task.*;
 import ru.overwrite.ublocker.utils.*;
 import ru.overwrite.ublocker.configuration.Config;
+import ru.overwrite.ublocker.utils.logging.BukkitLogger;
+import ru.overwrite.ublocker.utils.logging.Logger;
+import ru.overwrite.ublocker.utils.logging.PaperLogger;
 
 public final class UniversalBlocker extends JavaPlugin {
 
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("'['dd-MM-yyyy']' HH:mm:ss -");
 
-    @Setter
-    private String path;
+    private final Server server = getServer();
 
     @Getter
-    private final Config pluginConfig = new Config(this);
+    private final Logger pluginLogger = Utils.FOLIA ? new PaperLogger(this) : new BukkitLogger(this);
 
     @Getter
     private final Runner runner = Utils.FOLIA ? new PaperRunner(this) : new BukkitRunner(this);
 
     @Getter
-    private PluginMessage pluginMessage;
+    private final Config pluginConfig = new Config(this);
 
-    private final Server server = getServer();
+    @Setter
+    private String path;
+
+    @Getter
+    private PluginMessage pluginMessage;
 
     @Override
     public void onEnable() {
@@ -71,18 +76,18 @@ public final class UniversalBlocker extends JavaPlugin {
         }
         getCommand("universalblocker").setExecutor(new CommandClass(this));
         long endTime = System.currentTimeMillis();
-        loggerInfo("Plugin started in " + (endTime - startTime) + " ms");
+        pluginLogger.info("Plugin started in " + (endTime - startTime) + " ms");
     }
 
     public boolean isPaper() { // Один хуй не сработает на 1.20+
         if (server.getName().equals("CraftBukkit")) {
-            loggerInfo(" ");
-            loggerInfo("§6============= §c! WARNING ! §6=============");
-            loggerInfo("§eЭтот плагин работает только на Paper и его форках!");
-            loggerInfo("§eАвтор плагина §cкатегорически §eвыступает за отказ от использования устаревшего и уязвимого софта!");
-            loggerInfo("§eСкачать Paper: §ahttps://papermc.io/downloads/all");
-            loggerInfo("§6============= §c! WARNING ! §6=============");
-            loggerInfo(" ");
+            pluginLogger.info(" ");
+            pluginLogger.info("§6============= §c! WARNING ! §6=============");
+            pluginLogger.info("§eЭтот плагин работает только на Paper и его форках!");
+            pluginLogger.info("§eАвтор плагина §cкатегорически §eвыступает за отказ от использования устаревшего и уязвимого софта!");
+            pluginLogger.info("§eСкачать Paper: §ahttps://papermc.io/downloads/all");
+            pluginLogger.info("§6============= §c! WARNING ! §6=============");
+            pluginLogger.info(" ");
             this.setEnabled(false);
             return false;
         }
@@ -92,13 +97,13 @@ public final class UniversalBlocker extends JavaPlugin {
     private boolean checkCompatible(PluginManager pm) {
         for (String inc : ImmutableList.of("ViaRewind", "NeroChat", "PermissionsEx", "AntiCmds")) {
             if (pm.isPluginEnabled(inc)) {
-                loggerInfo(" ");
-                loggerInfo("§c============= §6! WARNING ! §c=============");
-                loggerInfo("§eНа сервере установлен плагин, который не совместим с §cUniversalBlocker!");
-                loggerInfo("§eНазвание: §6" + inc);
-                loggerInfo("§eУдалите данный плагин, для корректной работы §cUniversalBlocker!");
-                loggerInfo("§c============= §6! WARNING ! §c=============");
-                loggerInfo(" ");
+                pluginLogger.info(" ");
+                pluginLogger.info("§c============= §6! WARNING ! §c=============");
+                pluginLogger.info("§eНа сервере установлен плагин, который не совместим с §cUniversalBlocker!");
+                pluginLogger.info("§eНазвание: §6" + inc);
+                pluginLogger.info("§eУдалите данный плагин, для корректной работы §cUniversalBlocker!");
+                pluginLogger.info("§c============= §6! WARNING ! §c=============");
+                pluginLogger.info(" ");
                 this.setEnabled(false);
                 return false;
             }
@@ -108,15 +113,15 @@ public final class UniversalBlocker extends JavaPlugin {
 
     private void checkUpdates() {
         Utils.checkUpdates(this, version -> {
-            loggerInfo("§6========================================");
+            pluginLogger.info("§6========================================");
             if (getDescription().getVersion().equals(version)) {
-                loggerInfo("§aВы используете последнюю версию плагина!");
+                pluginLogger.info("§aВы используете последнюю версию плагина!");
             } else {
-                loggerInfo("§aВы используете устаревшую или некорректную версию плагина!");
-                loggerInfo("§aВы можете загрузить последнюю версию плагина здесь:");
-                loggerInfo("§bhttps://github.com/Overwrite987/UniversalBlocker/releases/latest");
+                pluginLogger.info("§aВы используете устаревшую или некорректную версию плагина!");
+                pluginLogger.info("§aВы можете загрузить последнюю версию плагина здесь:");
+                pluginLogger.info("§bhttps://github.com/Overwrite987/UniversalBlocker/releases/latest");
             }
-            loggerInfo("§6========================================");
+            pluginLogger.info("§6========================================");
         });
     }
 
@@ -158,14 +163,6 @@ public final class UniversalBlocker extends JavaPlugin {
 
     public boolean isExcluded(Player p) {
         return !pluginConfig.excludedPlayers.isEmpty() && pluginConfig.excludedPlayers.contains(p.getName());
-    }
-
-    private void loggerInfo(String logMessage) {
-        if (Utils.FOLIA) {
-            getComponentLogger().info(LegacyComponentSerializer.legacySection().deserialize(logMessage));
-        } else {
-            getLogger().info(logMessage);
-        }
     }
 
     public void logAction(String key, String fileName) {

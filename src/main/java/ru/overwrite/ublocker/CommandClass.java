@@ -32,29 +32,38 @@ public class CommandClass implements CommandExecutor {
             sender.sendMessage("§6/" + label + " reload - перезагрузить конфиг");
             return true;
         }
-        if (args[0].equalsIgnoreCase("reload")) {
-            long startTime = System.currentTimeMillis();
-            plugin.getRunner().cancelTasks();
-            HandlerList.unregisterAll(plugin);
-            plugin.reloadConfig();
-            final FileConfiguration config = plugin.getConfig();
-            final ConfigurationSection settings = config.getConfigurationSection("settings");
-            Utils.setupColorizer(settings);
-            final String path = settings.getBoolean("custom_plugin_folder.enable")
-                    ? settings.getString("custom_plugin_folder.path")
-                    : plugin.getDataFolder().getAbsolutePath();
-            plugin.setPath(path);
-            pluginConfig.setupExcluded(config);
-            plugin.registerEvents(Bukkit.getPluginManager(), settings);
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                p.updateCommands();
+        switch (args[0]) {
+            case "reload": {
+                long startTime = System.currentTimeMillis();
+                plugin.getRunner().cancelTasks();
+                HandlerList.unregisterAll(plugin);
+                plugin.reloadConfig();
+                final FileConfiguration config = plugin.getConfig();
+                final ConfigurationSection settings = config.getConfigurationSection("settings");
+                Utils.setupColorizer(settings);
+                final String path = settings.getBoolean("custom_plugin_folder.enable")
+                        ? settings.getString("custom_plugin_folder.path")
+                        : plugin.getDataFolder().getAbsolutePath();
+                plugin.setPath(path);
+                pluginConfig.setupExcluded(config);
+                plugin.registerEvents(Bukkit.getPluginManager(), settings);
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    p.updateCommands();
+                }
+                long endTime = System.currentTimeMillis();
+                sender.sendMessage("§cUniversalBlocker §7> §aКонфигурация перезагружена за §e" + (endTime - startTime) + " ms");
+                return true;
             }
-            long endTime = System.currentTimeMillis();
-            sender.sendMessage("§cUniversalBlocker §7> §aКонфигурация перезагружена за §e" + (endTime - startTime) + " ms");
-            return true;
-        } else {
-            sender.sendMessage("§6❖ §7Running §c§lUniversalBlocker §c§l" + plugin.getDescription().getVersion() + "§7 by §5OverwriteMC");
+            case "debug": {
+                Utils.DEBUG = !Utils.DEBUG;
+                String message = "§cUniversalBlocker §7> §6Дебаг переключен в значение: "
+                        + (Utils.DEBUG ? "§a" : "§c")
+                        + Utils.DEBUG;
+                sender.sendMessage(message);
+                return true;
+            }
         }
+        sender.sendMessage("§6❖ §7Running §c§lUniversalBlocker §c§l" + plugin.getDescription().getVersion() + "§7 by §5OverwriteMC");
         return true;
     }
 }

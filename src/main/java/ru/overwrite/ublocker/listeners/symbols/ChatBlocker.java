@@ -42,7 +42,13 @@ public class ChatBlocker implements Listener {
             return;
         String message = e.getMessage().toLowerCase();
         for (SymbolGroup group : pluginConfig.symbolBlockGroupSet) {
+            if (Utils.DEBUG) {
+                plugin.getPluginLogger().info("Group checking now: " + group.getGroupId());
+            }
             if (group.getBlockFactor().isEmpty() || !group.getBlockFactor().contains("chat")) {
+                if (Utils.DEBUG) {
+                    plugin.getPluginLogger().info("Group " + group.getGroupId() + " does not have 'chat' block factor. Skipping...");
+                }
                 continue;
             }
             switch (group.getBlockType()) {

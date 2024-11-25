@@ -45,7 +45,13 @@ public class SignBlocker implements Listener {
         String line3 = e.getLine(3).toLowerCase();
         String combined = line0 + line1 + line2 + line3;
         for (SymbolGroup group : pluginConfig.symbolBlockGroupSet) {
+            if (Utils.DEBUG) {
+                plugin.getPluginLogger().info("Group checking now: " + group.getGroupId());
+            }
             if (group.getBlockFactor().isEmpty() || !group.getBlockFactor().contains("sign")) {
+                if (Utils.DEBUG) {
+                    plugin.getPluginLogger().info("Group " + group.getGroupId() + " does not have 'sign' block factor. Skipping...");
+                }
                 continue;
             }
             switch (group.getBlockType()) {

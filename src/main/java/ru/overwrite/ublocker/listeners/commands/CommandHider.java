@@ -34,6 +34,10 @@ public class CommandHider implements Listener {
             return;
         e.getCommands().removeIf(command -> {
             for (CommandGroup group : pluginConfig.commandHideGroupSet) {
+                if (Utils.DEBUG) {
+                    plugin.getPluginLogger().info("Group checking now: " + group.getGroupId());
+                    plugin.getPluginLogger().info("Block type: " + group.getBlockType());
+                }
                 if (checkStringBlock(p, command, group)) {
                     return true;
                 }

@@ -43,6 +43,10 @@ public class CommandBlocker implements Listener {
             return;
         String command = e.getMessage().toLowerCase();
         for (CommandGroup group : pluginConfig.commandBlockGroupSet) {
+            if (Utils.DEBUG) {
+                plugin.getPluginLogger().info("Group checking now: " + group.getGroupId());
+                plugin.getPluginLogger().info("Block type: " + group.getBlockType());
+            }
             switch (group.getBlockType()) {
                 case STRING: {
                     checkStringBlock(e, p, command, group);

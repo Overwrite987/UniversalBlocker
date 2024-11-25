@@ -38,10 +38,18 @@ public class TabComplete implements Listener {
         String buffer = e.getBuffer();
         // Херня которая запрещает стилить плагины через читы, а за одно еще и предотвращает краш таб-комплитом
         if ((buffer.split(" ").length == 1 && !buffer.endsWith(" ")) || !buffer.startsWith("/") || buffer.length() > 256) {
+            if (Utils.DEBUG) {
+                plugin.getPluginLogger().warn("Preventing illegal tab complete action from player " + p.getName());
+                plugin.getPluginLogger().warn("Tab complete buffer: " + buffer);
+            }
             e.setCancelled(true);
             return;
         }
         for (CommandGroup group : pluginConfig.commandBlockGroupSet) {
+            if (Utils.DEBUG) {
+                plugin.getPluginLogger().info("Group checking now: " + group.getGroupId());
+                plugin.getPluginLogger().info("Block type: " + group.getBlockType());
+            }
             switch (group.getBlockType()) {
                 case STRING: {
                     checkStringBlock(e, p, buffer, group);

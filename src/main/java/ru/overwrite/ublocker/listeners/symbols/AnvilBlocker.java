@@ -52,7 +52,13 @@ public class AnvilBlocker implements Listener {
             return;
         String name = resultItem.getItemMeta().getDisplayName();
         for (SymbolGroup group : pluginConfig.symbolBlockGroupSet) {
+            if (Utils.DEBUG) {
+                plugin.getPluginLogger().info("Group checking now: " + group.getGroupId());
+            }
             if (group.getBlockFactor().isEmpty() || !group.getBlockFactor().contains("anvil")) {
+                if (Utils.DEBUG) {
+                    plugin.getPluginLogger().info("Group " + group.getGroupId() + " does not have 'anvil' block factor. Skipping...");
+                }
                 continue;
             }
             switch (group.getBlockType()) {
