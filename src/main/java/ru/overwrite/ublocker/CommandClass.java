@@ -41,7 +41,7 @@ public class CommandClass implements CommandExecutor {
                 final FileConfiguration config = plugin.getConfig();
                 final ConfigurationSection settings = config.getConfigurationSection("settings");
                 Utils.setupColorizer(settings);
-                final String path = settings.getBoolean("custom_plugin_folder.enable")
+                String path = settings.getBoolean("custom_plugin_folder.enable")
                         ? settings.getString("custom_plugin_folder.path")
                         : plugin.getDataFolder().getAbsolutePath();
                 plugin.setPath(path);
