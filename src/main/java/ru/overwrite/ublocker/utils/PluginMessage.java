@@ -12,17 +12,15 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import org.jetbrains.annotations.NotNull;
-import ru.overwrite.ublocker.Main;
+import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.task.Runner;
 
 public final class PluginMessage implements PluginMessageListener {
 
-    private final Main plugin;
-    private final Runner runner;
+    private final UniversalBlocker plugin;
 
-    public PluginMessage(Main plugin) {
+    public PluginMessage(UniversalBlocker plugin) {
         this.plugin = plugin;
-        this.runner = plugin.getRunner();
     }
 
     public void onPluginMessageReceived(String channel, @NotNull Player player, byte[] message) {
@@ -40,17 +38,15 @@ public final class PluginMessage implements PluginMessageListener {
             return;
         }
         if (subchannel.equalsIgnoreCase("ublocker_2")) {
-            runner.runAsync(() -> {
-                String[] split = input.readUTF().split(" ", 2);
-                String perm = split[0];
-                String notifyMessage = split[1];
-                Component comp = GsonComponentSerializer.gson().serializer().fromJson(notifyMessage, Component.class);
-                for (Player ps : Bukkit.getOnlinePlayers()) {
-                    if (ps.hasPermission(perm)) {
-                        ps.sendMessage(comp);
-                    }
+            String[] split = input.readUTF().split(" ", 1);
+            String perm = split[0];
+            String notifyMessage = split[1];
+            Component comp = GsonComponentSerializer.gson().serializer().fromJson(notifyMessage, Component.class);
+            for (Player ps : Bukkit.getOnlinePlayers()) {
+                if (ps.hasPermission(perm)) {
+                    ps.sendMessage(comp);
                 }
-            });
+            }
         }
     }
 

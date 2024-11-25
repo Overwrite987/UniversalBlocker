@@ -11,7 +11,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
-import ru.overwrite.ublocker.Main;
+import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.utils.Utils;
 import ru.overwrite.ublocker.configuration.Config;
 import ru.overwrite.ublocker.configuration.data.CaseCheckSettings;
@@ -19,10 +19,10 @@ import ru.overwrite.ublocker.configuration.data.CaseCheckSettings;
 @Deprecated(forRemoval = true) // Звёздочка об этом позаботится
 public class CaseCheck implements Listener {
 
-    private final Main plugin;
+    private final UniversalBlocker plugin;
     private final Config pluginConfig;
 
-    public CaseCheck(Main plugin) {
+    public CaseCheck(UniversalBlocker plugin) {
         this.plugin = plugin;
         this.pluginConfig = plugin.getPluginConfig();
     }

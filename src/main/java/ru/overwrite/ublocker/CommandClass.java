@@ -8,16 +8,17 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import ru.overwrite.ublocker.configuration.Config;
 import ru.overwrite.ublocker.utils.Utils;
 
 public class CommandClass implements CommandExecutor {
 
-    private final Main plugin;
+    private final UniversalBlocker plugin;
     private final Config pluginConfig;
 
-    public CommandClass(Main plugin) {
+    public CommandClass(UniversalBlocker plugin) {
         this.plugin = plugin;
         this.pluginConfig = plugin.getPluginConfig();
     }
@@ -33,25 +34,18 @@ public class CommandClass implements CommandExecutor {
         }
         if (args[0].equalsIgnoreCase("reload")) {
             long startTime = System.currentTimeMillis();
+            plugin.getRunner().cancelTasks();
+            HandlerList.unregisterAll(plugin);
             plugin.reloadConfig();
             final FileConfiguration config = plugin.getConfig();
             final ConfigurationSection settings = config.getConfigurationSection("settings");
-            Utils.SERIALIZER = settings.getString("serializer").toUpperCase();
+            Utils.setupColorizer(settings);
             final String path = settings.getBoolean("custom_plugin_folder.enable")
                     ? settings.getString("custom_plugin_folder.path")
                     : plugin.getDataFolder().getAbsolutePath();
             plugin.setPath(path);
-            pluginConfig.clearEverything();
-            if (settings.getBoolean("enable_chat_module")) {
-                pluginConfig.setupChat(path);
-            }
-            if (settings.getBoolean("enable_symbol_module")) {
-                pluginConfig.setupSymbols(path);
-            }
-            if (settings.getBoolean("enable_command_module")) {
-                pluginConfig.setupCommands(path);
-            }
             pluginConfig.setupExcluded(config);
+            plugin.registerEvents(Bukkit.getPluginManager(), settings);
             for (Player p : Bukkit.getOnlinePlayers()) {
                 p.updateCommands();
             }
@@ -61,6 +55,6 @@ public class CommandClass implements CommandExecutor {
         } else {
             sender.sendMessage("§6❖ §7Running §c§lUniversalBlocker §c§l" + plugin.getDescription().getVersion() + "§7 by §5OverwriteMC");
         }
-        return false;
+        return true;
     }
 }

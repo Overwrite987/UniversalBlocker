@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerEditBookEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
-import ru.overwrite.ublocker.Main;
+import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.task.Runner;
 import ru.overwrite.ublocker.utils.Utils;
 import ru.overwrite.ublocker.configuration.Config;
@@ -21,11 +21,11 @@ import ru.overwrite.ublocker.configuration.data.BookCharsSettings;
 
 public class BookChecker implements Listener {
 
-    private final Main plugin;
+    private final UniversalBlocker plugin;
     private final Config pluginConfig;
     private final Runner runner;
 
-    public BookChecker(Main plugin) {
+    public BookChecker(UniversalBlocker plugin) {
         this.plugin = plugin;
         this.pluginConfig = plugin.getPluginConfig();
         this.runner = plugin.getRunner();

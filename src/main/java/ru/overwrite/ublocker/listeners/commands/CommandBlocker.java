@@ -1,6 +1,5 @@
 package ru.overwrite.ublocker.listeners.commands;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,7 +16,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
-import ru.overwrite.ublocker.Main;
+import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.blockgroups.CommandGroup;
 import ru.overwrite.ublocker.conditions.ConditionChecker;
@@ -27,11 +26,11 @@ import ru.overwrite.ublocker.utils.Utils;
 
 public class CommandBlocker implements Listener {
 
-    private final Main plugin;
+    private final UniversalBlocker plugin;
     private final Config pluginConfig;
     private final Runner runner;
 
-    public CommandBlocker(Main plugin) {
+    public CommandBlocker(UniversalBlocker plugin) {
         this.plugin = plugin;
         this.pluginConfig = plugin.getPluginConfig();
         this.runner = plugin.getRunner();
@@ -63,7 +62,7 @@ public class CommandBlocker implements Listener {
     private void checkStringBlock(PlayerCommandPreprocessEvent e, Player p, String command, CommandGroup group) {
         for (String com : group.getCommandsToBlockString()) {
             Command comInMap = Bukkit.getCommandMap().getCommand(com.replace("/", ""));
-            List<String> aliases = comInMap == null ? Collections.emptyList() : comInMap.getAliases(); // Потенциально создавать новый лист неэффективно
+            List<String> aliases = comInMap == null ? List.of() : comInMap.getAliases(); // Потенциально создавать новый лист неэффективно
             if (!aliases.isEmpty() && !aliases.contains(comInMap.getName())) {
                 aliases.add(comInMap.getName());
             }
@@ -95,7 +94,7 @@ public class CommandBlocker implements Listener {
             Matcher matcher = pattern.matcher(Utils.cutCommand(command).replace("/", ""));
             if (matcher.matches()) {
                 Command comInMap = Bukkit.getCommandMap().getCommand(matcher.group());
-                List<String> aliases = comInMap == null ? Collections.emptyList() : comInMap.getAliases();
+                List<String> aliases = comInMap == null ? List.of() : comInMap.getAliases();
                 if (!aliases.isEmpty()) {
                     aliases.add(comInMap.getName());
                 }
@@ -201,7 +200,7 @@ public class CommandBlocker implements Listener {
                     if (!e.isCancelled())
                         break;
                     runner.runAsync(() -> {
-                        String formattedMessage = Utils.replaceEach(Utils.colorize(action.context()), searchList, replacementList);
+                        String formattedMessage = Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
 
                         String notifyMessage = Utils.extractMessage(formattedMessage, Utils.HOVER_MARKER);
                         String hoverText = Utils.extractValue(formattedMessage, "ht={", "}");
@@ -216,7 +215,7 @@ public class CommandBlocker implements Listener {
                     if (!e.isCancelled())
                         break;
                     runner.runAsync(() -> {
-                        String coAction = Utils.colorize(action.context());
+                        String coAction = Utils.COLORIZER.colorize(action.context());
                         String[] titleMessages = Utils.replaceEach(coAction, searchList, replacementList).split(";");
                         Utils.sendTitleMessage(titleMessages, p);
                     });
@@ -226,7 +225,7 @@ public class CommandBlocker implements Listener {
                     if (!e.isCancelled())
                         break;
                     runner.runAsync(() -> {
-                        String coAction = Utils.colorize(action.context());
+                        String coAction = Utils.COLORIZER.colorize(action.context());
                         String message = Utils.replaceEach(coAction, searchList, replacementList);
                         p.sendActionBar(message);
                     });
@@ -255,7 +254,7 @@ public class CommandBlocker implements Listener {
                     if (!e.isCancelled())
                         break;
                     runner.runAsync(() -> {
-                        String formattedMessage = Utils.replaceEach(Utils.colorize(action.context()), searchList, replacementList);
+                        String formattedMessage = Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
 
                         String message = Utils.extractMessage(formattedMessage, Utils.NOTIFY_MARKERS);
                         String hoverText = Utils.extractValue(formattedMessage, "ht={", "}");

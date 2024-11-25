@@ -7,27 +7,22 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.function.Consumer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
-import ru.overwrite.ublocker.Main;
+import ru.overwrite.ublocker.UniversalBlocker;
+import ru.overwrite.ublocker.utils.color.*;
 
 public final class Utils {
-
-    public static String SERIALIZER;
-
-    private static final Pattern HEX_PATTERN = Pattern.compile("&#([a-fA-F\\d]{6})");
 
     public static final boolean FOLIA;
 
@@ -40,6 +35,17 @@ public final class Utils {
             folia = false;
         }
         FOLIA = folia;
+    }
+
+    public static Colorizer COLORIZER;
+
+    public static void setupColorizer(ConfigurationSection mainSettings) {
+        COLORIZER = switch (mainSettings.getString("serializer", "LEGACY").toUpperCase()) {
+            case "MINIMESSAGE" -> new MiniMessageColorizer();
+            case "LEGACY" -> new LegacyColorizer();
+            case "LEGACY_ADVANCED" -> new LegacyAdvancedColorizer();
+            default -> new VanillaColorizer();
+        };
     }
 
     public static void sendTitleMessage(@NotNull String[] titleMessages, @NotNull Player p) {
@@ -102,44 +108,14 @@ public final class Utils {
         return "";
     }
 
-    private static final char COLOR_CHAR = '§';
-
-    public static String colorize(String message) {
-        switch (SERIALIZER) {
-            case "LEGACY": {
-                final Matcher matcher = HEX_PATTERN.matcher(message);
-                final StringBuilder builder = new StringBuilder(message.length() + 32);
-                while (matcher.find()) {
-                    final String group = matcher.group(1);
-                    matcher.appendReplacement(builder,
-                            COLOR_CHAR + "x" +
-                                    COLOR_CHAR + group.charAt(0) +
-                                    COLOR_CHAR + group.charAt(1) +
-                                    COLOR_CHAR + group.charAt(2) +
-                                    COLOR_CHAR + group.charAt(3) +
-                                    COLOR_CHAR + group.charAt(4) +
-                                    COLOR_CHAR + group.charAt(5));
-                }
-                message = matcher.appendTail(builder).toString();
-
-                return translateAlternateColorCodes('&', message);
-            }
-            case "MINIMESSAGE": {
-                Component component = MiniMessage.miniMessage().deserialize(message);
-                return LegacyComponentSerializer.legacySection().serialize(component);
-            }
-            default: {
-                return message;
-            }
-        }
-    }
+    public static final char COLOR_CHAR = '§';
 
     public static String translateAlternateColorCodes(char altColorChar, String textToTranslate) {
         char[] b = textToTranslate.toCharArray();
 
         for (int i = 0, length = b.length - 1; i < length; ++i) {
             if (b[i] == altColorChar && isValidColorCharacter(b[i + 1])) {
-                b[i++] = '§';
+                b[i++] = COLOR_CHAR;
                 b[i] |= 0x20;
             }
         }
@@ -197,7 +173,7 @@ public final class Utils {
         return result.toString();
     }
 
-    public static void checkUpdates(Main plugin, Consumer<String> consumer) {
+    public static void checkUpdates(UniversalBlocker plugin, Consumer<String> consumer) {
         plugin.getRunner().runDelayedAsync(() -> {
             try (BufferedReader reader = new BufferedReader(
                     new InputStreamReader(

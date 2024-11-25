@@ -1,6 +1,5 @@
 package ru.overwrite.ublocker.listeners.commands;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,7 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import com.destroystokyo.paper.event.server.AsyncTabCompleteEvent;
 
-import ru.overwrite.ublocker.Main;
+import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.blockgroups.CommandGroup;
 import ru.overwrite.ublocker.utils.Utils;
@@ -21,10 +20,10 @@ import ru.overwrite.ublocker.configuration.Config;
 
 public class TabComplete implements Listener {
 
-    private final Main plugin;
+    private final UniversalBlocker plugin;
     private final Config pluginConfig;
 
-    public TabComplete(Main plugin) {
+    public TabComplete(UniversalBlocker plugin) {
         this.plugin = plugin;
         this.pluginConfig = plugin.getPluginConfig();
     }
@@ -67,7 +66,7 @@ public class TabComplete implements Listener {
                     continue;
                 }
                 Command comInMap = Bukkit.getCommandMap().getCommand(buffer);
-                List<String> aliases = comInMap == null ? Collections.emptyList() : comInMap.getAliases();
+                List<String> aliases = comInMap == null ? List.of() : comInMap.getAliases();
                 if (!aliases.isEmpty() && !aliases.contains(comInMap.getName())) {
                     aliases.add(comInMap.getName());
                 }
@@ -88,7 +87,7 @@ public class TabComplete implements Listener {
             Matcher matcher = pattern.matcher(buffer.split(" ")[0]);
             if (matcher.matches()) {
                 Command comInMap = Bukkit.getCommandMap().getCommand(matcher.group());
-                List<String> aliases = comInMap == null ? Collections.emptyList() : comInMap.getAliases();
+                List<String> aliases = comInMap == null ? List.of() : comInMap.getAliases();
                 if (!aliases.isEmpty()) {
                     aliases.add(comInMap.getName());
                 }

@@ -15,7 +15,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
-import ru.overwrite.ublocker.Main;
+import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.blockgroups.SymbolGroup;
 import ru.overwrite.ublocker.conditions.ConditionChecker;
@@ -25,11 +25,11 @@ import ru.overwrite.ublocker.utils.Utils;
 
 public class ChatBlocker implements Listener {
 
-    private final Main plugin;
+    private final UniversalBlocker plugin;
     private final Config pluginConfig;
     private final Runner runner;
 
-    public ChatBlocker(Main plugin) {
+    public ChatBlocker(UniversalBlocker plugin) {
         this.plugin = plugin;
         this.pluginConfig = plugin.getPluginConfig();
         this.runner = plugin.getRunner();
@@ -115,7 +115,7 @@ public class ChatBlocker implements Listener {
                     if (!e.isCancelled())
                         break;
                     runner.runAsync(() -> {
-                        String formattedMessage = Utils.replaceEach(Utils.colorize(action.context()), searchList, replacementList);
+                        String formattedMessage = Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
 
                         String messageToPlayer = Utils.extractMessage(formattedMessage, Utils.HOVER_MARKER);
                         String hoverText = Utils.extractValue(formattedMessage, "ht={", "}");
@@ -130,7 +130,7 @@ public class ChatBlocker implements Listener {
                     if (!e.isCancelled())
                         break;
                     runner.runAsync(() -> {
-                        String coAction = Utils.colorize(action.context());
+                        String coAction = Utils.COLORIZER.colorize(action.context());
                         String[] titleMessages = Utils.replaceEach(coAction, searchList, replacementList).split(";");
                         Utils.sendTitleMessage(titleMessages, p);
                     });
@@ -140,7 +140,7 @@ public class ChatBlocker implements Listener {
                     if (!e.isCancelled())
                         break;
                     runner.runAsync(() -> {
-                        String coAction = Utils.colorize(action.context());
+                        String coAction = Utils.COLORIZER.colorize(action.context());
                         String messageToPlayer = Utils.replaceEach(coAction, searchList, replacementList);
                         p.sendActionBar(messageToPlayer);
                     });
@@ -169,7 +169,7 @@ public class ChatBlocker implements Listener {
                     if (!e.isCancelled())
                         break;
                     runner.runAsync(() -> {
-                        String formattedMessage = Utils.replaceEach(Utils.colorize(action.context()), searchList, replacementList);
+                        String formattedMessage = Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
 
                         String notifyMessage = Utils.extractMessage(formattedMessage, Utils.NOTIFY_MARKERS);
                         String hoverText = Utils.extractValue(formattedMessage, "ht={", "}");

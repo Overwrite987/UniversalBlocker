@@ -1,6 +1,5 @@
 package ru.overwrite.ublocker.listeners.commands;
 
-import java.util.Collections;
 import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectList;
@@ -11,7 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerCommandSendEvent;
 
-import ru.overwrite.ublocker.Main;
+import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.blockgroups.CommandGroup;
 import ru.overwrite.ublocker.conditions.ConditionChecker;
@@ -20,10 +19,10 @@ import ru.overwrite.ublocker.configuration.Config;
 
 public class CommandHider implements Listener {
 
-    private final Main plugin;
+    private final UniversalBlocker plugin;
     private final Config pluginConfig;
 
-    public CommandHider(Main plugin) {
+    public CommandHider(UniversalBlocker plugin) {
         this.plugin = plugin;
         this.pluginConfig = plugin.getPluginConfig();
     }
@@ -46,7 +45,7 @@ public class CommandHider implements Listener {
     private boolean checkStringBlock(Player p, String command, CommandGroup group) {
         for (String com : group.getCommandsToBlockString()) {
             Command comInMap = Bukkit.getCommandMap().getCommand(com);
-            List<String> aliases = comInMap == null ? Collections.emptyList() : comInMap.getAliases();
+            List<String> aliases = comInMap == null ? List.of() : comInMap.getAliases();
             if (!aliases.isEmpty() && !aliases.contains(comInMap.getName())) {
                 aliases.add(comInMap.getName());
             }

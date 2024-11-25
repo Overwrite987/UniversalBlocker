@@ -14,7 +14,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import ru.overwrite.ublocker.Main;
+import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.actions.*;
 import ru.overwrite.ublocker.blockgroups.BlockType;
 import ru.overwrite.ublocker.blockgroups.CommandGroup;
@@ -25,9 +25,9 @@ import ru.overwrite.ublocker.configuration.data.*;
 
 public class Config {
 
-    private final Main plugin;
+    private final UniversalBlocker plugin;
 
-    public Config(Main plugin) {
+    public Config(UniversalBlocker plugin) {
         this.plugin = plugin;
     }
 
@@ -63,7 +63,7 @@ public class Config {
             return;
         }
 
-        String message = Utils.colorize(allowedChars.getString("message"));
+        String message = Utils.COLORIZER.colorize(allowedChars.getString("message"));
 
         ConfigurationSection allowedChatCharsSound = allowedChars.getConfigurationSection("sound");
         boolean enableSounds = allowedChatCharsSound.getBoolean("enable");
@@ -71,7 +71,7 @@ public class Config {
 
         ConfigurationSection allowedChatCharsNotify = allowedChars.getConfigurationSection("notify");
         boolean notify = allowedChatCharsNotify.getBoolean("enable");
-        String notifyMessage = Utils.colorize(allowedChatCharsNotify.getString("message"));
+        String notifyMessage = Utils.COLORIZER.colorize(allowedChatCharsNotify.getString("message"));
         boolean notifySounds = allowedChatCharsNotify.getBoolean("sound.enable");
         String[] notifySound = allowedChatCharsNotify.getString("sound.value").split(";");
 
@@ -117,7 +117,7 @@ public class Config {
             return;
         }
 
-        String message = Utils.colorize(allowedBookChars.getString("message"));
+        String message = Utils.COLORIZER.colorize(allowedBookChars.getString("message"));
 
         ConfigurationSection allowedBookCharsSound = allowedBookChars.getConfigurationSection("sound");
         boolean enableSounds = allowedBookCharsSound.getBoolean("enable");
@@ -125,7 +125,7 @@ public class Config {
 
         ConfigurationSection allowedBookCharsNotify = allowedBookChars.getConfigurationSection("notify");
         boolean notifyEnabled = allowedBookCharsNotify.getBoolean("enable");
-        String notifyMessage = Utils.colorize(allowedBookCharsNotify.getString("message"));
+        String notifyMessage = Utils.COLORIZER.colorize(allowedBookCharsNotify.getString("message"));
         boolean notifySoundsEnabled = allowedBookCharsNotify.getBoolean("sound.enable");
         String[] notifySound = allowedBookCharsNotify.getString("sound.value").split(";");
 
@@ -171,7 +171,7 @@ public class Config {
             return;
         }
 
-        String message = Utils.colorize(allowedSignChars.getString("message"));
+        String message = Utils.COLORIZER.colorize(allowedSignChars.getString("message"));
 
         ConfigurationSection allowedSignCharsSound = allowedSignChars.getConfigurationSection("sound");
         boolean enableSounds = allowedSignCharsSound.getBoolean("enable");
@@ -179,7 +179,7 @@ public class Config {
 
         ConfigurationSection allowedSignCharsNotify = allowedSignChars.getConfigurationSection("notify");
         boolean notifyEnabled = allowedSignCharsNotify.getBoolean("enable");
-        String notifyMessage = Utils.colorize(allowedSignCharsNotify.getString("message"));
+        String notifyMessage = Utils.COLORIZER.colorize(allowedSignCharsNotify.getString("message"));
         boolean notifySoundsEnabled = allowedSignCharsNotify.getBoolean("sound.enable");
         String[] notifySound = allowedSignCharsNotify.getString("sound.value").split(";");
 
@@ -224,7 +224,7 @@ public class Config {
             return;
         }
 
-        String message = Utils.colorize(allowedCommandChars.getString("message"));
+        String message = Utils.COLORIZER.colorize(allowedCommandChars.getString("message"));
 
         ConfigurationSection allowedCommandCharsSound = allowedCommandChars.getConfigurationSection("sound");
         boolean enableSounds = allowedCommandCharsSound.getBoolean("enable");
@@ -232,7 +232,7 @@ public class Config {
 
         ConfigurationSection allowedCommandCharsNotify = allowedCommandChars.getConfigurationSection("notify");
         boolean notifyEnabled = allowedCommandCharsNotify.getBoolean("enable");
-        String notifyMessage = Utils.colorize(allowedCommandCharsNotify.getString("message"));
+        String notifyMessage = Utils.COLORIZER.colorize(allowedCommandCharsNotify.getString("message"));
         boolean notifySoundsEnabled = allowedCommandCharsNotify.getBoolean("sound.enable");
         String[] notifySound = allowedCommandCharsNotify.getString("sound.value").split(";");
 
@@ -279,7 +279,7 @@ public class Config {
 
         int maxNumbers = numbersCheck.getInt("maxmsgnumbers");
         boolean strictCheck = numbersCheck.getBoolean("strict");
-        String message = Utils.colorize(numbersCheck.getString("message"));
+        String message = Utils.COLORIZER.colorize(numbersCheck.getString("message"));
 
         ConfigurationSection numbersCheckSound = numbersCheck.getConfigurationSection("sound");
         boolean enableSounds = numbersCheckSound.getBoolean("enable");
@@ -287,7 +287,7 @@ public class Config {
 
         ConfigurationSection numbersCheckNotify = numbersCheck.getConfigurationSection("notify");
         boolean notifyEnabled = numbersCheckNotify.getBoolean("enable");
-        String notifyMessage = Utils.colorize(numbersCheckNotify.getString("message"));
+        String notifyMessage = Utils.COLORIZER.colorize(numbersCheckNotify.getString("message"));
         boolean notifySoundsEnabled = numbersCheckNotify.getBoolean("sound.enable");
         String[] notifySound = numbersCheckNotify.getString("sound.value").split(";");
 
@@ -318,7 +318,7 @@ public class Config {
 
         int maxUpperCasePercent = caseCheck.getInt("maxuppercasepercent");
         boolean strictCheck = caseCheck.getBoolean("strict");
-        String message = Utils.colorize(caseCheck.getString("message"));
+        String message = Utils.COLORIZER.colorize(caseCheck.getString("message"));
 
         ConfigurationSection caseCheckSound = caseCheck.getConfigurationSection("sound");
         boolean enableSounds = caseCheckSound.getBoolean("enable");
@@ -326,7 +326,7 @@ public class Config {
 
         ConfigurationSection caseCheckNotify = caseCheck.getConfigurationSection("notify");
         boolean notifyEnabled = caseCheckNotify.getBoolean("enable");
-        String notifyMessage = Utils.colorize(caseCheckNotify.getString("message"));
+        String notifyMessage = Utils.COLORIZER.colorize(caseCheckNotify.getString("message"));
         boolean notifySoundsEnabled = caseCheckNotify.getBoolean("sound.enable");
         String[] notifySound = caseCheckNotify.getString("sound.value").split(";");
 
@@ -375,7 +375,7 @@ public class Config {
         }
 
         boolean block = banWords.getBoolean("block");
-        String message = Utils.colorize(banWords.getString("message"));
+        String message = Utils.COLORIZER.colorize(banWords.getString("message"));
 
         ConfigurationSection banWordsSound = banWords.getConfigurationSection("sound");
         boolean enableSounds = banWordsSound.getBoolean("enable");
@@ -383,7 +383,7 @@ public class Config {
 
         ConfigurationSection banWordsNotify = banWords.getConfigurationSection("notify");
         boolean notifyEnabled = banWordsNotify.getBoolean("enable");
-        String notifyMessage = Utils.colorize(banWordsNotify.getString("message"));
+        String notifyMessage = Utils.COLORIZER.colorize(banWordsNotify.getString("message"));
         boolean notifySoundsEnabled = banWordsNotify.getBoolean("sound.enable");
         String[] notifySoundValue = banWordsNotify.getString("sound.value").split(";");
 
@@ -499,16 +499,6 @@ public class Config {
 
     public void setupExcluded(FileConfiguration config) {
         excludedPlayers = new ObjectOpenHashSet<>(config.getStringList("excluded_players"));
-    }
-
-    public void clearEverything() {
-        this.banWordsSettings = null;
-        this.bookCharsSettings = null;
-        this.caseCheckSettings = null;
-        this.chatCharsSettings = null;
-        this.commandCharsSettings = null;
-        this.numberCheckSettings = null;
-        this.signCharsSettings = null;
     }
 
     public FileConfiguration getFile(String path, String fileName) {

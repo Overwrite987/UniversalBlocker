@@ -35,7 +35,6 @@ public class ConditionChecker {
             switch (condition.type()) {
                 case REGION: {
                     if (!hasWorldGuard()) return false;
-
                     ObjectList<String> regions = WGUtils.getRegions(p.getLocation());
                     meetsCondition = evaluateCondition(operator, regions.contains(context));
                     break;
@@ -51,8 +50,9 @@ public class ConditionChecker {
                     meetsCondition = evaluateCondition(operator, playerMode == conditionMode);
                     break;
                 }
-                default:
+                default: {
                     continue;
+                }
             }
 
             if (!meetsCondition) {

@@ -1,5 +1,5 @@
 name: UniversalBlockerUltimate
-main: ru.overwrite.ublocker.Main
+main: ru.overwrite.ublocker.UniversalBlocker
 author: OverwriteMC
 version: '${project.version}'
 api-version: 1.16

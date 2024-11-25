@@ -2,7 +2,6 @@ package ru.overwrite.ublocker;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -27,7 +26,7 @@ import ru.overwrite.ublocker.task.*;
 import ru.overwrite.ublocker.utils.*;
 import ru.overwrite.ublocker.configuration.Config;
 
-public final class Main extends JavaPlugin {
+public final class UniversalBlocker extends JavaPlugin {
 
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("'['dd-MM-yyyy']' HH:mm:ss -");
 
@@ -45,8 +44,6 @@ public final class Main extends JavaPlugin {
 
     private final Server server = getServer();
 
-    private final List<String> incompatible = ImmutableList.of("ViaRewind", "NeroChat", "PermissionsEx", "AntiCmds");
-
     @Override
     public void onEnable() {
         long startTime = System.currentTimeMillis();
@@ -60,36 +57,12 @@ public final class Main extends JavaPlugin {
         saveDefaultConfig();
         final FileConfiguration config = getConfig();
         final ConfigurationSection settings = config.getConfigurationSection("settings");
-        Utils.SERIALIZER = settings.getString("serializer").toUpperCase();
+        Utils.setupColorizer(settings);
         path = settings.getBoolean("custom_plugin_folder.enable") ? settings.getString("custom_plugin_folder.path")
                 : this.getDataFolder().getAbsolutePath();
         pluginConfig.setupExcluded(config);
         this.setupProxy(settings);
-        if (settings.getBoolean("enable_chat_module")) {
-            pluginConfig.setupChat(path);
-            pm.registerEvents(new BanWords(this), this);
-            pm.registerEvents(new BookChecker(this), this);
-            pm.registerEvents(new ChatFilter(this), this);
-            pm.registerEvents(new SignFilter(this), this);
-            pm.registerEvents(new CommandFilter(this), this);
-            pm.registerEvents(new NumbersCheck(this), this);
-            pm.registerEvents(new CaseCheck(this), this); // Будет убрано в будущем, в связи с отсутствием необходимости
-        }
-        if (settings.getBoolean("enable_symbol_module")) {
-            pluginConfig.setupSymbols(path);
-            pm.registerEvents(new SyntaxBlocker(this), this);
-            pm.registerEvents(new ChatBlocker(this), this);
-            pm.registerEvents(new SignBlocker(this), this);
-            pm.registerEvents(new AnvilBlocker(this), this);
-        }
-        if (settings.getBoolean("enable_command_module")) {
-            pluginConfig.setupCommands(path);
-            pm.registerEvents(new CommandBlocker(this), this);
-            pm.registerEvents(new ConsoleBlocker(this), this);
-            pm.registerEvents(new RconBlocker(this), this);
-            pm.registerEvents(new TabComplete(this), this);
-            pm.registerEvents(new CommandHider(this), this);
-        }
+        this.registerEvents(pm, settings);
         if (settings.getBoolean("enable_metrics")) {
             new Metrics(this, 15379);
         }
@@ -117,7 +90,7 @@ public final class Main extends JavaPlugin {
     }
 
     private boolean checkCompatible(PluginManager pm) {
-        for (String inc : incompatible) {
+        for (String inc : ImmutableList.of("ViaRewind", "NeroChat", "PermissionsEx", "AntiCmds")) {
             if (pm.isPluginEnabled(inc)) {
                 loggerInfo(" ");
                 loggerInfo("§c============= §6! WARNING ! §c=============");
@@ -147,11 +120,39 @@ public final class Main extends JavaPlugin {
         });
     }
 
-    public void setupProxy(ConfigurationSection settings) {
+    private void setupProxy(ConfigurationSection settings) {
         if (settings.getBoolean("proxy")) {
             server.getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
             pluginMessage = new PluginMessage(this);
             server.getMessenger().registerIncomingPluginChannel(this, "BungeeCord", pluginMessage);
+        }
+    }
+
+    public void registerEvents(PluginManager pm, ConfigurationSection settings) {
+        if (settings.getBoolean("enable_chat_module")) {
+            pluginConfig.setupChat(path);
+            pm.registerEvents(new BanWords(this), this);
+            pm.registerEvents(new BookChecker(this), this);
+            pm.registerEvents(new ChatFilter(this), this);
+            pm.registerEvents(new SignFilter(this), this);
+            pm.registerEvents(new CommandFilter(this), this);
+            pm.registerEvents(new NumbersCheck(this), this);
+            pm.registerEvents(new CaseCheck(this), this); // Будет убрано в будущем, в связи с отсутствием необходимости
+        }
+        if (settings.getBoolean("enable_symbol_module")) {
+            pluginConfig.setupSymbols(path);
+            pm.registerEvents(new SyntaxBlocker(this), this);
+            pm.registerEvents(new ChatBlocker(this), this);
+            pm.registerEvents(new SignBlocker(this), this);
+            pm.registerEvents(new AnvilBlocker(this), this);
+        }
+        if (settings.getBoolean("enable_command_module")) {
+            pluginConfig.setupCommands(path);
+            pm.registerEvents(new CommandBlocker(this), this);
+            pm.registerEvents(new ConsoleBlocker(this), this);
+            pm.registerEvents(new RconBlocker(this), this);
+            pm.registerEvents(new TabComplete(this), this);
+            pm.registerEvents(new CommandHider(this), this);
         }
     }
 
@@ -183,8 +184,12 @@ public final class Main extends JavaPlugin {
     @Override
     public void onDisable() {
         runner.cancelTasks();
-        if (getConfig().getBoolean("settings.shutdown-on-disable")) {
+        if (getConfig().getBoolean("settings.shutdown_on_disable")) {
             server.shutdown();
+        }
+        if (pluginMessage != null) {
+            server.getMessenger().unregisterOutgoingPluginChannel(this);
+            server.getMessenger().unregisterIncomingPluginChannel(this);
         }
     }
 }

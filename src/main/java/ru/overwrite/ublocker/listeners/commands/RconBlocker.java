@@ -1,6 +1,5 @@
 package ru.overwrite.ublocker.listeners.commands;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,7 +12,7 @@ import org.bukkit.event.Listener;
 
 import org.bukkit.event.server.RemoteServerCommandEvent;
 
-import ru.overwrite.ublocker.Main;
+import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.blockgroups.CommandGroup;
 import ru.overwrite.ublocker.configuration.Config;
@@ -21,10 +20,10 @@ import ru.overwrite.ublocker.utils.Utils;
 
 public class RconBlocker implements Listener {
 
-    private final Main plugin;
+    private final UniversalBlocker plugin;
     private final Config pluginConfig;
 
-    public RconBlocker(Main plugin) {
+    public RconBlocker(UniversalBlocker plugin) {
         this.plugin = plugin;
         this.pluginConfig = plugin.getPluginConfig();
     }
@@ -52,7 +51,7 @@ public class RconBlocker implements Listener {
     private void checkStringBlock(RemoteServerCommandEvent e, String command, CommandGroup group) {
         for (String com : group.getCommandsToBlockString()) {
             Command comInMap = Bukkit.getCommandMap().getCommand(com.replace("/", ""));
-            List<String> aliases = comInMap == null ? Collections.emptyList() : comInMap.getAliases();
+            List<String> aliases = comInMap == null ? List.of() : comInMap.getAliases();
             if (!aliases.isEmpty() && !aliases.contains(comInMap.getName())) {
                 aliases.add(comInMap.getName());
             }
@@ -79,7 +78,7 @@ public class RconBlocker implements Listener {
             Matcher matcher = pattern.matcher(Utils.cutCommand(command).replace("/", ""));
             if (matcher.matches()) {
                 Command comInMap = Bukkit.getCommandMap().getCommand(matcher.group());
-                List<String> aliases = comInMap == null ? Collections.emptyList() : comInMap.getAliases();
+                List<String> aliases = comInMap == null ? List.of() : comInMap.getAliases();
                 if (!aliases.isEmpty()) {
                     aliases.add(comInMap.getName());
                 }
