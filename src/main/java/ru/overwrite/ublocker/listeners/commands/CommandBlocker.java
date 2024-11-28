@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import it.unimi.dsi.fastutil.objects.ObjectList;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
@@ -206,12 +207,19 @@ public class CommandBlocker implements Listener {
                     runner.runAsync(() -> {
                         String formattedMessage = Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
 
-                        String notifyMessage = Utils.extractMessage(formattedMessage, Utils.HOVER_MARKER);
-                        String hoverText = Utils.extractValue(formattedMessage, "ht={", "}");
+                        String message = Utils.extractMessage(formattedMessage, Utils.HOVER_MARKERS);
+                        String hoverText = Utils.extractValue(formattedMessage, Utils.HOVER_TEXT_PREFIX, "}");
+                        String clickEvent = Utils.extractValue(formattedMessage, Utils.CLICK_EVENT_PREFIX, "}");
 
-                        final Component comp = Utils.createHoverMessage(notifyMessage, hoverText);
+                        Component component = LegacyComponentSerializer.legacySection().deserialize(message);
+                        if (hoverText != null) {
+                            component = Utils.createHoverEvent(component, hoverText);
+                        }
+                        if (clickEvent != null) {
+                            component = Utils.createClickEvent(component, clickEvent);
+                        }
 
-                        p.sendMessage(comp);
+                        p.sendMessage(component);
                     });
                     break;
                 }
@@ -258,21 +266,31 @@ public class CommandBlocker implements Listener {
                     if (!e.isCancelled())
                         break;
                     runner.runAsync(() -> {
+                        String perm = Utils.getPermOrDefault(
+                                Utils.extractValue(action.context(), "perm={", "}"),
+                                "ublocker.admin");
+
                         String formattedMessage = Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
 
-                        String message = Utils.extractMessage(formattedMessage, Utils.NOTIFY_MARKERS);
-                        String hoverText = Utils.extractValue(formattedMessage, "ht={", "}");
-                        String perm = Utils.extractValue(formattedMessage, "perm={", "}");
+                        String notifyMessage = Utils.extractMessage(formattedMessage, Utils.NOTIFY_MARKERS);
+                        String hoverText = Utils.extractValue(formattedMessage, Utils.HOVER_TEXT_PREFIX, "}");
+                        String clickEvent = Utils.extractValue(formattedMessage, Utils.CLICK_EVENT_PREFIX, "}");
 
-                        final Component comp = Utils.createHoverMessage(message, hoverText);
+                        Component component = LegacyComponentSerializer.legacySection().deserialize(notifyMessage);
+                        if (hoverText != null) {
+                            component = Utils.createHoverEvent(component, hoverText);
+                        }
+                        if (clickEvent != null) {
+                            component = Utils.createClickEvent(component, clickEvent);
+                        }
 
                         for (Player ps : Bukkit.getOnlinePlayers()) {
                             if (ps.hasPermission(perm)) {
-                                ps.sendMessage(comp);
+                                ps.sendMessage(component);
                             }
                         }
                         if (plugin.getPluginMessage() != null) {
-                            String gsonMessage = GsonComponentSerializer.gson().serializer().toJsonTree(comp).toString();
+                            String gsonMessage = GsonComponentSerializer.gson().serializer().toJsonTree(component).toString();
                             plugin.getPluginMessage().sendCrossProxyPerm(p, perm + " " + gsonMessage);
                         }
                     });

@@ -38,7 +38,7 @@ public final class PluginMessage implements PluginMessageListener {
             return;
         }
         if (subchannel.equalsIgnoreCase("ublocker_2")) {
-            String[] split = input.readUTF().split(" ", 1);
+            String[] split = input.readUTF().split(" ", 2);
             String perm = split[0];
             String notifyMessage = split[1];
             Component comp = GsonComponentSerializer.gson().serializer().fromJson(notifyMessage, Component.class);

@@ -10,6 +10,7 @@ import java.util.function.Consumer;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -74,16 +75,24 @@ public final class Utils {
         p.playSound(p.getLocation(), sound, volume, pitch);
     }
 
-    public static final String[] HOVER_MARKER = new String[]{"ht={"};
+    public static final String HOVER_TEXT_PREFIX = "hoverText={";
+    public static final String CLICK_EVENT_PREFIX = "clickEvent={";
     public static final String[] PERM_MARKER = new String[]{"perm={"};
     public static final String[] FILE_MARKER = new String[]{"file={"};
-    public static final String[] NOTIFY_MARKERS = new String[]{"ht={", "perm={"};
+    public static final String[] HOVER_MARKERS = new String[]{HOVER_TEXT_PREFIX, CLICK_EVENT_PREFIX};
+    public static final String[] NOTIFY_MARKERS = new String[]{"hoverText={", "clickAction={", "perm={"};
 
-    public static Component createHoverMessage(String message, String hoverText) {
+    public static Component createHoverEvent(Component message, String hoverText) {
         HoverEvent<Component> hover = HoverEvent.showText(LegacyComponentSerializer.legacySection().deserialize(hoverText));
-        return LegacyComponentSerializer.legacySection()
-                .deserialize(message)
-                .hoverEvent(hover);
+        return message.hoverEvent(hover);
+    }
+
+    public static Component createClickEvent(Component message, String clickEvent) {
+        String[] clickEventArgs = clickEvent.split(";", 2);
+        ClickEvent.Action action = ClickEvent.Action.valueOf(clickEventArgs[0].toUpperCase());
+        String context = clickEventArgs[1];
+        ClickEvent click = ClickEvent.clickEvent(action, context);
+        return message.clickEvent(click);
     }
 
     public static String extractMessage(String message, String[] markers) {
@@ -107,13 +116,13 @@ public final class Utils {
                 return message.substring(startIndex, endIndex);
             }
         }
-        return "";
+        return null;
     }
 
     public static final char COLOR_CHAR = '§';
 
     public static String translateAlternateColorCodes(char altColorChar, String textToTranslate) {
-        char[] b = textToTranslate.toCharArray();
+        final char[] b = textToTranslate.toCharArray();
 
         for (int i = 0, length = b.length - 1; i < length; ++i) {
             if (b[i] == altColorChar && isValidColorCharacter(b[i + 1])) {
@@ -143,7 +152,7 @@ public final class Utils {
     }
 
     public static String getPermOrDefault(String perm, String defaultPerm) {
-        if (perm.isEmpty() || perm.isBlank()) {
+        if (perm == null || perm.isEmpty() || perm.isBlank()) {
             return defaultPerm;
         }
         return perm;

@@ -21,7 +21,7 @@ chat_settings:
     # Настройка оповещений для администрации
     notify:
       enable: true
-      message: '&7&l(&c&l!&7&l) &cИгрок &3%player% &cиспользовал запрещеннный символ в чате &8(&4%symbol%&8) ht={&7Сообщение игрока: &c%msg%}'
+      message: '&7&l(&c&l!&7&l) &cИгрок &3%player% &cиспользовал запрещеннный символ в чате &8(&4%symbol%&8) hoverText={&7Сообщение игрока: &c%msg%}'
       sound:
         enable: true
         value: BLOCK_NOTE_BLOCK_PLING;1.0;1.0
@@ -78,7 +78,7 @@ chat_settings:
       value: ENTITY_ITEM_BREAK;1.0;1.0
     notify:
       enable: true
-      message: '&7&l(&c&l!&7&l) &cИгрок &3%player% &cпытался написать запрещенные символы в команде &8(&4%symbol%&8). ht={&7Сообщение игрока: &c%msg%}'
+      message: '&7&l(&c&l!&7&l) &cИгрок &3%player% &cпытался написать запрещенные символы в команде &8(&4%symbol%&8). hoverText={&7Сообщение игрока: &c%msg%}'
       sound:
         enable: true
         value: BLOCK_NOTE_BLOCK_PLING;1.0;1.0
@@ -101,7 +101,7 @@ chat_settings:
       value: ENTITY_ITEM_BREAK;1.0;1.0
     notify:
       enable: true
-      message: '&7&l(&c&l!&7&l) &cИгрок &3%player% &cпытался написать более 7 цифр в сообщении. ht={&7Сообщение игрока: &c%msg%}'
+      message: '&7&l(&c&l!&7&l) &cИгрок &3%player% &cпытался написать более 7 цифр в сообщении. hoverText={&7Сообщение игрока: &c%msg%}'
       sound:
         enable: true
         value: BLOCK_NOTE_BLOCK_PLING;1.0;1.0
@@ -124,7 +124,7 @@ chat_settings:
       value: ENTITY_ITEM_BREAK;1.0;1.0
     notify:
       enable: true
-      message: '&7&l(&c&l!&7&l) &cИгрок &3%player% &cпытался написать более 7 цифр в сообщении. ht={&7Сообщение игрока: &c%msg%}'
+      message: '&7&l(&c&l!&7&l) &cИгрок &3%player% &cпытался написать более 7 цифр в сообщении. hoverText={&7Сообщение игрока: &c%msg%}'
       sound:
         enable: true
         value: BLOCK_NOTE_BLOCK_PLING;1.0;1.0
@@ -157,7 +157,7 @@ chat_settings:
       value: ENTITY_ITEM_BREAK;1.0;1.0
     notify:
       enable: true
-      message: '&7&l(&c&l!&7&l) &cИгрок &3%player% &cиспользовал запрещенное слово &8(&4%word%&8) ht={&7Полное сообщение: &4%msg%}'
+      message: '&7&l(&c&l!&7&l) &cИгрок &3%player% &cиспользовал запрещенное слово &8(&4%word%&8) hoverText={&7Полное сообщение: &4%msg%}'
       sound:
         enable: true
         value: BLOCK_NOTE_BLOCK_PLING;1.0;1.0

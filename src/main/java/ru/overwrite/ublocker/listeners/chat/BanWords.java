@@ -90,8 +90,8 @@ public class BanWords implements Listener {
 
             String formattedMessage = Utils.replaceEach(banWordsSettings.notifyMessage(), searchList, replacementList);
 
-            String notifyMessage = Utils.extractMessage(formattedMessage, Utils.HOVER_MARKER);
-            String hoverText = Utils.extractValue(formattedMessage, "ht={", "}");
+            String notifyMessage = Utils.extractMessage(formattedMessage, Utils.HOVER_TEXT_MARKER);
+            String hoverText = Utils.extractValue(formattedMessage, "hoverText={", "}");
 
             final Component comp = Utils.createHoverMessage(notifyMessage, hoverText);
 
