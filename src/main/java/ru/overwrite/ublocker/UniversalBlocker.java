@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import com.google.common.collect.ImmutableList;
+import lombok.AccessLevel;
 import lombok.Setter;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Server;
@@ -28,25 +29,23 @@ import ru.overwrite.ublocker.utils.logging.BukkitLogger;
 import ru.overwrite.ublocker.utils.logging.Logger;
 import ru.overwrite.ublocker.utils.logging.PaperLogger;
 
+@Getter
 public final class UniversalBlocker extends JavaPlugin {
 
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("'['dd-MM-yyyy']' HH:mm:ss -");
 
+    @Getter(AccessLevel.NONE)
     private final Server server = getServer();
 
-    @Getter
     private final Logger pluginLogger = Utils.FOLIA ? new PaperLogger(this) : new BukkitLogger(this);
 
-    @Getter
     private final Runner runner = Utils.FOLIA ? new PaperRunner(this) : new BukkitRunner(this);
 
-    @Getter
     private final Config pluginConfig = new Config(this);
 
     @Setter
     private String path;
 
-    @Getter
     private PluginMessage pluginMessage;
 
     @Override
@@ -162,7 +161,7 @@ public final class UniversalBlocker extends JavaPlugin {
     }
 
     public boolean isExcluded(Player p) {
-        return !pluginConfig.excludedPlayers.isEmpty() && pluginConfig.excludedPlayers.contains(p.getName());
+        return !pluginConfig.getExcludedPlayers().isEmpty() && pluginConfig.getExcludedPlayers().contains(p.getName());
     }
 
     public void logAction(String key, String fileName) {

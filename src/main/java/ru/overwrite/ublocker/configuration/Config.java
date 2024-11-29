@@ -2,13 +2,16 @@ package ru.overwrite.ublocker.configuration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.regex.Pattern;
 
+import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -23,21 +26,23 @@ import ru.overwrite.ublocker.conditions.*;
 import ru.overwrite.ublocker.utils.Utils;
 import ru.overwrite.ublocker.configuration.data.*;
 
+@Getter
 public class Config {
 
+    @Getter(AccessLevel.NONE)
     private final UniversalBlocker plugin;
 
     public Config(UniversalBlocker plugin) {
         this.plugin = plugin;
     }
 
-    public ObjectSet<CommandGroup> commandBlockGroupSet;
+    private ObjectSet<CommandGroup> commandBlockGroupSet;
 
-    public ObjectSet<SymbolGroup> symbolBlockGroupSet;
+    private ObjectSet<SymbolGroup> symbolBlockGroupSet;
 
-    public ObjectSet<CommandGroup> commandHideGroupSet;
+    private ObjectSet<CommandGroup> commandHideGroupSet;
 
-    public ObjectSet<String> excludedPlayers;
+    private ObjectSet<String> excludedPlayers;
 
     public void setupChat(String path) {
         final FileConfiguration chat = getFile(path, "chat.yml");
@@ -51,7 +56,6 @@ public class Config {
         setupBanWords(settings.getConfigurationSection("ban_words_chat"));
     }
 
-    @Getter
     private ChatCharsSettings chatCharsSettings;
 
     private void setupChatChars(ConfigurationSection allowedChars) {
@@ -104,8 +108,6 @@ public class Config {
         );
     }
 
-
-    @Getter
     private BookCharsSettings bookCharsSettings;
 
     private void setupBookChars(ConfigurationSection allowedBookChars) {
@@ -158,8 +160,6 @@ public class Config {
         );
     }
 
-
-    @Getter
     private SignCharsSettings signCharsSettings;
 
     private void setupSignChars(ConfigurationSection allowedSignChars) {
@@ -212,7 +212,6 @@ public class Config {
         );
     }
 
-    @Getter
     private CommandCharsSettings commandCharsSettings;
 
     private void setupCommandChars(ConfigurationSection allowedCommandChars) {
@@ -265,7 +264,6 @@ public class Config {
         );
     }
 
-    @Getter
     private NumberCheckSettings numberCheckSettings;
 
     private void setupNumberCheck(ConfigurationSection numbersCheck) {
@@ -304,7 +302,6 @@ public class Config {
         );
     }
 
-    @Getter
     private CaseCheckSettings caseCheckSettings;
 
     private void setupCaseCheck(ConfigurationSection caseCheck) {
@@ -343,7 +340,6 @@ public class Config {
         );
     }
 
-    @Getter
     private BanWordsSettings banWordsSettings;
 
     private void setupBanWords(ConfigurationSection banWords) {
