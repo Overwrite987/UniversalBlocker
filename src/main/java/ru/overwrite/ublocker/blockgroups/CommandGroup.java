@@ -21,9 +21,9 @@ public final class CommandGroup {
 
     private final ObjectList<Pattern> commandsToBlockPattern = new ObjectArrayList<>();
 
-    private final ObjectList<Condition> conditionsToCheck;
+    private final List<Condition> conditionsToCheck;
 
-    private final ObjectList<Action> actionsToExecute;
+    private final List<Action> actionsToExecute;
 
     private final boolean blockAliases;
 
@@ -31,8 +31,8 @@ public final class CommandGroup {
                         BlockType blockType,
                         boolean blockAliases,
                         ObjectList<String> commandsToBlock,
-                        ObjectList<Condition> conditionsToCheck,
-                        ObjectList<Action> actionsToExecute) {
+                        List<Condition> conditionsToCheck,
+                        List<Action> actionsToExecute) {
         this.groupId = groupId;
         this.blockType = blockType;
         this.blockAliases = blockAliases;

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import it.unimi.dsi.fastutil.objects.ObjectList;
 import org.bukkit.event.Listener;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -45,7 +44,7 @@ public class TabComplete implements Listener {
             e.setCancelled(true);
             return;
         }
-        for (CommandGroup group : pluginConfig.commandBlockGroupSet) {
+        for (CommandGroup group : pluginConfig.getCommandBlockGroupSet()) {
             if (Utils.DEBUG) {
                 plugin.getPluginLogger().info("Group checking now: " + group.getGroupId());
                 plugin.getPluginLogger().info("Block type: " + group.getBlockType());
@@ -69,7 +68,7 @@ public class TabComplete implements Listener {
     private void checkStringBlock(AsyncTabCompleteEvent e, Player p, String buffer, CommandGroup group) {
         for (String command : group.getCommandsToBlockString()) {
             if (buffer.equalsIgnoreCase(command + " ")) {
-                ObjectList<Action> actions = group.getActionsToExecute();
+                List<Action> actions = group.getActionsToExecute();
                 if (actions.isEmpty()) {
                     continue;
                 }
@@ -88,7 +87,7 @@ public class TabComplete implements Listener {
 
     private void checkPatternBlock(AsyncTabCompleteEvent e, Player p, String buffer, CommandGroup group) {
         for (Pattern pattern : group.getCommandsToBlockPattern()) {
-            ObjectList<Action> actions = group.getActionsToExecute();
+            List<Action> actions = group.getActionsToExecute();
             if (actions.isEmpty()) {
                 continue;
             }

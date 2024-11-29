@@ -1,5 +1,6 @@
 package ru.overwrite.ublocker.listeners.symbols;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,7 +42,7 @@ public class SyntaxBlocker implements Listener {
         if (plugin.isExcluded(p))
             return;
         String command = e.getMessage().toLowerCase();
-        for (SymbolGroup group : pluginConfig.symbolBlockGroupSet) {
+        for (SymbolGroup group : pluginConfig.getSymbolBlockGroupSet()) {
             if (Utils.DEBUG) {
                 plugin.getPluginLogger().info("Group checking now: " + group.getGroupId());
             }
@@ -69,7 +70,7 @@ public class SyntaxBlocker implements Listener {
 
     private void checkStringBlock(PlayerCommandPreprocessEvent e, Player p, String command, SymbolGroup group) {
         for (String symbol : group.getSymbolsToBlock()) {
-            ObjectList<Action> actions = group.getActionsToExecute();
+            List<Action> actions = group.getActionsToExecute();
             if (actions.isEmpty()) {
                 continue;
             }
@@ -87,7 +88,7 @@ public class SyntaxBlocker implements Listener {
 
     private void checkPatternBlock(PlayerCommandPreprocessEvent e, Player p, String command, SymbolGroup group) {
         for (Pattern pattern : group.getPatternsToBlock()) {
-            ObjectList<Action> actions = group.getActionsToExecute();
+            List<Action> actions = group.getActionsToExecute();
             if (actions.isEmpty()) {
                 continue;
             }
@@ -106,7 +107,7 @@ public class SyntaxBlocker implements Listener {
 
     private final String[] searchList = {"%player%", "%world%", "%symbol%", "%cmd%"};
 
-    private void executeActions(Cancellable e, Player p, String command, String symbol, ObjectList<Action> actions, String world) {
+    private void executeActions(Cancellable e, Player p, String command, String symbol, List<Action> actions, String world) {
         final String[] replacementList = {p.getName(), world, symbol, command};
         for (Action action : actions) {
             switch (action.type()) {

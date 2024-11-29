@@ -6,6 +6,8 @@ import org.bukkit.entity.Player;
 
 import ru.overwrite.ublocker.utils.WGUtils;
 
+import java.util.List;
+
 public class ConditionChecker {
 
     private static Boolean hasWorldGuard = null;
@@ -22,7 +24,7 @@ public class ConditionChecker {
         return hasWorldGuard;
     }
 
-    public static boolean isMeetsRequirements(Player p, ObjectList<Condition> conditions) {
+    public static boolean isMeetsRequirements(Player p, List<Condition> conditions) {
         if (conditions == null || conditions.isEmpty()) {
             return true;
         }

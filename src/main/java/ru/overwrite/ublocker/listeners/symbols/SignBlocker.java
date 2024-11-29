@@ -1,5 +1,6 @@
 package ru.overwrite.ublocker.listeners.symbols;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,7 +46,7 @@ public class SignBlocker implements Listener {
         String line2 = e.getLine(2).toLowerCase();
         String line3 = e.getLine(3).toLowerCase();
         String combined = line0 + line1 + line2 + line3;
-        for (SymbolGroup group : pluginConfig.symbolBlockGroupSet) {
+        for (SymbolGroup group : pluginConfig.getSymbolBlockGroupSet()) {
             if (Utils.DEBUG) {
                 plugin.getPluginLogger().info("Group checking now: " + group.getGroupId());
             }
@@ -73,7 +74,7 @@ public class SignBlocker implements Listener {
 
     private void checkStringBlock(SignChangeEvent e, Player p, String line0, String line1, String line2, String line3, SymbolGroup group) {
         for (String symbol : group.getSymbolsToBlock()) {
-            ObjectList<Action> actions = group.getActionsToExecute();
+            List<Action> actions = group.getActionsToExecute();
             if (actions.isEmpty()) {
                 continue;
             }
@@ -88,7 +89,7 @@ public class SignBlocker implements Listener {
 
     private void checkPatternBlock(SignChangeEvent e, Player p, String combined, String line0, String line1, String line2, String line3, SymbolGroup group) {
         for (Pattern pattern : group.getPatternsToBlock()) {
-            ObjectList<Action> actions = group.getActionsToExecute();
+            List<Action> actions = group.getActionsToExecute();
             if (actions.isEmpty()) {
                 continue;
             }
@@ -104,7 +105,7 @@ public class SignBlocker implements Listener {
 
     private final String[] searchList = {"%player%", "%world%", "%symbol%", "%line0%", "%line1%", "%line2%", "%line3%"};
 
-    private void executeActions(Cancellable e, Player p, String line0, String line1, String line2, String line3, String symbol, ObjectList<Action> actions, String world) {
+    private void executeActions(Cancellable e, Player p, String line0, String line1, String line2, String line3, String symbol, List<Action> actions, String world) {
         final String[] replacementList = {p.getName(), world, symbol, line0, line1, line2, line3};
         for (Action action : actions) {
             switch (action.type()) {

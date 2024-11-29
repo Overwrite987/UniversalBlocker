@@ -1,9 +1,9 @@
 package ru.overwrite.ublocker.listeners.symbols;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -42,7 +42,7 @@ public class ChatBlocker implements Listener {
         if (plugin.isExcluded(p))
             return;
         String message = e.getMessage().toLowerCase();
-        for (SymbolGroup group : pluginConfig.symbolBlockGroupSet) {
+        for (SymbolGroup group : pluginConfig.getSymbolBlockGroupSet()) {
             if (Utils.DEBUG) {
                 plugin.getPluginLogger().info("Group checking now: " + group.getGroupId());
             }
@@ -70,7 +70,7 @@ public class ChatBlocker implements Listener {
 
     private void checkStringBlock(AsyncPlayerChatEvent e, Player p, String message, SymbolGroup group) {
         for (String symbol : group.getSymbolsToBlock()) {
-            ObjectList<Action> actions = group.getActionsToExecute();
+            List<Action> actions = group.getActionsToExecute();
             if (actions.isEmpty()) {
                 continue;
             }
@@ -85,7 +85,7 @@ public class ChatBlocker implements Listener {
 
     private void checkPatternBlock(AsyncPlayerChatEvent e, Player p, String message, SymbolGroup group) {
         for (Pattern pattern : group.getPatternsToBlock()) {
-            ObjectList<Action> actions = group.getActionsToExecute();
+            List<Action> actions = group.getActionsToExecute();
             if (actions.isEmpty()) {
                 continue;
             }
@@ -101,7 +101,7 @@ public class ChatBlocker implements Listener {
 
     private final String[] searchList = {"%player%", "%world%", "%symbol%", "%msg%"};
 
-    private void executeActions(Cancellable e, Player p, String message, String symbol, ObjectList<Action> actions, String world) {
+    private void executeActions(Cancellable e, Player p, String message, String symbol, List<Action> actions, String world) {
         final String[] replacementList = {p.getName(), world, message, symbol};
         for (Action action : actions) {
             switch (action.type()) {

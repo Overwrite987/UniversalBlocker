@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -43,7 +42,7 @@ public class CommandBlocker implements Listener {
         if (plugin.isExcluded(p))
             return;
         String command = e.getMessage().toLowerCase();
-        for (CommandGroup group : pluginConfig.commandBlockGroupSet) {
+        for (CommandGroup group : pluginConfig.getCommandBlockGroupSet()) {
             if (Utils.DEBUG) {
                 plugin.getPluginLogger().info("Group checking now: " + group.getGroupId());
                 plugin.getPluginLogger().info("Block type: " + group.getBlockType());
@@ -73,7 +72,7 @@ public class CommandBlocker implements Listener {
             }
             String executedCommandBase = Utils.cutCommand(command);
             if (executedCommandBase.equalsIgnoreCase(com) || aliases.contains(executedCommandBase.substring(1))) {
-                ObjectList<Action> actions = group.getActionsToExecute();
+                List<Action> actions = group.getActionsToExecute();
                 if (actions.isEmpty()) {
                     continue;
                 }
@@ -89,7 +88,7 @@ public class CommandBlocker implements Listener {
 
     private void checkPatternGroup(PlayerCommandPreprocessEvent e, Player p, String command, CommandGroup group) {
         for (Pattern pattern : group.getCommandsToBlockPattern()) {
-            ObjectList<Action> actions = group.getActionsToExecute();
+            List<Action> actions = group.getActionsToExecute();
             if (actions.isEmpty()) {
                 continue;
             }
@@ -117,7 +116,7 @@ public class CommandBlocker implements Listener {
 
     private final String[] searchList = {"%player%", "%world%", "%cmd%", "%fullcmd%"};
 
-    public boolean executeActions(CommandGroup group, Cancellable e, Player p, String com, String command, ObjectList<Action> actions, List<String> aliases, String world) {
+    public boolean executeActions(CommandGroup group, Cancellable e, Player p, String com, String command, List<Action> actions, List<String> aliases, String world) {
         final String[] replacementList = {p.getName(), world, com, command};
         for (Action action : actions) {
             switch (action.type()) {

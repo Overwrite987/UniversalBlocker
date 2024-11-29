@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import it.unimi.dsi.fastutil.objects.ObjectList;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.event.EventHandler;
@@ -31,7 +30,7 @@ public class ConsoleBlocker implements Listener {
     @EventHandler
     public void onConsoleCommand(ServerCommandEvent e) {
         String command = e.getCommand().toLowerCase();
-        for (CommandGroup group : pluginConfig.commandBlockGroupSet) {
+        for (CommandGroup group : pluginConfig.getCommandBlockGroupSet()) {
             if (Utils.DEBUG) {
                 plugin.getPluginLogger().info("Group checking now: " + group.getGroupId());
                 plugin.getPluginLogger().info("Block type: " + group.getBlockType());
@@ -61,7 +60,7 @@ public class ConsoleBlocker implements Listener {
             }
             String executedCommandBase = command.contains(" ") ? Utils.cutCommand(command) : command;
             if (executedCommandBase.equalsIgnoreCase(com) || aliases.contains(executedCommandBase.substring(1))) {
-                ObjectList<Action> actions = group.getActionsToExecute();
+                List<Action> actions = group.getActionsToExecute();
                 if (actions.isEmpty()) {
                     continue;
                 }
@@ -75,7 +74,7 @@ public class ConsoleBlocker implements Listener {
 
     private void checkPatternBlock(ServerCommandEvent e, String command, CommandGroup group) {
         for (Pattern pattern : group.getCommandsToBlockPattern()) {
-            ObjectList<Action> actions = group.getActionsToExecute();
+            List<Action> actions = group.getActionsToExecute();
             if (actions.isEmpty()) {
                 continue;
             }

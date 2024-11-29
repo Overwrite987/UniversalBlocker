@@ -24,9 +24,9 @@ public final class SymbolGroup {
 
     private final ObjectList<Pattern> excludedCommandsPattern = new ObjectArrayList<>();
 
-    private final ObjectList<Condition> conditionsToCheck;
+    private final List<Condition> conditionsToCheck;
 
-    private final ObjectList<Action> actionsToExecute;
+    private final List<Action> actionsToExecute;
 
     private final ObjectList<String> blockFactor;
 
@@ -35,8 +35,8 @@ public final class SymbolGroup {
                        ObjectList<String> blockFactor,
                        ObjectList<String> symbolsToBlock,
                        ObjectList<String> excludedCommand,
-                       ObjectList<Condition> conditionsToCheck,
-                       ObjectList<Action> actionsToExecute) {
+                       List<Condition> conditionsToCheck,
+                       List<Action> actionsToExecute) {
         this.groupId = groupId;
         this.blockType = blockType;
         this.blockFactor = blockFactor;

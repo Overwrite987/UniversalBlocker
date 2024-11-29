@@ -410,14 +410,8 @@ public class Config {
             final ConfigurationSection section = commands.getConfigurationSection("commands." + commandsID);
             BlockType blockType = BlockType.valueOf(section.getString("mode").toUpperCase());
             boolean blockAliases = section.getBoolean("block_aliases") && blockType.equals(BlockType.STRING); // Не будет работать с паттернами
-            ObjectList<Condition> conditionList = new ObjectArrayList<>();
-            for (String condition : section.getStringList("conditions")) {
-                conditionList.add(Condition.fromString(condition));
-            }
-            ObjectList<Action> actionList = new ObjectArrayList<>();
-            for (String action : section.getStringList("actions")) {
-                actionList.add(Action.fromString(action));
-            }
+            List<Condition> conditionList = getConditionList(section.getStringList("conditions"));
+            List<Action> actionList = getActionList(section.getStringList("actions"));
             commandBlockGroupSet.add(
                     new CommandGroup(
                             commandsID,
@@ -465,14 +459,8 @@ public class Config {
             final ConfigurationSection section = symbols.getConfigurationSection("symbols." + symbolsID);
             BlockType blockType = BlockType.valueOf(section.getString("mode").toUpperCase());
             ObjectList<String> blockFactor = getBlockFactorList(section.getString("block_factor", ""));
-            ObjectList<Condition> conditionList = new ObjectArrayList<>();
-            for (String condition : section.getStringList("conditions")) {
-                conditionList.add(Condition.fromString(condition));
-            }
-            ObjectList<Action> actionList = new ObjectArrayList<>();
-            for (String action : section.getStringList("actions")) {
-                actionList.add(Action.fromString(action));
-            }
+            List<Condition> conditionList = getConditionList(section.getStringList("conditions"));
+            List<Action> actionList = getActionList(section.getStringList("actions"));
             symbolBlockGroupSet.add(
                     new SymbolGroup(
                             symbolsID,
@@ -485,6 +473,22 @@ public class Config {
                     )
             );
         }
+    }
+
+    private ImmutableList<Action> getActionList(List<String> actionStrings) {
+        ObjectList<Action> actionList = new ObjectArrayList<>(actionStrings.size());
+        for (String action : actionStrings) {
+            actionList.add(Action.fromString(action));
+        }
+        return ImmutableList.copyOf(actionList);
+    }
+
+    private ImmutableList<Condition> getConditionList(List<String> conditionStrings) {
+        ObjectList<Condition> conditionList = new ObjectArrayList<>(conditionStrings.size());
+        for (String action : conditionStrings) {
+            conditionList.add(Condition.fromString(action));
+        }
+        return ImmutableList.copyOf(conditionList);
     }
 
     private ObjectList<String> getBlockFactorList(String str) {
