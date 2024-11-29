@@ -25,9 +25,7 @@ import ru.overwrite.ublocker.listeners.symbols.*;
 import ru.overwrite.ublocker.task.*;
 import ru.overwrite.ublocker.utils.*;
 import ru.overwrite.ublocker.configuration.Config;
-import ru.overwrite.ublocker.utils.logging.BukkitLogger;
-import ru.overwrite.ublocker.utils.logging.Logger;
-import ru.overwrite.ublocker.utils.logging.PaperLogger;
+import ru.overwrite.ublocker.utils.logging.*;
 
 @Getter
 public final class UniversalBlocker extends JavaPlugin {
