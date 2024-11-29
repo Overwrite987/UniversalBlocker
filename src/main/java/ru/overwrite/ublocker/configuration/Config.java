@@ -1,30 +1,29 @@
 package ru.overwrite.ublocker.configuration;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.regex.Pattern;
-
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-
 import ru.overwrite.ublocker.UniversalBlocker;
-import ru.overwrite.ublocker.actions.*;
+import ru.overwrite.ublocker.actions.Action;
+import ru.overwrite.ublocker.actions.ActionType;
 import ru.overwrite.ublocker.blockgroups.BlockType;
 import ru.overwrite.ublocker.blockgroups.CommandGroup;
 import ru.overwrite.ublocker.blockgroups.SymbolGroup;
-import ru.overwrite.ublocker.conditions.*;
-import ru.overwrite.ublocker.utils.Utils;
+import ru.overwrite.ublocker.conditions.Condition;
 import ru.overwrite.ublocker.configuration.data.*;
+import ru.overwrite.ublocker.utils.Utils;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.regex.Pattern;
 
 @Getter
 public class Config {

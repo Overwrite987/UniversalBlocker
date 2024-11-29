@@ -1,20 +1,19 @@
 package ru.overwrite.ublocker.listeners.commands;
 
-import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandSendEvent;
-
 import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.blockgroups.CommandGroup;
 import ru.overwrite.ublocker.conditions.ConditionChecker;
-import ru.overwrite.ublocker.utils.Utils;
 import ru.overwrite.ublocker.configuration.Config;
+import ru.overwrite.ublocker.utils.Utils;
+
+import java.util.List;
 
 public class CommandHider implements Listener {
 

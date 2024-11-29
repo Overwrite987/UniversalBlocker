@@ -1,8 +1,7 @@
 package ru.overwrite.ublocker.listeners.chat;
 
-import java.util.List;
-import java.util.function.Predicate;
-
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -11,14 +10,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerEditBookEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-
 import ru.overwrite.ublocker.UniversalBlocker;
-import ru.overwrite.ublocker.task.Runner;
-import ru.overwrite.ublocker.utils.Utils;
 import ru.overwrite.ublocker.configuration.Config;
 import ru.overwrite.ublocker.configuration.data.BookCharsSettings;
+import ru.overwrite.ublocker.task.Runner;
+import ru.overwrite.ublocker.utils.Utils;
+
+import java.util.List;
+import java.util.function.Predicate;
 
 public class BookChecker implements Listener {
 

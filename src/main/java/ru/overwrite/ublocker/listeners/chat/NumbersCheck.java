@@ -1,8 +1,7 @@
 package ru.overwrite.ublocker.listeners.chat;
 
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -11,13 +10,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-
 import ru.overwrite.ublocker.UniversalBlocker;
-import ru.overwrite.ublocker.utils.Utils;
 import ru.overwrite.ublocker.configuration.Config;
 import ru.overwrite.ublocker.configuration.data.NumberCheckSettings;
+import ru.overwrite.ublocker.utils.Utils;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class NumbersCheck implements Listener {
 

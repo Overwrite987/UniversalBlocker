@@ -1,8 +1,7 @@
 package ru.overwrite.ublocker.conditions;
 
-
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public record Condition(ConditionType type, String operator, String context) {
 

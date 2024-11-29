@@ -1,31 +1,38 @@
 package ru.overwrite.ublocker;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import com.google.common.collect.ImmutableList;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import org.bstats.bukkit.Metrics;
+import org.bukkit.Server;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
+import ru.overwrite.ublocker.configuration.Config;
+import ru.overwrite.ublocker.listeners.chat.*;
+import ru.overwrite.ublocker.listeners.commands.*;
+import ru.overwrite.ublocker.listeners.symbols.AnvilBlocker;
+import ru.overwrite.ublocker.listeners.symbols.ChatBlocker;
+import ru.overwrite.ublocker.listeners.symbols.SignBlocker;
+import ru.overwrite.ublocker.listeners.symbols.SyntaxBlocker;
+import ru.overwrite.ublocker.task.BukkitRunner;
+import ru.overwrite.ublocker.task.PaperRunner;
+import ru.overwrite.ublocker.task.Runner;
+import ru.overwrite.ublocker.utils.PluginMessage;
+import ru.overwrite.ublocker.utils.Utils;
+import ru.overwrite.ublocker.utils.logging.BukkitLogger;
+import ru.overwrite.ublocker.utils.logging.Logger;
+import ru.overwrite.ublocker.utils.logging.PaperLogger;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
-import com.google.common.collect.ImmutableList;
-import lombok.AccessLevel;
-import lombok.Setter;
-import org.bstats.bukkit.Metrics;
-import org.bukkit.Server;
-import org.bukkit.entity.Player;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import lombok.Getter;
-import ru.overwrite.ublocker.listeners.chat.*;
-import ru.overwrite.ublocker.listeners.commands.*;
-import ru.overwrite.ublocker.listeners.symbols.*;
-import ru.overwrite.ublocker.task.*;
-import ru.overwrite.ublocker.utils.*;
-import ru.overwrite.ublocker.configuration.Config;
-import ru.overwrite.ublocker.utils.logging.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 public final class UniversalBlocker extends JavaPlugin {

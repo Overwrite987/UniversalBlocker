@@ -3,12 +3,11 @@ package ru.overwrite.ublocker.blockgroups;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import lombok.Getter;
+import ru.overwrite.ublocker.actions.Action;
+import ru.overwrite.ublocker.conditions.Condition;
 
 import java.util.List;
 import java.util.regex.Pattern;
-
-import ru.overwrite.ublocker.actions.Action;
-import ru.overwrite.ublocker.conditions.Condition;
 
 @Getter
 public final class CommandGroup {

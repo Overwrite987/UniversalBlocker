@@ -1,7 +1,7 @@
 package ru.overwrite.ublocker.actions;
 
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public record Action(ActionType type, String context) {
 

@@ -1,21 +1,20 @@
 package ru.overwrite.ublocker.listeners.commands;
 
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.bukkit.event.Listener;
+import com.destroystokyo.paper.event.server.AsyncTabCompleteEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import com.destroystokyo.paper.event.server.AsyncTabCompleteEvent;
-
+import org.bukkit.event.Listener;
 import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.blockgroups.CommandGroup;
-import ru.overwrite.ublocker.utils.Utils;
 import ru.overwrite.ublocker.configuration.Config;
+import ru.overwrite.ublocker.utils.Utils;
+
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TabComplete implements Listener {
 

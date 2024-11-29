@@ -3,7 +3,6 @@ package ru.overwrite.ublocker.conditions;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
-
 import ru.overwrite.ublocker.utils.WGUtils;
 
 import java.util.List;
