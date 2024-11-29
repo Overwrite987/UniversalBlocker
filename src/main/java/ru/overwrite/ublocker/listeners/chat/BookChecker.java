@@ -3,6 +3,7 @@ package ru.overwrite.ublocker.listeners.chat;
 import java.util.List;
 import java.util.function.Predicate;
 
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -63,21 +64,28 @@ public class BookChecker implements Listener {
 
                 String formattedMessage = Utils.replaceEach(bookCharsSettings.notifyMessage(), searchList, replacementList);
 
-                String notifyMessage = Utils.extractMessage(formattedMessage, Utils.HOVER_TEXT_MARKER);
-                String hoverText = Utils.extractValue(formattedMessage, "hoverText={", "}");
+                String notifyMessage = Utils.extractMessage(formattedMessage, Utils.NOTIFY_MARKERS);
+                String hoverText = Utils.extractValue(formattedMessage, Utils.HOVER_TEXT_PREFIX, "}");
+                String clickEvent = Utils.extractValue(formattedMessage, Utils.CLICK_EVENT_PREFIX, "}");
 
-                final Component comp = Utils.createHoverMessage(notifyMessage, hoverText);
+                Component component = LegacyComponentSerializer.legacySection().deserialize(notifyMessage);
+                if (hoverText != null) {
+                    component = Utils.createHoverEvent(component, hoverText);
+                }
+                if (clickEvent != null) {
+                    component = Utils.createClickEvent(component, clickEvent);
+                }
 
                 for (Player admin : Bukkit.getOnlinePlayers()) {
                     if (admin.hasPermission("ublocker.admin")) {
-                        admin.sendMessage(comp);
+                        admin.sendMessage(component);
                         if (bookCharsSettings.notifySoundsEnabled()) {
                             Utils.sendSound(bookCharsSettings.notifySound(), admin);
                         }
                     }
                 }
                 if (plugin.getPluginMessage() != null) {
-                    String gsonMessage = GsonComponentSerializer.gson().serializer().toJsonTree(comp).toString();
+                    String gsonMessage = GsonComponentSerializer.gson().serializer().toJsonTree(component).toString();
                     plugin.getPluginMessage().sendCrossProxyBasic(p, gsonMessage);
                 }
             }
