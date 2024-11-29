@@ -22,7 +22,7 @@ public final class WGUtils {
         return regions;
     }
 
-    public static ApplicableRegionSet getApplicableRegions(Location location) {
+    private static ApplicableRegionSet getApplicableRegions(Location location) {
         RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer()
                 .get(BukkitAdapter.adapt(location.getWorld()));
         if (regionManager == null || regionManager.getRegions().isEmpty())
