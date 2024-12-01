@@ -119,13 +119,15 @@ public class SignFilter implements Listener {
     private String getFirstBlockedChar(String message) {
         SignCharsSettings signCharsSettings = pluginConfig.getSignCharsSettings();
         return switch (signCharsSettings.mode()) {
-            case STRING -> Character.toString(message.codePoints()
-                    .filter(codePoint -> signCharsSettings.string().indexOf(codePoint) == -1).findFirst()
-                    .getAsInt());
+            case STRING -> Character.toString(
+                    message.codePoints()
+                            .filter(codePoint -> signCharsSettings.string().indexOf(codePoint) == -1).findFirst()
+                            .getAsInt());
             case PATTERN -> {
                 Predicate<String> allowedCharsPattern = signCharsSettings.pattern().asMatchPredicate();
                 yield Character.toString(
-                        message.codePoints().filter(codePoint -> !allowedCharsPattern.test(Character.toString(codePoint)))
+                        message.codePoints()
+                                .filter(codePoint -> !allowedCharsPattern.test(Character.toString(codePoint)))
                                 .findFirst().getAsInt());
             }
         };

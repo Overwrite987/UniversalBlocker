@@ -8,9 +8,9 @@ public record ChatCharsSettings(
         String message,
         boolean enableSounds,
         String[] sound,
-        boolean notifyEnabled,  // Изменено с `notify`
+        boolean notifyEnabled,
         String notifyMessage,
-        boolean notifySoundsEnabled, // Изменено с `notifySounds`
+        boolean notifySoundsEnabled,
         String[] notifySound,
         BlockType mode,
         String string,

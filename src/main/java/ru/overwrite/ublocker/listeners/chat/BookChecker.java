@@ -112,13 +112,15 @@ public class BookChecker implements Listener {
     private String getFirstBlockedChar(String message) {
         BookCharsSettings bookCharsSettings = pluginConfig.getBookCharsSettings();
         return switch (bookCharsSettings.mode()) {
-            case STRING -> Character.toString(message.codePoints()
-                    .filter(codePoint -> bookCharsSettings.string().indexOf(codePoint) == -1).findFirst()
-                    .getAsInt());
+            case STRING -> Character.toString(
+                    message.codePoints()
+                            .filter(codePoint -> bookCharsSettings.string().indexOf(codePoint) == -1).findFirst()
+                            .getAsInt());
             case PATTERN -> {
                 Predicate<String> allowedCharsPattern = bookCharsSettings.pattern().asMatchPredicate();
                 yield Character.toString(
-                        message.codePoints().filter(codePoint -> !allowedCharsPattern.test(Character.toString(codePoint)))
+                        message.codePoints()
+                                .filter(codePoint -> !allowedCharsPattern.test(Character.toString(codePoint)))
                                 .findFirst().getAsInt());
             }
         };

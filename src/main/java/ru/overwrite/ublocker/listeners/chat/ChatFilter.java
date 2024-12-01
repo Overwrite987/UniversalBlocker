@@ -48,7 +48,7 @@ public class ChatFilter implements Listener {
         e.setCancelled(true);
         p.sendMessage(chatCharsSettings.message());
         if (chatCharsSettings.enableSounds()) {
-           Utils.sendSound(chatCharsSettings.sound(), p);
+            Utils.sendSound(chatCharsSettings.sound(), p);
         }
         if (chatCharsSettings.notifyEnabled()) {
             String[] replacementList = {p.getName(), getFirstBlockedChar(message), message};
@@ -103,13 +103,15 @@ public class ChatFilter implements Listener {
     private String getFirstBlockedChar(String message) {
         ChatCharsSettings chatCharsSettings = pluginConfig.getChatCharsSettings();
         return switch (chatCharsSettings.mode()) {
-            case STRING -> Character.toString(message.codePoints()
-                    .filter(codePoint -> chatCharsSettings.string().indexOf(codePoint) == -1).findFirst()
-                    .getAsInt());
+            case STRING -> Character.toString(
+                    message.codePoints()
+                            .filter(codePoint -> chatCharsSettings.string().indexOf(codePoint) == -1).findFirst()
+                            .getAsInt());
             case PATTERN -> {
                 Predicate<String> allowedCharsPattern = chatCharsSettings.pattern().asMatchPredicate();
                 yield Character.toString(
-                        message.codePoints().filter(codePoint -> !allowedCharsPattern.test(Character.toString(codePoint)))
+                        message.codePoints()
+                                .filter(codePoint -> !allowedCharsPattern.test(Character.toString(codePoint)))
                                 .findFirst().getAsInt());
             }
         };

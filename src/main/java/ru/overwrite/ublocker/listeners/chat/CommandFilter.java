@@ -108,13 +108,15 @@ public class CommandFilter implements Listener {
     private String getFirstBlockedChar(String message) {
         CommandCharsSettings commandCharsSettings = pluginConfig.getCommandCharsSettings();
         return switch (commandCharsSettings.mode()) {
-            case STRING -> Character.toString(message.codePoints()
-                    .filter(codePoint -> commandCharsSettings.string().indexOf(codePoint) == -1).findFirst()
-                    .getAsInt());
+            case STRING -> Character.toString(
+                    message.codePoints()
+                            .filter(codePoint -> commandCharsSettings.string().indexOf(codePoint) == -1).findFirst()
+                            .getAsInt());
             case PATTERN -> {
                 Predicate<String> allowedCharsPattern = commandCharsSettings.pattern().asMatchPredicate();
                 yield Character.toString(
-                        message.codePoints().filter(codePoint -> !allowedCharsPattern.test(Character.toString(codePoint)))
+                        message.codePoints()
+                                .filter(codePoint -> !allowedCharsPattern.test(Character.toString(codePoint)))
                                 .findFirst().getAsInt());
             }
         };
