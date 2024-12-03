@@ -78,19 +78,12 @@ public class Config {
         boolean notifySounds = allowedChatCharsNotify.getBoolean("sound.enable");
         String[] notifySound = allowedChatCharsNotify.getString("sound.value").split(";");
 
-        BlockType mode;
+        BlockType mode = BlockType.valueOf(allowedChars.getString("mode").toUpperCase());
         String string = "";
         Pattern pattern = null;
-        switch (allowedChars.getString("mode").toUpperCase()) {
-            case "STRING" -> {
-                mode = BlockType.STRING;
-                string = allowedChars.getString("pattern");
-            }
-            case "PATTERN" -> {
-                mode = BlockType.PATTERN;
-                pattern = Pattern.compile(allowedChars.getString("pattern"));
-            }
-            default -> throw new IllegalArgumentException("Invalid mode in sign character settings.");
+        switch (mode) {
+            case STRING -> string = allowedChars.getString("pattern");
+            case PATTERN -> pattern = Pattern.compile(allowedChars.getString("pattern"));
         }
 
         this.chatCharsSettings = new ChatCharsSettings(
@@ -130,19 +123,12 @@ public class Config {
         boolean notifySoundsEnabled = allowedBookCharsNotify.getBoolean("sound.enable");
         String[] notifySound = allowedBookCharsNotify.getString("sound.value").split(";");
 
-        BlockType mode;
+        BlockType mode = BlockType.valueOf(allowedBookChars.getString("mode").toUpperCase());
         String string = "";
         Pattern pattern = null;
-        switch (allowedBookChars.getString("mode").toUpperCase()) {
-            case "STRING" -> {
-                mode = BlockType.STRING;
-                string = allowedBookChars.getString("pattern");
-            }
-            case "PATTERN" -> {
-                mode = BlockType.PATTERN;
-                pattern = Pattern.compile(allowedBookChars.getString("pattern"));
-            }
-            default -> throw new IllegalArgumentException("Invalid mode in sign character settings.");
+        switch (mode) {
+            case STRING -> string = allowedBookChars.getString("pattern");
+            case PATTERN -> pattern = Pattern.compile(allowedBookChars.getString("pattern"));
         }
 
         this.bookCharsSettings = new BookCharsSettings(
@@ -182,19 +168,12 @@ public class Config {
         boolean notifySoundsEnabled = allowedSignCharsNotify.getBoolean("sound.enable");
         String[] notifySound = allowedSignCharsNotify.getString("sound.value").split(";");
 
-        BlockType mode;
+        BlockType mode = BlockType.valueOf(allowedSignChars.getString("mode").toUpperCase());
         String string = "";
         Pattern pattern = null;
-        switch (allowedSignChars.getString("mode").toUpperCase()) {
-            case "STRING" -> {
-                mode = BlockType.STRING;
-                string = allowedSignChars.getString("pattern");
-            }
-            case "PATTERN" -> {
-                mode = BlockType.PATTERN;
-                pattern = Pattern.compile(allowedSignChars.getString("pattern"));
-            }
-            default -> throw new IllegalArgumentException("Invalid mode in sign character settings.");
+        switch (mode) {
+            case STRING -> string = allowedSignChars.getString("pattern");
+            case PATTERN -> pattern = Pattern.compile(allowedSignChars.getString("pattern"));
         }
 
         this.signCharsSettings = new SignCharsSettings(
@@ -234,18 +213,12 @@ public class Config {
         boolean notifySoundsEnabled = allowedCommandCharsNotify.getBoolean("sound.enable");
         String[] notifySound = allowedCommandCharsNotify.getString("sound.value").split(";");
 
-        BlockType mode;
+        BlockType mode = BlockType.valueOf(allowedCommandChars.getString("mode").toUpperCase());
         String string = "";
         Pattern pattern = null;
-        switch (allowedCommandChars.getString("mode").toUpperCase()) {
-            case "STRING" -> {
-                mode = BlockType.STRING;
-                string = allowedCommandChars.getString("pattern");
-            }
-            case "PATTERN" -> {
-                mode = BlockType.PATTERN;
-                pattern = Pattern.compile(allowedCommandChars.getString("pattern"));
-            }
+        switch (mode) {
+            case STRING -> string = allowedCommandChars.getString("pattern");
+            case PATTERN -> pattern = Pattern.compile(allowedCommandChars.getString("pattern"));
             default -> throw new IllegalArgumentException("Invalid mode in sign character settings.");
         }
 
@@ -350,16 +323,14 @@ public class Config {
             return;
         }
 
-        BlockType mode;
+        BlockType mode = BlockType.valueOf(banWords.getString("mode").toUpperCase());
         ObjectSet<String> banWordsString = new ObjectOpenHashSet<>();
         ObjectSet<Pattern> banWordsPattern = new ObjectOpenHashSet<>();
-        switch (banWords.getString("mode").toUpperCase()) {
-            case "STRING":
-                mode = BlockType.STRING;
+        switch (mode) {
+            case STRING:
                 banWordsString.addAll(banWords.getStringList("words"));
                 break;
-            case "PATTERN":
-                mode = BlockType.PATTERN;
+            case PATTERN:
                 for (String patternString : banWords.getStringList("words")) {
                     Pattern pattern = Pattern.compile(patternString);
                     banWordsPattern.add(pattern);
