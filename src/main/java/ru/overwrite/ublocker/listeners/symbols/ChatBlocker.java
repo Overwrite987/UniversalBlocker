@@ -215,7 +215,9 @@ public class ChatBlocker implements Listener {
                     if (!e.isCancelled())
                         break;
                     runner.runAsync(() -> {
-                        String perm = Utils.extractValue(action.context(), "perm={", "}");
+                        String perm = Utils.getPermOrDefault(
+                                Utils.extractValue(action.context(), "perm={", "}"),
+                                "ublocker.admin");
                         String[] sound = Utils.extractMessage(action.context(), Utils.PERM_MARKER).split(";");
                         for (Player ps : Bukkit.getOnlinePlayers()) {
                             if (ps.hasPermission(perm)) {
