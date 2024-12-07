@@ -140,13 +140,27 @@ public final class UniversalBlocker extends JavaPlugin {
     public void registerEvents(PluginManager pm, ConfigurationSection settings) {
         if (settings.getBoolean("enable_chat_module")) {
             pluginConfig.setupChat(path);
-            pm.registerEvents(new BanWords(this), this);
-            pm.registerEvents(new BookChecker(this), this);
-            pm.registerEvents(new ChatFilter(this), this);
-            pm.registerEvents(new SignFilter(this), this);
-            pm.registerEvents(new CommandFilter(this), this);
-            pm.registerEvents(new NumbersCheck(this), this);
-            pm.registerEvents(new CaseCheck(this), this); // Будет убрано в будущем, в связи с отсутствием необходимости
+            if (pluginConfig.getBanWordsSettings() != null) {
+                pm.registerEvents(new BanWords(this), this);
+            }
+            if (pluginConfig.getBookCharsSettings() != null) {
+                pm.registerEvents(new BookChecker(this), this);
+            }
+            if (pluginConfig.getChatCharsSettings() != null) {
+                pm.registerEvents(new ChatFilter(this), this);
+            }
+            if (pluginConfig.getSignCharsSettings() != null) {
+                pm.registerEvents(new SignFilter(this), this);
+            }
+            if (pluginConfig.getCommandCharsSettings() != null) {
+                pm.registerEvents(new CommandFilter(this), this);
+            }
+            if (pluginConfig.getNumberCheckSettings() != null) {
+                pm.registerEvents(new NumbersCheck(this), this);
+            }
+            if (pluginConfig.getCaseCheckSettings() != null) {
+                pm.registerEvents(new CaseCheck(this), this); // Будет убрано в будущем, в связи с отсутствием необходимости
+            }
         }
         if (settings.getBoolean("enable_symbol_module")) {
             pluginConfig.setupSymbols(path);
