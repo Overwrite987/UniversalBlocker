@@ -28,11 +28,11 @@ public final class SymbolGroup {
 
     private final List<Action> actionsToExecute;
 
-    private final ObjectList<String> blockFactor;
+    private final List<String> blockFactor;
 
     public SymbolGroup(String groupId,
                        BlockType blockType,
-                       ObjectList<String> blockFactor,
+                       List<String> blockFactor,
                        ObjectList<String> symbolsToBlock,
                        ObjectList<String> excludedCommand,
                        List<Condition> conditionsToCheck,

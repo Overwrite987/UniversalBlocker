@@ -22,6 +22,7 @@ import ru.overwrite.ublocker.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -428,7 +429,7 @@ public class Config {
         for (String symbolsID : symbols.getConfigurationSection("symbols").getKeys(false)) {
             final ConfigurationSection section = symbols.getConfigurationSection("symbols." + symbolsID);
             BlockType blockType = BlockType.valueOf(section.getString("mode").toUpperCase());
-            ObjectList<String> blockFactor = getBlockFactorList(section.getString("block_factor", ""));
+            List<String> blockFactor = getBlockFactorList(section.getString("block_factor", ""));
             List<Condition> conditionList = getConditionList(section.getStringList("conditions"));
             List<Action> actionList = getActionList(section.getStringList("actions"));
             symbolBlockGroupSet.add(
@@ -454,17 +455,17 @@ public class Config {
     }
 
     private ImmutableList<Condition> getConditionList(List<String> conditionStrings) {
-        ObjectList<Condition> conditionList = new ObjectArrayList<>(conditionStrings.size());
+        List<Condition> conditionList = new ArrayList<>(conditionStrings.size());
         for (String action : conditionStrings) {
             conditionList.add(Condition.fromString(action));
         }
         return ImmutableList.copyOf(conditionList);
     }
 
-    private ObjectList<String> getBlockFactorList(String str) {
+    private ImmutableList<String> getBlockFactorList(String str) {
         return str.contains(";")
-                ? ObjectList.of(str.trim().split(";"))
-                : ObjectList.of(str.trim());
+                ? ImmutableList.copyOf(str.trim().split(";"))
+                : ImmutableList.of(str.trim());
     }
 
     public void setupExcluded(FileConfiguration config) {
