@@ -220,7 +220,6 @@ public class Config {
         switch (mode) {
             case STRING -> string = allowedCommandChars.getString("pattern");
             case PATTERN -> pattern = Pattern.compile(allowedCommandChars.getString("pattern"));
-            default -> throw new IllegalArgumentException("Invalid mode in sign character settings.");
         }
 
         this.commandCharsSettings = new CommandCharsSettings(
