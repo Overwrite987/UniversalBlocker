@@ -121,7 +121,7 @@ public class TabComplete implements Listener {
                 }
                 case LITE_BLOCK_TAB_COMPLETE: {
                     String perm = Utils.getPermOrDefault(
-                            Utils.extractValue(action.context(), "perm={", "}"),
+                            Utils.extractValue(action.context(), Utils.PERM_TEXT_PREFIX, "}"),
                             "ublocker.bypass.commands");
                     if (p.hasPermission(perm)) {
                         return false;

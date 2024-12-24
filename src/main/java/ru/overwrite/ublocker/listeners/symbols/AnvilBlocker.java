@@ -119,7 +119,7 @@ public class AnvilBlocker implements Listener {
                 }
                 case LITE_BLOCK: {
                     String perm = Utils.getPermOrDefault(
-                            Utils.extractValue(action.context(), "perm={", "}"),
+                            Utils.extractValue(action.context(), Utils.PERM_TEXT_PREFIX, "}"),
                             "ublocker.bypass.symbols");
                     if (!p.hasPermission(perm)) {
                         e.setCancelled(true);
@@ -192,7 +192,7 @@ public class AnvilBlocker implements Listener {
                         break;
                     runner.runAsync(() -> {
                         String perm = Utils.getPermOrDefault(
-                                Utils.extractValue(action.context(), "perm={", "}"),
+                                Utils.extractValue(action.context(), Utils.PERM_TEXT_PREFIX, "}"),
                                 "ublocker.admin");
 
                         String formattedMessage = Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
@@ -226,7 +226,7 @@ public class AnvilBlocker implements Listener {
                         break;
                     runner.runAsync(() -> {
                         String perm = Utils.getPermOrDefault(
-                                Utils.extractValue(action.context(), "perm={", "}"),
+                                Utils.extractValue(action.context(), Utils.PERM_TEXT_PREFIX, "}"),
                                 "ublocker.admin");
                         String[] sound = Utils.extractMessage(action.context(), Utils.PERM_MARKER).split(";");
                         for (Player ps : Bukkit.getOnlinePlayers()) {
