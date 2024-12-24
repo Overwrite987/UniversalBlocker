@@ -151,7 +151,7 @@ public final class Utils {
     }
 
     public static String getPermOrDefault(String perm, String defaultPerm) {
-        if (perm == null || perm.isEmpty() || perm.isBlank()) {
+        if (perm == null || perm.isBlank()) {
             return defaultPerm;
         }
         return perm;
