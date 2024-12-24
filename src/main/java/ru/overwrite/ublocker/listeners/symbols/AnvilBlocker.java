@@ -107,7 +107,7 @@ public class AnvilBlocker implements Listener {
         }
     }
 
-    private final String[] searchList = {"%player%", "%world%", "%symbol%", "%cmd%"};
+    private final String[] searchList = {"%player%", "%world%", "%symbol%", "%msg%"};
 
     private void executeActions(Cancellable e, Player p, String name, String symbol, List<Action> actions, String world) {
         final String[] replacementList = {p.getName(), world, name, symbol};

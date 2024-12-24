@@ -60,7 +60,7 @@ public class SignBlocker implements Listener {
                     break;
                 }
                 case PATTERN: {
-                    checkPatternBlock(e, p, combined, line0, line1, line2, line3, group);
+                    checkPatternBlock(e, p, combined, group);
                     break;
                 }
                 default: {
@@ -80,12 +80,13 @@ public class SignBlocker implements Listener {
                 if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
                     continue;
                 }
-                executeActions(e, p, line0, line1, line2, line3, symbol, actions, p.getWorld().getName());
+                String combined = line0+line1+line2+line3;
+                executeActions(e, p, combined, symbol, actions, p.getWorld().getName());
             }
         }
     }
 
-    private void checkPatternBlock(SignChangeEvent e, Player p, String combined, String line0, String line1, String line2, String line3, SymbolGroup group) {
+    private void checkPatternBlock(SignChangeEvent e, Player p, String combined, SymbolGroup group) {
         for (Pattern pattern : group.getPatternsToBlock()) {
             List<Action> actions = group.getActionsToExecute();
             if (actions.isEmpty()) {
@@ -96,15 +97,15 @@ public class SignBlocker implements Listener {
                 if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
                     continue;
                 }
-                executeActions(e, p, line0, line1, line2, line3, matcher.group(), actions, p.getWorld().getName());
+                executeActions(e, p, combined, matcher.group(), actions, p.getWorld().getName());
             }
         }
     }
 
-    private final String[] searchList = {"%player%", "%world%", "%symbol%", "%line0%", "%line1%", "%line2%", "%line3%"};
+    private final String[] searchList = {"%player%", "%world%", "%symbol%", "%msg%"};
 
-    private void executeActions(Cancellable e, Player p, String line0, String line1, String line2, String line3, String symbol, List<Action> actions, String world) {
-        final String[] replacementList = {p.getName(), world, symbol, line0, line1, line2, line3};
+    private void executeActions(Cancellable e, Player p, String combined, String symbol, List<Action> actions, String world) {
+        final String[] replacementList = {p.getName(), world, symbol, combined};
         for (Action action : actions) {
             switch (action.type()) {
                 case BLOCK: {

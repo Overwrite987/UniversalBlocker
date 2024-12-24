@@ -104,7 +104,7 @@ public class SyntaxBlocker implements Listener {
         }
     }
 
-    private final String[] searchList = {"%player%", "%world%", "%symbol%", "%cmd%"};
+    private final String[] searchList = {"%player%", "%world%", "%symbol%", "%msg%"};
 
     private void executeActions(Cancellable e, Player p, String command, String symbol, List<Action> actions, String world) {
         final String[] replacementList = {p.getName(), world, symbol, command};
