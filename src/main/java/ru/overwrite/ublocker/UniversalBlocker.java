@@ -158,9 +158,6 @@ public final class UniversalBlocker extends JavaPlugin {
             if (pluginConfig.getNumberCheckSettings() != null) {
                 pm.registerEvents(new NumbersCheck(this), this);
             }
-            if (pluginConfig.getCaseCheckSettings() != null) {
-                pm.registerEvents(new CaseCheck(this), this); // Будет убрано в будущем, в связи с отсутствием необходимости
-            }
         }
         if (settings.getBoolean("enable_symbol_module")) {
             pluginConfig.setupSymbols(path);
