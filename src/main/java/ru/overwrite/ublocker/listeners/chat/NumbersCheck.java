@@ -45,7 +45,7 @@ public class NumbersCheck implements Listener {
                     count++;
                 }
             }
-            if (count > numberCheckSettings.maxNumbers() && !isAdmin(p)) {
+            if (count > numberCheckSettings.maxNumbers() && !plugin.isAdmin(p, "ublocker.bypass.numbers")) {
                 cancelChatEvent(p, message, e);
             }
         } else {
@@ -58,7 +58,7 @@ public class NumbersCheck implements Listener {
                     digitsCount += part.length();
                 }
             }
-            if (digitsCount > numberCheckSettings.maxNumbers() && !isAdmin(p)) {
+            if (digitsCount > numberCheckSettings.maxNumbers() && !plugin.isAdmin(p, "ublocker.bypass.numbers")) {
                 cancelChatEvent(p, message, e);
             }
         }
@@ -104,9 +104,4 @@ public class NumbersCheck implements Listener {
             }
         }
     }
-
-    private boolean isAdmin(Player player) {
-        return player.hasPermission("ublocker.bypass.numbers") || plugin.isExcluded(player);
-    }
-
 }

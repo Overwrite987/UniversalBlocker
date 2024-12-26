@@ -33,8 +33,9 @@ public class ChatFilter implements Listener {
         if (chatCharsSettings == null) return;
 
         Player p = e.getPlayer();
-        if (isAdmin(p))
+        if (plugin.isAdmin(p, "ublocker.bypass.chatchars")) {
             return;
+        }
         String message = e.getMessage();
         if (containsBlockedChars(message)) {
             cancelChatEvent(p, message, e);
@@ -115,9 +116,5 @@ public class ChatFilter implements Listener {
                                 .findFirst().getAsInt());
             }
         };
-    }
-
-    private boolean isAdmin(Player player) {
-        return (player.hasPermission("ublocker.bypass.chatchars") || plugin.isExcluded(player));
     }
 }

@@ -176,6 +176,10 @@ public final class UniversalBlocker extends JavaPlugin {
         }
     }
 
+    public boolean isAdmin(Player player, String permission) {
+        return (player.hasPermission(permission) || isExcluded(player));
+    }
+
     public boolean isExcluded(Player p) {
         return !pluginConfig.getExcludedPlayers().isEmpty() && pluginConfig.getExcludedPlayers().contains(p.getName());
     }

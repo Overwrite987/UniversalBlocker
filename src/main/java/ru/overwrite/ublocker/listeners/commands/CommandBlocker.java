@@ -65,7 +65,7 @@ public class CommandBlocker implements Listener {
     private void checkStringBlock(PlayerCommandPreprocessEvent e, Player p, String command, CommandGroup group) {
         for (String com : group.getCommandsToBlockString()) {
             Command comInMap = Bukkit.getCommandMap().getCommand(com.replace("/", ""));
-            List<String> aliases = comInMap == null ? List.of() : comInMap.getAliases(); // Потенциально создавать новый лист неэффективно
+            List<String> aliases = comInMap == null ? List.of() : comInMap.getAliases();
             if (!aliases.isEmpty() && !aliases.contains(comInMap.getName())) {
                 aliases.add(comInMap.getName());
             }

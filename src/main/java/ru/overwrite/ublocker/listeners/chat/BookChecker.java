@@ -37,8 +37,9 @@ public class BookChecker implements Listener {
         if (bookCharsSettings == null) return;
 
         Player p = e.getPlayer();
-        if (isAdmin(p))
+        if (plugin.isAdmin(p, "ublocker.bypass.bookchars")) {
             return;
+        }
         List<String> messages = e.getNewBookMeta().getPages();
         for (String message : messages) {
             String serialisedMessage = message.replace("\n", "");
@@ -124,9 +125,5 @@ public class BookChecker implements Listener {
                                 .findFirst().getAsInt());
             }
         };
-    }
-
-    private boolean isAdmin(Player player) {
-        return (player.hasPermission("ublocker.bypass.bookchars") || plugin.isExcluded(player));
     }
 }

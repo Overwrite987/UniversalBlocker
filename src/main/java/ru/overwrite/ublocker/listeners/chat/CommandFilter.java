@@ -36,8 +36,9 @@ public class CommandFilter implements Listener {
         if (commandCharsSettings == null) return;
 
         Player p = e.getPlayer();
-        if (isAdmin(p))
+        if (plugin.isAdmin(p, "ublocker.bypass.commandchars")) {
             return;
+        }
         String message = e.getMessage();
         if (containsBlockedChars(message)) {
             cancelCommandEvent(p, message, e);
@@ -120,9 +121,5 @@ public class CommandFilter implements Listener {
                                 .findFirst().getAsInt());
             }
         };
-    }
-
-    private boolean isAdmin(Player player) {
-        return (player.hasPermission("ublocker.bypass.commandchars") || plugin.isExcluded(player));
     }
 }

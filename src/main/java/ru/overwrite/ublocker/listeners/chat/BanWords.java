@@ -34,13 +34,14 @@ public class BanWords implements Listener {
         if (banWordsSettings == null) return;
 
         Player p = e.getPlayer();
-        if (isAdmin(p))
+        if (plugin.isAdmin(p, "ublocker.bypass.banwords")) {
             return;
+        }
         String message = e.getMessage().toLowerCase();
         switch (banWordsSettings.mode()) {
             case STRING: {
                 for (String banword : banWordsSettings.banWordsString()) {
-                    if (message.contains(banword) && !isAdmin(p)) {
+                    if (message.contains(banword)) {
                         if (banWordsSettings.block()) {
                             e.setCancelled(true);
                             executeBlockActions(p, banword, message, e);
@@ -56,7 +57,7 @@ public class BanWords implements Listener {
             case PATTERN: {
                 for (Pattern banword : banWordsSettings.banWordsPattern()) {
                     Matcher matcher = banword.matcher(message);
-                    if (matcher.find() && !isAdmin(p)) {
+                    if (matcher.find()) {
                         if (banWordsSettings.block()) {
                             e.setCancelled(true);
                             executeBlockActions(p, matcher.group(), message, e);
@@ -115,9 +116,5 @@ public class BanWords implements Listener {
                 plugin.getPluginMessage().sendCrossProxyBasic(p, gsonMessage);
             }
         }
-    }
-
-    private boolean isAdmin(Player player) {
-        return (player.hasPermission("ublocker.bypass.banwords") || plugin.isExcluded(player));
     }
 }

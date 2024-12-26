@@ -38,8 +38,9 @@ public class SignFilter implements Listener {
         if (signCharsSettings == null) return;
 
         Player p = e.getPlayer();
-        if (isAdmin(p))
+        if (plugin.isAdmin(p, "ublocker.bypass.signchars")) {
             return;
+        }
         String line0 = e.getLine(0);
         String line1 = e.getLine(1);
         String line2 = e.getLine(2);
@@ -131,9 +132,5 @@ public class SignFilter implements Listener {
                                 .findFirst().getAsInt());
             }
         };
-    }
-
-    private boolean isAdmin(Player player) {
-        return (player.hasPermission("ublocker.bypass.signchars") || plugin.isExcluded(player));
     }
 }
