@@ -1,6 +1,5 @@
 package ru.overwrite.ublocker.listeners.symbols;
 
-import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -116,7 +115,7 @@ public class SyntaxBlocker implements Listener {
                 }
                 case LITE_BLOCK: {
                     String perm = Utils.getPermOrDefault(
-                            Utils.extractValue(action.context(), Utils.PERM_TEXT_PREFIX, "}"),
+                            Utils.extractValue(action.context(), Utils.PERM_PREFIX, "}"),
                             "ublocker.bypass.symbols");
                     if (!p.hasPermission(perm)) {
                         e.setCancelled(true);
@@ -180,7 +179,7 @@ public class SyntaxBlocker implements Listener {
                 }
                 case LOG: {
                     String logMessage = Utils.extractMessage(action.context(), Utils.FILE_MARKER);
-                    String file = Utils.extractValue(action.context(), "file={", "}");
+                    String file = Utils.extractValue(action.context(), Utils.FILE_PREFIX, "}");
                     plugin.logAction(Utils.replaceEach(logMessage, searchList, replacementList), file);
                     break;
                 }
@@ -189,7 +188,7 @@ public class SyntaxBlocker implements Listener {
                         break;
                     runner.runAsync(() -> {
                         String perm = Utils.getPermOrDefault(
-                                Utils.extractValue(action.context(), Utils.PERM_TEXT_PREFIX, "}"),
+                                Utils.extractValue(action.context(), Utils.PERM_PREFIX, "}"),
                                 "ublocker.admin");
 
                         String formattedMessage = Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
@@ -223,7 +222,7 @@ public class SyntaxBlocker implements Listener {
                         break;
                     runner.runAsync(() -> {
                         String perm = Utils.getPermOrDefault(
-                                Utils.extractValue(action.context(), Utils.PERM_TEXT_PREFIX, "}"),
+                                Utils.extractValue(action.context(), Utils.PERM_PREFIX, "}"),
                                 "ublocker.admin");
                         String[] sound = Utils.extractMessage(action.context(), Utils.PERM_MARKER).split(";");
                         for (Player ps : Bukkit.getOnlinePlayers()) {
@@ -240,7 +239,7 @@ public class SyntaxBlocker implements Listener {
         }
     }
 
-    private boolean startWithExcludedString(String command, ObjectList<String> excludedList) {
+    private boolean startWithExcludedString(String command, List<String> excludedList) {
         if (excludedList.isEmpty()) {
             return false;
         }
@@ -252,7 +251,7 @@ public class SyntaxBlocker implements Listener {
         return false;
     }
 
-    private boolean startWithExcludedPattern(String command, ObjectList<Pattern> excludedList) {
+    private boolean startWithExcludedPattern(String command, List<Pattern> excludedList) {
         if (excludedList.isEmpty()) {
             return false;
         }

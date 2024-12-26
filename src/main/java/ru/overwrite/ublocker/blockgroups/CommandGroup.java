@@ -1,7 +1,7 @@
 package ru.overwrite.ublocker.blockgroups;
 
+import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectList;
 import lombok.Getter;
 import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.conditions.Condition;
@@ -16,9 +16,9 @@ public final class CommandGroup {
 
     private final BlockType blockType;
 
-    private final ObjectList<String> commandsToBlockString = new ObjectArrayList<>();
+    private List<String> commandsToBlockString;
 
-    private final ObjectList<Pattern> commandsToBlockPattern = new ObjectArrayList<>();
+    private List<Pattern> commandsToBlockPattern;
 
     private final List<Condition> conditionsToCheck;
 
@@ -29,7 +29,7 @@ public final class CommandGroup {
     public CommandGroup(String groupId,
                         BlockType blockType,
                         boolean blockAliases,
-                        ObjectList<String> commandsToBlock,
+                        List<String> commandsToBlock,
                         List<Condition> conditionsToCheck,
                         List<Action> actionsToExecute) {
         this.groupId = groupId;
@@ -43,16 +43,20 @@ public final class CommandGroup {
     private void setupBlockingList(List<String> commandsToBlock) {
         switch (this.blockType) {
             case STRING: {
+                List<String> commandsToBlockString = new ObjectArrayList<>(commandsToBlock.size());
                 for (String s : commandsToBlock) {
-                    this.commandsToBlockString.add(s.toLowerCase());
+                    commandsToBlockString.add(s.toLowerCase());
                 }
+                this.commandsToBlockString = ImmutableList.copyOf(commandsToBlockString);
                 break;
             }
             case PATTERN: {
+                List<Pattern> commandsToBlockPattern = new ObjectArrayList<>(commandsToBlock.size());
                 for (String s : commandsToBlock) {
                     Pattern pattern = Pattern.compile(s);
-                    this.commandsToBlockPattern.add(pattern);
+                    commandsToBlockPattern.add(pattern);
                 }
+                this.commandsToBlockPattern = ImmutableList.copyOf(commandsToBlockPattern);
                 break;
             }
             default: {

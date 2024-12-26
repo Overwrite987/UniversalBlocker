@@ -74,13 +74,14 @@ public final class Utils {
         p.playSound(p.getLocation(), sound, volume, pitch);
     }
 
-    public static final String PERM_TEXT_PREFIX = "perm={";
+    public static final String PERM_PREFIX = "perm={";
+    public static final String FILE_PREFIX = "file={";
     public static final String HOVER_TEXT_PREFIX = "hoverText={";
     public static final String CLICK_EVENT_PREFIX = "clickEvent={";
-    public static final String[] PERM_MARKER = new String[]{PERM_TEXT_PREFIX};
-    public static final String[] FILE_MARKER = new String[]{"file={"};
-    public static final String[] HOVER_MARKERS = new String[]{HOVER_TEXT_PREFIX, CLICK_EVENT_PREFIX};
-    public static final String[] NOTIFY_MARKERS = new String[]{HOVER_TEXT_PREFIX, CLICK_EVENT_PREFIX, PERM_TEXT_PREFIX};
+    public static final String[] PERM_MARKER = {PERM_PREFIX};
+    public static final String[] FILE_MARKER = {FILE_PREFIX};
+    public static final String[] HOVER_MARKERS = {HOVER_TEXT_PREFIX, CLICK_EVENT_PREFIX};
+    public static final String[] NOTIFY_MARKERS = {HOVER_TEXT_PREFIX, CLICK_EVENT_PREFIX, PERM_PREFIX};
 
     public static Component createHoverEvent(Component message, String hoverText) {
         HoverEvent<Component> hover = HoverEvent.showText(LegacyComponentSerializer.legacySection().deserialize(hoverText));

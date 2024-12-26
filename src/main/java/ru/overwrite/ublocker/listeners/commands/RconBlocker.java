@@ -113,7 +113,7 @@ public class RconBlocker implements Listener {
                 }
                 case LOG: {
                     String logMessage = Utils.extractMessage(action.context(), Utils.FILE_MARKER);
-                    String file = Utils.extractValue(action.context(), "file={", "}");
+                    String file = Utils.extractValue(action.context(), Utils.FILE_PREFIX, "}");
                     plugin.logAction(logMessage, file);
                     break;
                 }

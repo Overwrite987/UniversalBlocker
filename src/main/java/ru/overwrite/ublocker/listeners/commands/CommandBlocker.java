@@ -137,7 +137,7 @@ public class CommandBlocker implements Listener {
                 }
                 case LITE_BLOCK: {
                     String perm = Utils.getPermOrDefault(
-                            Utils.extractValue(action.context(), Utils.PERM_TEXT_PREFIX, "}"),
+                            Utils.extractValue(action.context(), Utils.PERM_PREFIX, "}"),
                             "ublocker.bypass.commands");
                     if (p.hasPermission(perm)) {
                         break;
@@ -180,7 +180,7 @@ public class CommandBlocker implements Listener {
                     if (command.split(" ").length <= 1) {
                         break;
                     }
-                    String perm = Utils.getPermOrDefault(Utils.extractValue(action.context(), Utils.PERM_TEXT_PREFIX, "}"), "ublocker.bypass.commands");
+                    String perm = Utils.getPermOrDefault(Utils.extractValue(action.context(), Utils.PERM_PREFIX, "}"), "ublocker.bypass.commands");
                     if (p.hasPermission(perm)) {
                         break;
                     }
@@ -256,7 +256,7 @@ public class CommandBlocker implements Listener {
                 }
                 case LOG: {
                     String logMessage = Utils.extractMessage(action.context(), Utils.FILE_MARKER);
-                    String file = Utils.extractValue(action.context(), "file={", "}");
+                    String file = Utils.extractValue(action.context(), Utils.FILE_PREFIX, "}");
                     plugin.logAction(Utils.replaceEach(logMessage, searchList, replacementList), file);
                     break;
                 }
@@ -265,7 +265,7 @@ public class CommandBlocker implements Listener {
                         break;
                     runner.runAsync(() -> {
                         String perm = Utils.getPermOrDefault(
-                                Utils.extractValue(action.context(), Utils.PERM_TEXT_PREFIX, "}"),
+                                Utils.extractValue(action.context(), Utils.PERM_PREFIX, "}"),
                                 "ublocker.admin");
 
                         String formattedMessage = Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
@@ -299,7 +299,7 @@ public class CommandBlocker implements Listener {
                         break;
                     runner.runAsync(() -> {
                         String perm = Utils.getPermOrDefault(
-                                Utils.extractValue(action.context(), Utils.PERM_TEXT_PREFIX, "}"),
+                                Utils.extractValue(action.context(), Utils.PERM_PREFIX, "}"),
                                 "ublocker.admin");
                         String[] sound = Utils.extractMessage(action.context(), Utils.PERM_MARKER).split(";");
                         for (Player ps : Bukkit.getOnlinePlayers()) {

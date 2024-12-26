@@ -1,10 +1,10 @@
 package ru.overwrite.ublocker.configuration;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import it.unimi.dsi.fastutil.objects.ObjectSet;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 @Getter
@@ -36,13 +37,13 @@ public class Config {
         this.plugin = plugin;
     }
 
-    private ObjectSet<CommandGroup> commandBlockGroupSet;
+    private Set<CommandGroup> commandBlockGroupSet;
 
-    private ObjectSet<SymbolGroup> symbolBlockGroupSet;
+    private Set<SymbolGroup> symbolBlockGroupSet;
 
-    private ObjectSet<CommandGroup> commandHideGroupSet;
+    private Set<CommandGroup> commandHideGroupSet;
 
-    private ObjectSet<String> excludedPlayers;
+    private Set<String> excludedPlayers;
 
     public void setupChat(String path) {
         final FileConfiguration chat = getFile(path, "chat.yml");
@@ -52,7 +53,6 @@ public class Config {
         setupSignChars(settings.getConfigurationSection("allowed_sign_chars"));
         setupCommandChars(settings.getConfigurationSection("allowed_command_chars"));
         setupNumberCheck(settings.getConfigurationSection("numbers_check"));
-        setupCaseCheck(settings.getConfigurationSection("case_check"));
         setupBanWords(settings.getConfigurationSection("ban_words_chat"));
     }
 
@@ -274,44 +274,6 @@ public class Config {
         );
     }
 
-    private CaseCheckSettings caseCheckSettings;
-
-    private void setupCaseCheck(ConfigurationSection caseCheck) {
-        if (isNullSection(caseCheck)) {
-            return;
-        }
-
-        if (!caseCheck.getBoolean("enable")) {
-            return;
-        }
-
-        int maxUpperCasePercent = caseCheck.getInt("maxuppercasepercent");
-        boolean strictCheck = caseCheck.getBoolean("strict");
-        String message = Utils.COLORIZER.colorize(caseCheck.getString("message"));
-
-        ConfigurationSection caseCheckSound = caseCheck.getConfigurationSection("sound");
-        boolean enableSounds = caseCheckSound.getBoolean("enable");
-        String[] sound = caseCheckSound.getString("value").split(";");
-
-        ConfigurationSection caseCheckNotify = caseCheck.getConfigurationSection("notify");
-        boolean notifyEnabled = caseCheckNotify.getBoolean("enable");
-        String notifyMessage = Utils.COLORIZER.colorize(caseCheckNotify.getString("message"));
-        boolean notifySoundsEnabled = caseCheckNotify.getBoolean("sound.enable");
-        String[] notifySound = caseCheckNotify.getString("sound.value").split(";");
-
-        this.caseCheckSettings = new CaseCheckSettings(
-                maxUpperCasePercent,
-                strictCheck,
-                message,
-                enableSounds,
-                sound,
-                notifyEnabled,
-                notifyMessage,
-                notifySoundsEnabled,
-                notifySound
-        );
-    }
-
     private BanWordsSettings banWordsSettings;
 
     private void setupBanWords(ConfigurationSection banWords) {
@@ -324,8 +286,8 @@ public class Config {
         }
 
         BlockType mode = BlockType.valueOf(banWords.getString("mode").toUpperCase());
-        ObjectSet<String> banWordsString = new ObjectOpenHashSet<>();
-        ObjectSet<Pattern> banWordsPattern = new ObjectOpenHashSet<>();
+        Set<String> banWordsString = new ObjectOpenHashSet<>();
+        Set<Pattern> banWordsPattern = new ObjectOpenHashSet<>();
         switch (mode) {
             case STRING:
                 banWordsString.addAll(banWords.getStringList("words"));
@@ -374,12 +336,12 @@ public class Config {
 
     public void setupCommands(String path) {
         final FileConfiguration commands = getFile(path, "commands.yml");
-        commandBlockGroupSet = new ObjectOpenHashSet<>();
-        commandHideGroupSet = new ObjectOpenHashSet<>();
+        Set<CommandGroup> commandBlockGroupSet = new ObjectOpenHashSet<>();
+        Set<CommandGroup> commandHideGroupSet = new ObjectOpenHashSet<>();
         for (String commandsID : commands.getConfigurationSection("commands").getKeys(false)) {
             final ConfigurationSection section = commands.getConfigurationSection("commands." + commandsID);
             BlockType blockType = BlockType.valueOf(section.getString("mode").toUpperCase());
-            boolean blockAliases = section.getBoolean("block_aliases") && blockType.equals(BlockType.STRING); // Не будет работать с паттернами
+            boolean blockAliases = section.getBoolean("block_aliases") && blockType == BlockType.STRING; // Не будет работать с паттернами
             List<Condition> conditionList = getConditionList(section.getStringList("conditions"));
             List<Action> actionList = getActionList(section.getStringList("actions"));
             commandBlockGroupSet.add(
@@ -387,12 +349,12 @@ public class Config {
                             commandsID,
                             blockType,
                             blockAliases,
-                            new ObjectArrayList<>(section.getStringList("commands")),
+                            section.getStringList("commands"),
                             conditionList,
                             actionList
                     )
             );
-            if (!blockType.equals(BlockType.STRING)) {
+            if (blockType != BlockType.STRING) {
                 return;
             }
             boolean shouldAddToHideList = false;
@@ -420,11 +382,13 @@ public class Config {
                 );
             }
         }
+        this.commandBlockGroupSet = ImmutableSet.copyOf(commandBlockGroupSet);
+        this.commandHideGroupSet = ImmutableSet.copyOf(commandHideGroupSet);
     }
 
     public void setupSymbols(String path) {
         final FileConfiguration symbols = getFile(path, "symbols.yml");
-        symbolBlockGroupSet = new ObjectOpenHashSet<>();
+        Set<SymbolGroup> symbolBlockGroupSet = new ObjectOpenHashSet<>();
         for (String symbolsID : symbols.getConfigurationSection("symbols").getKeys(false)) {
             final ConfigurationSection section = symbols.getConfigurationSection("symbols." + symbolsID);
             BlockType blockType = BlockType.valueOf(section.getString("mode").toUpperCase());
@@ -436,13 +400,14 @@ public class Config {
                             symbolsID,
                             blockType,
                             blockFactor,
-                            new ObjectArrayList<>(section.getStringList("symbols")),
-                            new ObjectArrayList<>(section.getStringList("excluded_commands")),
+                            section.getStringList("symbols"),
+                            section.getStringList("excluded_commands"),
                             conditionList,
                             actionList
                     )
             );
         }
+        this.symbolBlockGroupSet = ImmutableSet.copyOf(symbolBlockGroupSet);
     }
 
     private ImmutableList<Action> getActionList(List<String> actionStrings) {

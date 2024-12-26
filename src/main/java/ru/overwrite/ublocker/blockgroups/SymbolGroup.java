@@ -1,7 +1,7 @@
 package ru.overwrite.ublocker.blockgroups;
 
+import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectList;
 import lombok.Getter;
 import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.conditions.Condition;
@@ -16,13 +16,13 @@ public final class SymbolGroup {
 
     private final BlockType blockType;
 
-    private final ObjectList<String> symbolsToBlock = new ObjectArrayList<>();
+    private List<String> symbolsToBlock;
 
-    private final ObjectList<Pattern> patternsToBlock = new ObjectArrayList<>();
+    private List<Pattern> patternsToBlock;
 
-    private final ObjectList<String> excludedCommandsString = new ObjectArrayList<>();
+    private List<String> excludedCommandsString;
 
-    private final ObjectList<Pattern> excludedCommandsPattern = new ObjectArrayList<>();
+    private List<Pattern> excludedCommandsPattern;
 
     private final List<Condition> conditionsToCheck;
 
@@ -33,8 +33,8 @@ public final class SymbolGroup {
     public SymbolGroup(String groupId,
                        BlockType blockType,
                        List<String> blockFactor,
-                       ObjectList<String> symbolsToBlock,
-                       ObjectList<String> excludedCommand,
+                       List<String> symbolsToBlock,
+                       List<String> excludedCommand,
                        List<Condition> conditionsToCheck,
                        List<Action> actionsToExecute) {
         this.groupId = groupId;
@@ -49,16 +49,20 @@ public final class SymbolGroup {
     private void setupBlockingList(List<String> symbolsToBlock) {
         switch (this.blockType) {
             case STRING: {
+                List<String> symbolsToBlocks = new ObjectArrayList<>(symbolsToBlock.size());
                 for (String s : symbolsToBlock) {
-                    this.symbolsToBlock.add(s.toLowerCase());
+                    symbolsToBlocks.add(s.toLowerCase());
                 }
+                this.symbolsToBlock = ImmutableList.copyOf(symbolsToBlocks);
                 break;
             }
             case PATTERN: {
+                List<Pattern> patternsToBlocks = new ObjectArrayList<>(symbolsToBlock.size());
                 for (String s : symbolsToBlock) {
                     Pattern pattern = Pattern.compile(s);
-                    this.patternsToBlock.add(pattern);
+                    patternsToBlocks.add(pattern);
                 }
+                this.patternsToBlock = ImmutableList.copyOf(patternsToBlocks);
                 break;
             }
             default: {
@@ -70,16 +74,20 @@ public final class SymbolGroup {
     private void setupExcludedCommands(List<String> excludedCommand) {
         switch (this.blockType) {
             case STRING: {
+                List<String> excludedCommandsString = new ObjectArrayList<>(excludedCommand.size());
                 for (String s : excludedCommand) {
                     excludedCommandsString.add(s.toLowerCase());
                 }
+                this.excludedCommandsString = ImmutableList.copyOf(excludedCommandsString);
                 break;
             }
             case PATTERN: {
+                List<Pattern> excludedCommandsPattern = new ObjectArrayList<>(excludedCommand.size());
                 for (String s : excludedCommand) {
                     Pattern pattern = Pattern.compile(s);
                     excludedCommandsPattern.add(pattern);
                 }
+                this.excludedCommandsPattern = ImmutableList.copyOf(excludedCommandsPattern);
                 break;
             }
             default: {
