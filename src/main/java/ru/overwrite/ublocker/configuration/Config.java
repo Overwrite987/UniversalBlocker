@@ -21,7 +21,6 @@ import ru.overwrite.ublocker.configuration.data.*;
 import ru.overwrite.ublocker.utils.Utils;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -354,6 +353,7 @@ public class Config {
                             actionList
                     )
             );
+            this.commandBlockGroupSet = ImmutableSet.copyOf(commandBlockGroupSet);
             if (blockType != BlockType.STRING) {
                 return;
             }
@@ -382,7 +382,6 @@ public class Config {
                 );
             }
         }
-        this.commandBlockGroupSet = ImmutableSet.copyOf(commandBlockGroupSet);
         this.commandHideGroupSet = ImmutableSet.copyOf(commandHideGroupSet);
     }
 
