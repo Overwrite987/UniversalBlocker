@@ -353,9 +353,8 @@ public class Config {
                             actionList
                     )
             );
-            this.commandBlockGroupSet = ImmutableSet.copyOf(commandBlockGroupSet);
             if (blockType != BlockType.STRING) {
-                return;
+                break;
             }
             boolean shouldAddToHideList = false;
             for (Action a : actionList) {
@@ -382,6 +381,7 @@ public class Config {
                 );
             }
         }
+        this.commandBlockGroupSet = ImmutableSet.copyOf(commandBlockGroupSet);
         this.commandHideGroupSet = ImmutableSet.copyOf(commandHideGroupSet);
     }
 
