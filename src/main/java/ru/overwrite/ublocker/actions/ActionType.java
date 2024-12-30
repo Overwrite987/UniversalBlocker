@@ -21,6 +21,7 @@ public enum ActionType {
     SOUND,
     CONSOLE,
     NOTIFY,
+    NOTIFY_CONSOLE,
     NOTIFY_SOUND,
     LOG;
 

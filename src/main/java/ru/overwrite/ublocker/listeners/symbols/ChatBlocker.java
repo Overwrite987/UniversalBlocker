@@ -211,6 +211,15 @@ public class ChatBlocker implements Listener {
                     });
                     break;
                 }
+                case NOTIFY_CONSOLE: {
+                    if (!e.isCancelled())
+                        break;
+                    runner.runAsync(() -> {
+                        String formattedMessage = Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
+                        Bukkit.getConsoleSender().sendMessage(formattedMessage);
+                    });
+                    break;
+                }
                 case NOTIFY_SOUND: {
                     if (!e.isCancelled())
                         break;
