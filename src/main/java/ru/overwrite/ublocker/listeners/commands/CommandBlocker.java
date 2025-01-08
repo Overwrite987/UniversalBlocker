@@ -98,7 +98,6 @@ public class CommandBlocker implements Listener {
                 plugin.getPluginLogger().info("Executed command base: " + executedCommandBase);
             }
             Matcher matcher = pattern.matcher(executedCommandBase.replace("/", ""));
-            System.out.println(matcher.matches());
             if (matcher.matches()) {
                 Command comInMap = Bukkit.getCommandMap().getCommand(matcher.group());
                 List<String> aliases = comInMap == null ? List.of() : comInMap.getAliases();
