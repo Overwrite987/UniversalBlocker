@@ -2,7 +2,6 @@ package ru.overwrite.ublocker.listeners.symbols;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -50,6 +49,16 @@ public class ChatBlocker implements Listener {
                 }
                 continue;
             }
+            List<Action> actions = group.getActionsToExecute();
+            if (actions.isEmpty()) {
+                continue;
+            }
+            if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
+                if (Utils.DEBUG) {
+                    plugin.getPluginLogger().info("Blocking does not fulfill the requirements. Skipping group...");
+                }
+                continue;
+            }
             switch (group.getBlockType()) {
                 case STRING: {
                     checkStringBlock(e, p, message, group);
@@ -69,13 +78,7 @@ public class ChatBlocker implements Listener {
     private void checkStringBlock(AsyncPlayerChatEvent e, Player p, String message, SymbolGroup group) {
         for (String symbol : group.getSymbolsToBlock()) {
             List<Action> actions = group.getActionsToExecute();
-            if (actions.isEmpty()) {
-                continue;
-            }
             if (message.contains(symbol)) {
-                if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
-                    continue;
-                }
                 executeActions(e, p, message, symbol, actions, p.getWorld().getName());
             }
         }
@@ -83,15 +86,9 @@ public class ChatBlocker implements Listener {
 
     private void checkPatternBlock(AsyncPlayerChatEvent e, Player p, String message, SymbolGroup group) {
         for (Pattern pattern : group.getPatternsToBlock()) {
-            List<Action> actions = group.getActionsToExecute();
-            if (actions.isEmpty()) {
-                continue;
-            }
             Matcher matcher = pattern.matcher(message);
             if (matcher.find()) {
-                if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
-                    continue;
-                }
+                List<Action> actions = group.getActionsToExecute();
                 executeActions(e, p, message, matcher.group(), actions, p.getWorld().getName());
             }
         }
@@ -122,17 +119,7 @@ public class ChatBlocker implements Listener {
                     runner.runAsync(() -> {
                         String formattedMessage = Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
 
-                        String messageToPlayer = Utils.extractMessage(formattedMessage, Utils.HOVER_MARKERS);
-                        String hoverText = Utils.extractValue(formattedMessage, Utils.HOVER_TEXT_PREFIX, "}");
-                        String clickEvent = Utils.extractValue(formattedMessage, Utils.CLICK_EVENT_PREFIX, "}");
-
-                        Component component = LegacyComponentSerializer.legacySection().deserialize(messageToPlayer);
-                        if (hoverText != null) {
-                            component = Utils.createHoverEvent(component, hoverText);
-                        }
-                        if (clickEvent != null) {
-                            component = Utils.createClickEvent(component, clickEvent);
-                        }
+                        Component component = Utils.parseMessage(formattedMessage, Utils.HOVER_MARKERS);
 
                         p.sendMessage(component);
                     });
@@ -172,7 +159,7 @@ public class ChatBlocker implements Listener {
                     break;
                 }
                 case LOG: {
-                    String logMessage = Utils.extractMessage(action.context(), Utils.FILE_MARKER);
+                    String logMessage = Utils.extractMessage(action.context(), Utils.FILE_MARKER, true);
                     String file = Utils.extractValue(action.context(), Utils.FILE_PREFIX, "}");
                     plugin.logAction(Utils.replaceEach(logMessage, searchList, replacementList), file);
                     break;
@@ -187,17 +174,7 @@ public class ChatBlocker implements Listener {
 
                         String formattedMessage = Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
 
-                        String notifyMessage = Utils.extractMessage(formattedMessage, Utils.NOTIFY_MARKERS);
-                        String hoverText = Utils.extractValue(formattedMessage, Utils.HOVER_TEXT_PREFIX, "}");
-                        String clickEvent = Utils.extractValue(formattedMessage, Utils.CLICK_EVENT_PREFIX, "}");
-
-                        Component component = LegacyComponentSerializer.legacySection().deserialize(notifyMessage);
-                        if (hoverText != null) {
-                            component = Utils.createHoverEvent(component, hoverText);
-                        }
-                        if (clickEvent != null) {
-                            component = Utils.createClickEvent(component, clickEvent);
-                        }
+                        Component component = Utils.parseMessage(formattedMessage, Utils.NOTIFY_MARKERS);
 
                         for (Player ps : Bukkit.getOnlinePlayers()) {
                             if (ps.hasPermission(perm)) {
@@ -227,7 +204,7 @@ public class ChatBlocker implements Listener {
                         String perm = Utils.getPermOrDefault(
                                 Utils.extractValue(action.context(), Utils.PERM_PREFIX, "}"),
                                 "ublocker.admin");
-                        String[] sound = Utils.extractMessage(action.context(), Utils.PERM_MARKER).split(";");
+                        String[] sound = Utils.extractMessage(action.context(), Utils.PERM_MARKER, true).split(";");
                         for (Player ps : Bukkit.getOnlinePlayers()) {
                             if (ps.hasPermission(perm)) {
                                 Utils.sendSound(sound, ps);

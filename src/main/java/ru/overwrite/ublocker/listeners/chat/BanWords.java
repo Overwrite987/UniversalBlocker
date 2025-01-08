@@ -2,7 +2,6 @@ package ru.overwrite.ublocker.listeners.chat;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -91,17 +90,7 @@ public class BanWords implements Listener {
 
             String formattedMessage = Utils.replaceEach(banWordsSettings.notifyMessage(), searchList, replacementList);
 
-            String notifyMessage = Utils.extractMessage(formattedMessage, Utils.NOTIFY_MARKERS);
-            String hoverText = Utils.extractValue(formattedMessage, Utils.HOVER_TEXT_PREFIX, "}");
-            String clickEvent = Utils.extractValue(formattedMessage, Utils.CLICK_EVENT_PREFIX, "}");
-
-            Component component = LegacyComponentSerializer.legacySection().deserialize(notifyMessage);
-            if (hoverText != null) {
-                component = Utils.createHoverEvent(component, hoverText);
-            }
-            if (clickEvent != null) {
-                component = Utils.createClickEvent(component, clickEvent);
-            }
+            Component component = Utils.parseMessage(formattedMessage, Utils.NOTIFY_MARKERS);
 
             for (Player admin : Bukkit.getOnlinePlayers()) {
                 if (admin.hasPermission("ublocker.admin")) {

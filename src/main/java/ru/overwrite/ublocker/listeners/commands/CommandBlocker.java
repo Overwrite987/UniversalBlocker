@@ -2,7 +2,6 @@ package ru.overwrite.ublocker.listeners.commands;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
@@ -46,6 +45,16 @@ public class CommandBlocker implements Listener {
                 plugin.getPluginLogger().info("Group checking now: " + group.getGroupId());
                 plugin.getPluginLogger().info("Block type: " + group.getBlockType());
             }
+            List<Action> actions = group.getActionsToExecute();
+            if (actions.isEmpty()) {
+                continue;
+            }
+            if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
+                if (Utils.DEBUG) {
+                    plugin.getPluginLogger().info("Blocking does not fulfill the requirements. Skipping group...");
+                }
+                continue;
+            }
             switch (group.getBlockType()) {
                 case STRING: {
                     checkStringBlock(e, p, command, group);
@@ -70,14 +79,11 @@ public class CommandBlocker implements Listener {
                 aliases.add(comInMap.getName());
             }
             String executedCommandBase = Utils.cutCommand(command);
+            if (Utils.DEBUG) {
+                plugin.getPluginLogger().info("Executed command base: " + executedCommandBase);
+            }
             if (executedCommandBase.equalsIgnoreCase(com) || aliases.contains(executedCommandBase.substring(1))) {
                 List<Action> actions = group.getActionsToExecute();
-                if (actions.isEmpty()) {
-                    continue;
-                }
-                if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
-                    continue;
-                }
                 if (executeActions(group, e, p, com, command, actions, aliases, p.getWorld().getName())) {
                     break;
                 }
@@ -87,20 +93,19 @@ public class CommandBlocker implements Listener {
 
     private void checkPatternGroup(PlayerCommandPreprocessEvent e, Player p, String command, CommandGroup group) {
         for (Pattern pattern : group.getCommandsToBlockPattern()) {
-            List<Action> actions = group.getActionsToExecute();
-            if (actions.isEmpty()) {
-                continue;
+            String executedCommandBase = Utils.cutCommand(command);
+            if (Utils.DEBUG) {
+                plugin.getPluginLogger().info("Executed command base: " + executedCommandBase);
             }
-            if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
-                continue;
-            }
-            Matcher matcher = pattern.matcher(Utils.cutCommand(command).replace("/", ""));
+            Matcher matcher = pattern.matcher(executedCommandBase.replace("/", ""));
+            System.out.println(matcher.matches());
             if (matcher.matches()) {
                 Command comInMap = Bukkit.getCommandMap().getCommand(matcher.group());
                 List<String> aliases = comInMap == null ? List.of() : comInMap.getAliases();
                 if (!aliases.isEmpty()) {
                     aliases.add(comInMap.getName());
                 }
+                List<Action> actions = group.getActionsToExecute();
                 if (aliases.contains(matcher.group())) {
                     if (executeActions(group, e, p, matcher.group(), command, actions, aliases, p.getWorld().getName())) {
                         break;
@@ -120,19 +125,20 @@ public class CommandBlocker implements Listener {
         for (Action action : actions) {
             switch (action.type()) {
                 case BLOCK: {
-                    String executedCommandBase = Utils.cutCommand(command);
-                    if (group.isBlockAliases()) {
-                        for (String alias : aliases) {
-                            if (executedCommandBase.substring(1).equalsIgnoreCase(alias)) {
-                                e.setCancelled(true);
-                                break;
-                            }
-                        }
-                    }
-                    if (com.equals(executedCommandBase)) {
-                        e.setCancelled(true);
-                        break;
-                    }
+//                    String executedCommandBase = Utils.cutCommand(command);
+//                    if (group.isBlockAliases()) {
+//                        for (String alias : aliases) {
+//                            if (executedCommandBase.substring(1).equalsIgnoreCase(alias)) {
+//                                e.setCancelled(true);
+//                                break;
+//                            }
+//                        }
+//                    }
+//                    if (com.equals(executedCommandBase)) {
+//                        e.setCancelled(true);
+//                        break;
+//                    }
+                    e.setCancelled(true);
                     break;
                 }
                 case LITE_BLOCK: {
@@ -142,38 +148,14 @@ public class CommandBlocker implements Listener {
                     if (p.hasPermission(perm)) {
                         break;
                     }
-                    String executedCommandBase = Utils.cutCommand(command);
-                    if (group.isBlockAliases()) {
-                        for (String alias : aliases) {
-                            if (executedCommandBase.substring(1).equalsIgnoreCase(alias)) {
-                                e.setCancelled(true);
-                                break;
-                            }
-                        }
-                    }
-                    if (com.equals(executedCommandBase)) {
-                        e.setCancelled(true);
-                        break;
-                    }
+                    e.setCancelled(true);
                     break;
                 }
                 case BLOCK_ARGUMENTS: {
                     if (command.split(" ").length <= 1) {
                         break;
                     }
-                    String executedCommandBase = Utils.cutCommand(command);
-                    if (group.isBlockAliases()) {
-                        for (String alias : aliases) {
-                            if (executedCommandBase.substring(1).equalsIgnoreCase(alias)) {
-                                e.setCancelled(true);
-                                break;
-                            }
-                        }
-                    }
-                    if (com.equals(executedCommandBase)) {
-                        e.setCancelled(true);
-                        break;
-                    }
+                    e.setCancelled(true);
                     break;
                 }
                 case LITE_BLOCK_ARGUMENTS: {
@@ -184,19 +166,7 @@ public class CommandBlocker implements Listener {
                     if (p.hasPermission(perm)) {
                         break;
                     }
-                    String executedCommandBase = Utils.cutCommand(command);
-                    if (group.isBlockAliases()) {
-                        for (String alias : aliases) {
-                            if (executedCommandBase.substring(1).equalsIgnoreCase(alias)) {
-                                e.setCancelled(true);
-                                break;
-                            }
-                        }
-                    }
-                    if (com.equals(executedCommandBase)) {
-                        e.setCancelled(true);
-                        break;
-                    }
+                    e.setCancelled(true);
                     break;
                 }
                 case MESSAGE: {
@@ -205,17 +175,17 @@ public class CommandBlocker implements Listener {
                     runner.runAsync(() -> {
                         String formattedMessage = Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
 
-                        String message = Utils.extractMessage(formattedMessage, Utils.HOVER_MARKERS);
-                        String hoverText = Utils.extractValue(formattedMessage, Utils.HOVER_TEXT_PREFIX, "}");
-                        String clickEvent = Utils.extractValue(formattedMessage, Utils.CLICK_EVENT_PREFIX, "}");
+//                        String message = Utils.extractMessage(formattedMessage, Utils.HOVER_MARKERS, true);
+//                        String hoverText = Utils.extractValue(formattedMessage, Utils.HOVER_TEXT_PREFIX, "}");
+//                        String clickEvent = Utils.extractValue(formattedMessage, Utils.CLICK_EVENT_PREFIX, "}");
 
-                        Component component = LegacyComponentSerializer.legacySection().deserialize(message);
-                        if (hoverText != null) {
-                            component = Utils.createHoverEvent(component, hoverText);
-                        }
-                        if (clickEvent != null) {
-                            component = Utils.createClickEvent(component, clickEvent);
-                        }
+                        Component component = Utils.parseMessage(formattedMessage, Utils.HOVER_MARKERS);
+//                        if (hoverText != null) {
+//                            component = Utils.createHoverEvent(component, hoverText);
+//                        }
+//                        if (clickEvent != null) {
+//                            component = Utils.createClickEvent(component, clickEvent);
+//                        }
 
                         p.sendMessage(component);
                     });
@@ -255,7 +225,7 @@ public class CommandBlocker implements Listener {
                     break;
                 }
                 case LOG: {
-                    String logMessage = Utils.extractMessage(action.context(), Utils.FILE_MARKER);
+                    String logMessage = Utils.extractMessage(action.context(), Utils.FILE_MARKER, true);
                     String file = Utils.extractValue(action.context(), Utils.FILE_PREFIX, "}");
                     plugin.logAction(Utils.replaceEach(logMessage, searchList, replacementList), file);
                     break;
@@ -270,17 +240,17 @@ public class CommandBlocker implements Listener {
 
                         String formattedMessage = Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
 
-                        String notifyMessage = Utils.extractMessage(formattedMessage, Utils.NOTIFY_MARKERS);
-                        String hoverText = Utils.extractValue(formattedMessage, Utils.HOVER_TEXT_PREFIX, "}");
-                        String clickEvent = Utils.extractValue(formattedMessage, Utils.CLICK_EVENT_PREFIX, "}");
+//                        String notifyMessage = Utils.extractMessage(formattedMessage, Utils.NOTIFY_MARKERS, true);
+//                        String hoverText = Utils.extractValue(formattedMessage, Utils.HOVER_TEXT_PREFIX, "}");
+//                        String clickEvent = Utils.extractValue(formattedMessage, Utils.CLICK_EVENT_PREFIX, "}");
 
-                        Component component = LegacyComponentSerializer.legacySection().deserialize(notifyMessage);
-                        if (hoverText != null) {
-                            component = Utils.createHoverEvent(component, hoverText);
-                        }
-                        if (clickEvent != null) {
-                            component = Utils.createClickEvent(component, clickEvent);
-                        }
+                        Component component = Utils.parseMessage(formattedMessage, Utils.NOTIFY_MARKERS);
+//                        if (hoverText != null) {
+//                            component = Utils.createHoverEvent(component, hoverText);
+//                        }
+//                        if (clickEvent != null) {
+//                            component = Utils.createClickEvent(component, clickEvent);
+//                        }
 
                         for (Player ps : Bukkit.getOnlinePlayers()) {
                             if (ps.hasPermission(perm)) {
@@ -310,7 +280,7 @@ public class CommandBlocker implements Listener {
                         String perm = Utils.getPermOrDefault(
                                 Utils.extractValue(action.context(), Utils.PERM_PREFIX, "}"),
                                 "ublocker.admin");
-                        String[] sound = Utils.extractMessage(action.context(), Utils.PERM_MARKER).split(";");
+                        String[] sound = Utils.extractMessage(action.context(), Utils.PERM_MARKER, true).split(";");
                         for (Player ps : Bukkit.getOnlinePlayers()) {
                             if (ps.hasPermission(perm)) {
                                 Utils.sendSound(sound, ps);

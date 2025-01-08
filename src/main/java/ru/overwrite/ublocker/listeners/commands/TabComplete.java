@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.blockgroups.CommandGroup;
+import ru.overwrite.ublocker.conditions.ConditionChecker;
 import ru.overwrite.ublocker.configuration.Config;
 import ru.overwrite.ublocker.utils.Utils;
 
@@ -48,6 +49,16 @@ public class TabComplete implements Listener {
                 plugin.getPluginLogger().info("Group checking now: " + group.getGroupId());
                 plugin.getPluginLogger().info("Block type: " + group.getBlockType());
             }
+            List<Action> actions = group.getActionsToExecute();
+            if (actions.isEmpty()) {
+                continue;
+            }
+            if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
+                if (Utils.DEBUG) {
+                    plugin.getPluginLogger().info("Blocking does not fulfill the requirements. Skipping group...");
+                }
+                continue;
+            }
             switch (group.getBlockType()) {
                 case STRING: {
                     checkStringBlock(e, p, buffer, group);
@@ -68,9 +79,6 @@ public class TabComplete implements Listener {
         for (String command : group.getCommandsToBlockString()) {
             if (buffer.equalsIgnoreCase(command + " ")) {
                 List<Action> actions = group.getActionsToExecute();
-                if (actions.isEmpty()) {
-                    continue;
-                }
                 Command comInMap = Bukkit.getCommandMap().getCommand(buffer);
                 List<String> aliases = comInMap == null ? List.of() : comInMap.getAliases();
                 if (!aliases.isEmpty() && !aliases.contains(comInMap.getName())) {
@@ -87,9 +95,6 @@ public class TabComplete implements Listener {
     private void checkPatternBlock(AsyncTabCompleteEvent e, Player p, String buffer, CommandGroup group) {
         for (Pattern pattern : group.getCommandsToBlockPattern()) {
             List<Action> actions = group.getActionsToExecute();
-            if (actions.isEmpty()) {
-                continue;
-            }
             Matcher matcher = pattern.matcher(buffer.split(" ")[0]);
             if (matcher.matches()) {
                 Command comInMap = Bukkit.getCommandMap().getCommand(matcher.group());
@@ -109,32 +114,13 @@ public class TabComplete implements Listener {
         for (Action action : actions) {
             switch (action.type()) {
                 case BLOCK_TAB_COMPLETE: {
-                    String executedCommandBase = Utils.cutCommand(command);
-                    if (group.isBlockAliases()) {
-                        for (String alias : aliases) {
-                            if (com.equalsIgnoreCase(alias)) {
-                                return true;
-                            }
-                        }
-                    }
-                    return com.equals(executedCommandBase);
+                    return true;
                 }
                 case LITE_BLOCK_TAB_COMPLETE: {
                     String perm = Utils.getPermOrDefault(
                             Utils.extractValue(action.context(), Utils.PERM_PREFIX, "}"),
                             "ublocker.bypass.commands");
-                    if (p.hasPermission(perm)) {
-                        return false;
-                    }
-                    String executedCommandBase = Utils.cutCommand(command);
-                    if (group.isBlockAliases()) {
-                        for (String alias : aliases) {
-                            if (Bukkit.getCommandMap().getCommand(com).getAliases().contains(alias)) {
-                                return true;
-                            }
-                        }
-                    }
-                    return com.equals(executedCommandBase);
+                    return !p.hasPermission(perm);
                 }
                 default:
                     break;

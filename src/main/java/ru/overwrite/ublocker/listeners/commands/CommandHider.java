@@ -9,7 +9,6 @@ import org.bukkit.event.player.PlayerCommandSendEvent;
 import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.blockgroups.CommandGroup;
-import ru.overwrite.ublocker.conditions.ConditionChecker;
 import ru.overwrite.ublocker.configuration.Config;
 import ru.overwrite.ublocker.utils.Utils;
 
@@ -36,6 +35,10 @@ public class CommandHider implements Listener {
                     plugin.getPluginLogger().info("Group checking now: " + group.getGroupId());
                     plugin.getPluginLogger().info("Block type: " + group.getBlockType());
                 }
+                List<Action> actions = group.getActionsToExecute();
+                if (actions.isEmpty()) {
+                    continue;
+                }
                 if (checkStringBlock(p, command, group)) {
                     return true;
                 }
@@ -53,52 +56,28 @@ public class CommandHider implements Listener {
             }
             if (command.equalsIgnoreCase(com) || aliases.contains(command)) {
                 List<Action> actions = group.getActionsToExecute();
-                if (actions.isEmpty()) {
-                    continue;
-                }
-                if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
-                    continue;
-                }
-                if (shouldHideCommand(group, p, com, command, aliases, actions)) {
-                    return true;
-                }
+                return shouldHideCommand(p, actions);
             }
         }
         return false;
     }
 
-    private boolean shouldHideCommand(CommandGroup group, Player p, String com, String command, List<String> aliases, List<Action> actions) {
+    private boolean shouldHideCommand(Player p, List<Action> actions) {
         for (Action action : actions) {
             switch (action.type()) {
                 case HIDE: {
-                    if (group.isBlockAliases()) {
-                        for (String alias : aliases) {
-                            if (com.equalsIgnoreCase(alias)) {
-                                return true;
-                            }
-                        }
-                    }
-                    return com.equals(command);
+                    return true;
                 }
                 case LITE_HIDE: {
                     String perm = Utils.getPermOrDefault(
                             Utils.extractValue(action.context(), Utils.PERM_PREFIX, "}"),
                             "ublocker.bypass.commands");
-                    if (p.hasPermission(perm)) {
-                        return false;
-                    }
-                    if (group.isBlockAliases()) {
-                        for (String alias : aliases) {
-                            if (com.equalsIgnoreCase(alias)) {
-                                return true;
-                            }
-                        }
-                    }
-                    return com.equals(command);
+                    return !p.hasPermission(perm);
                 }
                 default:
                     break;
             }
+            ;
         }
         return false;
     }

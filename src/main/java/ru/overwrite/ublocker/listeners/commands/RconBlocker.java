@@ -2,6 +2,7 @@ package ru.overwrite.ublocker.listeners.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.RemoteServerCommandEvent;
@@ -33,6 +34,10 @@ public class RconBlocker implements Listener {
                 plugin.getPluginLogger().info("Group checking now: " + group.getGroupId());
                 plugin.getPluginLogger().info("Block type: " + group.getBlockType());
             }
+            List<Action> actions = group.getActionsToExecute();
+            if (actions.isEmpty()) {
+                continue;
+            }
             switch (group.getBlockType()) {
                 case STRING: {
                     checkStringBlock(e, command, group);
@@ -59,11 +64,7 @@ public class RconBlocker implements Listener {
             String executedCommandBase = command.contains(" ") ? Utils.cutCommand(command) : command;
             if (executedCommandBase.equalsIgnoreCase(com) || aliases.contains(executedCommandBase.substring(1))) {
                 List<Action> actions = group.getActionsToExecute();
-                if (actions.isEmpty()) {
-                    continue;
-                }
-                if (shouldBlockCommand(group, com, command, aliases, actions)) {
-                    e.setCancelled(true);
+                if (shouldBlockCommand(e, actions)) {
                     break;
                 }
             }
@@ -72,10 +73,6 @@ public class RconBlocker implements Listener {
 
     private void checkPatternBlock(RemoteServerCommandEvent e, String command, CommandGroup group) {
         for (Pattern pattern : group.getCommandsToBlockPattern()) {
-            List<Action> actions = group.getActionsToExecute();
-            if (actions.isEmpty()) {
-                continue;
-            }
             Matcher matcher = pattern.matcher(Utils.cutCommand(command).replace("/", ""));
             if (matcher.matches()) {
                 Command comInMap = Bukkit.getCommandMap().getCommand(matcher.group());
@@ -83,36 +80,27 @@ public class RconBlocker implements Listener {
                 if (!aliases.isEmpty()) {
                     aliases.add(comInMap.getName());
                 }
+                List<Action> actions = group.getActionsToExecute();
                 if (aliases.contains(matcher.group())) {
-                    if (shouldBlockCommand(group, matcher.group(), command, aliases, actions)) {
-                        e.setCancelled(true);
+                    if (shouldBlockCommand(e, actions)) {
                         break;
                     }
                 }
-                if (shouldBlockCommand(group, matcher.group(), command, aliases, actions)) {
-                    e.setCancelled(true);
+                if (shouldBlockCommand(e, actions)) {
                     break;
                 }
             }
         }
     }
 
-    private boolean shouldBlockCommand(CommandGroup group, String com, String command, List<String> aliases, List<Action> actions) {
+    private boolean shouldBlockCommand(Cancellable e, List<Action> actions) {
         for (Action action : actions) {
             switch (action.type()) {
                 case BLOCK_CONSOLE: {
-                    String executedCommandBase = Utils.cutCommand(command);
-                    if (group.isBlockAliases()) {
-                        for (String alias : aliases) {
-                            if (com.equalsIgnoreCase(alias)) {
-                                return true;
-                            }
-                        }
-                    }
-                    return com.equals(executedCommandBase);
+                    e.setCancelled(true);
                 }
                 case LOG: {
-                    String logMessage = Utils.extractMessage(action.context(), Utils.FILE_MARKER);
+                    String logMessage = Utils.extractMessage(action.context(), Utils.FILE_MARKER, true);
                     String file = Utils.extractValue(action.context(), Utils.FILE_PREFIX, "}");
                     plugin.logAction(logMessage, file);
                     break;
@@ -121,6 +109,6 @@ public class RconBlocker implements Listener {
                     break;
             }
         }
-        return false;
+        return e.isCancelled();
     }
 }
