@@ -1,12 +1,15 @@
 package ru.overwrite.ublocker.blockgroups;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.conditions.Condition;
 
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 @Getter
@@ -16,9 +19,9 @@ public final class SymbolGroup {
 
     private final BlockType blockType;
 
-    private List<String> symbolsToBlock;
+    private Set<String> symbolsToBlock;
 
-    private List<Pattern> patternsToBlock;
+    private Set<Pattern> patternsToBlock;
 
     private List<String> excludedCommandsString;
 
@@ -49,20 +52,20 @@ public final class SymbolGroup {
     private void setupBlockingList(List<String> symbolsToBlock) {
         switch (this.blockType) {
             case STRING: {
-                List<String> symbolsToBlocks = new ObjectArrayList<>(symbolsToBlock.size());
+                Set<String> symbolsToBlocks = new ObjectOpenHashSet<>(symbolsToBlock.size());
                 for (String s : symbolsToBlock) {
                     symbolsToBlocks.add(s.toLowerCase());
                 }
-                this.symbolsToBlock = ImmutableList.copyOf(symbolsToBlocks);
+                this.symbolsToBlock = ImmutableSet.copyOf(symbolsToBlocks);
                 break;
             }
             case PATTERN: {
-                List<Pattern> patternsToBlocks = new ObjectArrayList<>(symbolsToBlock.size());
+                Set<Pattern> patternsToBlocks = new ObjectOpenHashSet<>(symbolsToBlock.size());
                 for (String s : symbolsToBlock) {
                     Pattern pattern = Pattern.compile(s);
                     patternsToBlocks.add(pattern);
                 }
-                this.patternsToBlock = ImmutableList.copyOf(patternsToBlocks);
+                this.patternsToBlock = ImmutableSet.copyOf(patternsToBlocks);
                 break;
             }
             default: {
