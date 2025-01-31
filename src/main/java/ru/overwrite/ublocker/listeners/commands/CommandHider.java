@@ -77,7 +77,6 @@ public class CommandHider implements Listener {
                 default:
                     break;
             }
-            ;
         }
         return false;
     }

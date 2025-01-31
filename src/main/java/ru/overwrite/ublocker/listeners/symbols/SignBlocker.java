@@ -123,9 +123,7 @@ public class SignBlocker implements Listener {
                         break;
                     runner.runAsync(() -> {
                         String formattedMessage = Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
-
                         Component component = Utils.parseMessage(formattedMessage, Utils.HOVER_MARKERS);
-
                         p.sendMessage(component);
                     });
                     break;
@@ -178,9 +176,7 @@ public class SignBlocker implements Listener {
                                 "ublocker.admin");
 
                         String formattedMessage = Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
-
                         Component component = Utils.parseMessage(formattedMessage, Utils.NOTIFY_MARKERS);
-
                         for (Player ps : Bukkit.getOnlinePlayers()) {
                             if (ps.hasPermission(perm)) {
                                 ps.sendMessage(component);

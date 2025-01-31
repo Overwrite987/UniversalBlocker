@@ -128,9 +128,7 @@ public class AnvilBlocker implements Listener {
                         break;
                     runner.runAsync(() -> {
                         String formattedMessage = Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
-
                         Component component = Utils.parseMessage(formattedMessage, Utils.HOVER_MARKERS);
-
                         p.sendMessage(component);
                     });
                     break;

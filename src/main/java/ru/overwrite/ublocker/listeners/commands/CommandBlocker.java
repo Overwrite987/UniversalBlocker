@@ -84,7 +84,7 @@ public class CommandBlocker implements Listener {
             }
             if (executedCommandBase.equalsIgnoreCase(com) || aliases.contains(executedCommandBase.substring(1))) {
                 List<Action> actions = group.getActionsToExecute();
-                if (executeActions(group, e, p, com, command, actions, aliases, p.getWorld().getName())) {
+                if (executeActions(e, p, com, command, actions, p.getWorld().getName())) {
                     break;
                 }
             }
@@ -106,11 +106,11 @@ public class CommandBlocker implements Listener {
                 }
                 List<Action> actions = group.getActionsToExecute();
                 if (aliases.contains(matcher.group())) {
-                    if (executeActions(group, e, p, matcher.group(), command, actions, aliases, p.getWorld().getName())) {
+                    if (executeActions(e, p, matcher.group(), command, actions, p.getWorld().getName())) {
                         break;
                     }
                 }
-                if (executeActions(group, e, p, matcher.group(), command, actions, aliases, p.getWorld().getName())) {
+                if (executeActions(e, p, matcher.group(), command, actions, p.getWorld().getName())) {
                     break;
                 }
             }
@@ -119,24 +119,11 @@ public class CommandBlocker implements Listener {
 
     private final String[] searchList = {"%player%", "%world%", "%cmd%", "%fullcmd%"};
 
-    public boolean executeActions(CommandGroup group, Cancellable e, Player p, String com, String command, List<Action> actions, List<String> aliases, String world) {
+    public boolean executeActions(Cancellable e, Player p, String com, String command, List<Action> actions, String world) {
         final String[] replacementList = {p.getName(), world, com, command};
         for (Action action : actions) {
             switch (action.type()) {
                 case BLOCK: {
-//                    String executedCommandBase = Utils.cutCommand(command);
-//                    if (group.isBlockAliases()) {
-//                        for (String alias : aliases) {
-//                            if (executedCommandBase.substring(1).equalsIgnoreCase(alias)) {
-//                                e.setCancelled(true);
-//                                break;
-//                            }
-//                        }
-//                    }
-//                    if (com.equals(executedCommandBase)) {
-//                        e.setCancelled(true);
-//                        break;
-//                    }
                     e.setCancelled(true);
                     break;
                 }
@@ -173,19 +160,7 @@ public class CommandBlocker implements Listener {
                         break;
                     runner.runAsync(() -> {
                         String formattedMessage = Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
-
-//                        String message = Utils.extractMessage(formattedMessage, Utils.HOVER_MARKERS, true);
-//                        String hoverText = Utils.extractValue(formattedMessage, Utils.HOVER_TEXT_PREFIX, "}");
-//                        String clickEvent = Utils.extractValue(formattedMessage, Utils.CLICK_EVENT_PREFIX, "}");
-
                         Component component = Utils.parseMessage(formattedMessage, Utils.HOVER_MARKERS);
-//                        if (hoverText != null) {
-//                            component = Utils.createHoverEvent(component, hoverText);
-//                        }
-//                        if (clickEvent != null) {
-//                            component = Utils.createClickEvent(component, clickEvent);
-//                        }
-
                         p.sendMessage(component);
                     });
                     break;
@@ -238,19 +213,7 @@ public class CommandBlocker implements Listener {
                                 "ublocker.admin");
 
                         String formattedMessage = Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
-
-//                        String notifyMessage = Utils.extractMessage(formattedMessage, Utils.NOTIFY_MARKERS, true);
-//                        String hoverText = Utils.extractValue(formattedMessage, Utils.HOVER_TEXT_PREFIX, "}");
-//                        String clickEvent = Utils.extractValue(formattedMessage, Utils.CLICK_EVENT_PREFIX, "}");
-
                         Component component = Utils.parseMessage(formattedMessage, Utils.NOTIFY_MARKERS);
-//                        if (hoverText != null) {
-//                            component = Utils.createHoverEvent(component, hoverText);
-//                        }
-//                        if (clickEvent != null) {
-//                            component = Utils.createClickEvent(component, clickEvent);
-//                        }
-
                         for (Player ps : Bukkit.getOnlinePlayers()) {
                             if (ps.hasPermission(perm)) {
                                 ps.sendMessage(component);
