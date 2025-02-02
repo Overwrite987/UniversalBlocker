@@ -52,6 +52,12 @@ public final class Utils {
 
     public static boolean DEBUG;
 
+    public static void printDebug(String messgae) {
+        if (DEBUG) {
+            Bukkit.getConsoleSender().sendMessage("[UniversalBlocker-Debug] " + messgae);
+        }
+    }
+
     public static void sendTitleMessage(@NotNull String[] titleMessages, @NotNull Player p) {
         if (titleMessages.length > 5) {
             Bukkit.getConsoleSender().sendMessage("Unable to send title. " + Arrays.toString(titleMessages));

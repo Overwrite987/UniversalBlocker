@@ -40,13 +40,9 @@ public class ChatBlocker implements Listener {
             return;
         String message = e.getMessage().toLowerCase();
         for (SymbolGroup group : pluginConfig.getSymbolBlockGroupSet()) {
-            if (Utils.DEBUG) {
-                plugin.getPluginLogger().info("Group checking now: " + group.getGroupId());
-            }
+            Utils.printDebug("Group checking now: " + group.getGroupId());
             if (group.getBlockFactor().isEmpty() || !group.getBlockFactor().contains("chat")) {
-                if (Utils.DEBUG) {
-                    plugin.getPluginLogger().info("Group " + group.getGroupId() + " does not have 'chat' block factor. Skipping...");
-                }
+                Utils.printDebug("Group " + group.getGroupId() + " does not have 'chat' block factor. Skipping...");
                 continue;
             }
             List<Action> actions = group.getActionsToExecute();
@@ -54,9 +50,7 @@ public class ChatBlocker implements Listener {
                 continue;
             }
             if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
-                if (Utils.DEBUG) {
-                    plugin.getPluginLogger().info("Blocking does not fulfill the requirements. Skipping group...");
-                }
+                Utils.printDebug("Blocking does not fulfill the requirements. Skipping group...");
                 continue;
             }
             switch (group.getBlockType()) {

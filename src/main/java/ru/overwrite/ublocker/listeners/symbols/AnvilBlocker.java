@@ -36,11 +36,9 @@ public class AnvilBlocker implements Listener {
 
     @EventHandler
     public void onAnvilClick(InventoryClickEvent e) {
-        if (e.getInventory().getType() != InventoryType.ANVIL) {
+        if (e.getInventory().getType() != InventoryType.ANVIL || e.getSlot() != 2) {
             return;
         }
-        if (e.getSlot() != 2)
-            return;
         ItemStack resultItem = e.getCurrentItem();
         if (resultItem == null || !resultItem.hasItemMeta() || !resultItem.getItemMeta().hasDisplayName()) {
             return;
@@ -50,13 +48,9 @@ public class AnvilBlocker implements Listener {
             return;
         String name = resultItem.getItemMeta().getDisplayName();
         for (SymbolGroup group : pluginConfig.getSymbolBlockGroupSet()) {
-            if (Utils.DEBUG) {
-                plugin.getPluginLogger().info("Group checking now: " + group.getGroupId());
-            }
+            Utils.printDebug("Group checking now: " + group.getGroupId());
             if (group.getBlockFactor().isEmpty() || !group.getBlockFactor().contains("anvil")) {
-                if (Utils.DEBUG) {
-                    plugin.getPluginLogger().info("Group " + group.getGroupId() + " does not have 'anvil' block factor. Skipping...");
-                }
+                Utils.printDebug("Group " + group.getGroupId() + " does not have 'anvil' block factor. Skipping...");
                 continue;
             }
             List<Action> actions = group.getActionsToExecute();
@@ -64,9 +58,7 @@ public class AnvilBlocker implements Listener {
                 continue;
             }
             if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
-                if (Utils.DEBUG) {
-                    plugin.getPluginLogger().info("Blocking does not fulfill the requirements. Skipping group...");
-                }
+                Utils.printDebug("Blocking does not fulfill the requirements. Skipping group...");
                 continue;
             }
             switch (group.getBlockType()) {

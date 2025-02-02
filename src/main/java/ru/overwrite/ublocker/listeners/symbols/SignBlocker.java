@@ -44,13 +44,9 @@ public class SignBlocker implements Listener {
         String line3 = e.getLine(3).toLowerCase();
         String combined = line0 + line1 + line2 + line3;
         for (SymbolGroup group : pluginConfig.getSymbolBlockGroupSet()) {
-            if (Utils.DEBUG) {
-                plugin.getPluginLogger().info("Group checking now: " + group.getGroupId());
-            }
+            Utils.printDebug("Group checking now: " + group.getGroupId());
             if (group.getBlockFactor().isEmpty() || !group.getBlockFactor().contains("sign")) {
-                if (Utils.DEBUG) {
-                    plugin.getPluginLogger().info("Group " + group.getGroupId() + " does not have 'sign' block factor. Skipping...");
-                }
+                Utils.printDebug("Group " + group.getGroupId() + " does not have 'sign' block factor. Skipping...");
                 continue;
             }
             List<Action> actions = group.getActionsToExecute();
@@ -58,9 +54,7 @@ public class SignBlocker implements Listener {
                 continue;
             }
             if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
-                if (Utils.DEBUG) {
-                    plugin.getPluginLogger().info("Blocking does not fulfill the requirements. Skipping group...");
-                }
+                Utils.printDebug("Blocking does not fulfill the requirements. Skipping group...");
                 continue;
             }
             switch (group.getBlockType()) {

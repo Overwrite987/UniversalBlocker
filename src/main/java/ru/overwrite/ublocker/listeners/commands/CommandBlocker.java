@@ -50,9 +50,7 @@ public class CommandBlocker implements Listener {
                 continue;
             }
             if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
-                if (Utils.DEBUG) {
-                    plugin.getPluginLogger().info("Blocking does not fulfill the requirements. Skipping group...");
-                }
+                Utils.printDebug("Blocking does not fulfill the requirements. Skipping group...");
                 continue;
             }
             switch (group.getBlockType()) {
@@ -79,9 +77,7 @@ public class CommandBlocker implements Listener {
                 aliases.add(comInMap.getName());
             }
             String executedCommandBase = Utils.cutCommand(command);
-            if (Utils.DEBUG) {
-                plugin.getPluginLogger().info("Executed command base: " + executedCommandBase);
-            }
+            Utils.printDebug("Executed command base: " + executedCommandBase);
             if (executedCommandBase.equalsIgnoreCase(com) || aliases.contains(executedCommandBase.substring(1))) {
                 List<Action> actions = group.getActionsToExecute();
                 if (executeActions(e, p, com, command, actions, p.getWorld().getName())) {
@@ -94,9 +90,7 @@ public class CommandBlocker implements Listener {
     private void checkPatternGroup(PlayerCommandPreprocessEvent e, Player p, String command, CommandGroup group) {
         for (Pattern pattern : group.getCommandsToBlockPattern()) {
             String executedCommandBase = Utils.cutCommand(command);
-            if (Utils.DEBUG) {
-                plugin.getPluginLogger().info("Executed command base: " + executedCommandBase);
-            }
+            Utils.printDebug("Executed command base: " + executedCommandBase);
             Matcher matcher = pattern.matcher(executedCommandBase.replace("/", ""));
             if (matcher.matches()) {
                 Command comInMap = Bukkit.getCommandMap().getCommand(matcher.group());

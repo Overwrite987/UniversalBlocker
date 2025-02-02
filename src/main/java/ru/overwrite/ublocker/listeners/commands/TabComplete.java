@@ -54,9 +54,7 @@ public class TabComplete implements Listener {
                 continue;
             }
             if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
-                if (Utils.DEBUG) {
-                    plugin.getPluginLogger().info("Blocking does not fulfill the requirements. Skipping group...");
-                }
+                Utils.printDebug("Blocking does not fulfill the requirements. Skipping group...");
                 continue;
             }
             switch (group.getBlockType()) {
