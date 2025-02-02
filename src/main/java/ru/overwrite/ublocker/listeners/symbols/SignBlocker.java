@@ -119,8 +119,6 @@ public class SignBlocker implements Listener {
                     break;
                 }
                 case MESSAGE: {
-                    if (!e.isCancelled())
-                        break;
                     runner.runAsync(() -> {
                         String formattedMessage = Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
                         Component component = Utils.parseMessage(formattedMessage, Utils.HOVER_MARKERS);
@@ -129,8 +127,6 @@ public class SignBlocker implements Listener {
                     break;
                 }
                 case TITLE: {
-                    if (!e.isCancelled())
-                        break;
                     runner.runAsync(() -> {
                         String coAction = Utils.COLORIZER.colorize(action.context());
                         String[] titleMessages = Utils.replaceEach(coAction, searchList, replacementList).split(";");
@@ -139,8 +135,6 @@ public class SignBlocker implements Listener {
                     break;
                 }
                 case ACTIONBAR: {
-                    if (!e.isCancelled())
-                        break;
                     runner.runAsync(() -> {
                         String coAction = Utils.COLORIZER.colorize(action.context());
                         String message = Utils.replaceEach(coAction, searchList, replacementList);
@@ -149,8 +143,6 @@ public class SignBlocker implements Listener {
                     break;
                 }
                 case SOUND: {
-                    if (!e.isCancelled())
-                        return;
                     runner.runAsync(() -> {
                         String[] sound = action.context().split(";");
                         Utils.sendSound(sound, p);
@@ -168,8 +160,6 @@ public class SignBlocker implements Listener {
                     break;
                 }
                 case NOTIFY: {
-                    if (!e.isCancelled())
-                        break;
                     runner.runAsync(() -> {
                         String perm = Utils.getPermOrDefault(
                                 Utils.extractValue(action.context(), Utils.PERM_PREFIX, "}"),
@@ -177,11 +167,11 @@ public class SignBlocker implements Listener {
 
                         String formattedMessage = Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
                         Component component = Utils.parseMessage(formattedMessage, Utils.NOTIFY_MARKERS);
-                        for (Player ps : Bukkit.getOnlinePlayers()) {
-                            if (ps.hasPermission(perm)) {
-                                ps.sendMessage(component);
-                            }
-                        }
+
+                        Bukkit.getOnlinePlayers().stream()
+                                .filter(player -> player.hasPermission(perm))
+                                .forEach(player -> player.sendMessage(component));
+
                         if (plugin.getPluginMessage() != null) {
                             String gsonMessage = GsonComponentSerializer.gson().serializer().toJsonTree(component).toString();
                             plugin.getPluginMessage().sendCrossProxyPerm(p, perm + " " + gsonMessage);
@@ -190,8 +180,6 @@ public class SignBlocker implements Listener {
                     break;
                 }
                 case NOTIFY_CONSOLE: {
-                    if (!e.isCancelled())
-                        break;
                     runner.runAsync(() -> {
                         String formattedMessage = Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
                         Bukkit.getConsoleSender().sendMessage(formattedMessage);
@@ -199,18 +187,14 @@ public class SignBlocker implements Listener {
                     break;
                 }
                 case NOTIFY_SOUND: {
-                    if (!e.isCancelled())
-                        break;
                     runner.runAsync(() -> {
                         String perm = Utils.getPermOrDefault(
                                 Utils.extractValue(action.context(), Utils.PERM_PREFIX, "}"),
                                 "ublocker.admin");
                         String[] sound = Utils.extractMessage(action.context(), Utils.PERM_MARKER, true).split(";");
-                        for (Player ps : Bukkit.getOnlinePlayers()) {
-                            if (ps.hasPermission(perm)) {
-                                Utils.sendSound(sound, ps);
-                            }
-                        }
+                        Bukkit.getOnlinePlayers().stream()
+                                .filter(player -> player.hasPermission(perm))
+                                .forEach(player -> Utils.sendSound(sound, player));
                     });
                     break;
                 }
