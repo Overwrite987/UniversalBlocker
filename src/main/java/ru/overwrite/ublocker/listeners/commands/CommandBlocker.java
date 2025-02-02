@@ -122,10 +122,7 @@ public class CommandBlocker implements Listener {
                     break;
                 }
                 case LITE_BLOCK: {
-                    String perm = Utils.getPermOrDefault(
-                            Utils.extractValue(action.context(), Utils.PERM_PREFIX, "}"),
-                            "ublocker.bypass.commands");
-                    if (p.hasPermission(perm)) {
+                    if (hasBypassPermission(p, action)) {
                         break;
                     }
                     e.setCancelled(true);
@@ -142,10 +139,7 @@ public class CommandBlocker implements Listener {
                     if (hasNoArguments(command)) {
                         break;
                     }
-                    String perm = Utils.getPermOrDefault(
-                            Utils.extractValue(action.context(), Utils.PERM_PREFIX, "}"),
-                            "ublocker.bypass.commands");
-                    if (p.hasPermission(perm)) {
+                    if (hasBypassPermission(p, action)) {
                         break;
                     }
                     e.setCancelled(true);
@@ -236,6 +230,14 @@ public class CommandBlocker implements Listener {
             }
         }
         return e.isCancelled();
+    }
+
+    private boolean hasBypassPermission(Player p, Action action) {
+        String perm = Utils.getPermOrDefault(
+                Utils.extractValue(action.context(), Utils.PERM_PREFIX, "}"),
+                "ublocker.bypass.commands"
+        );
+        return p.hasPermission(perm);
     }
 
     private boolean hasNoArguments(String command) {
