@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
-public class PaperRunner implements Runner {
+public final class PaperRunner implements Runner {
 
 	private final Plugin plugin;
 	private final AsyncScheduler asyncScheduler;
