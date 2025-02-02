@@ -132,14 +132,14 @@ public class CommandBlocker implements Listener {
                     break;
                 }
                 case BLOCK_ARGUMENTS: {
-                    if (command.split(" ").length <= 1) {
+                    if (hasNoArguments(command)) {
                         break;
                     }
                     e.setCancelled(true);
                     break;
                 }
                 case LITE_BLOCK_ARGUMENTS: {
-                    if (command.split(" ").length <= 1) {
+                    if (hasNoArguments(command)) {
                         break;
                     }
                     String perm = Utils.getPermOrDefault(
@@ -236,5 +236,9 @@ public class CommandBlocker implements Listener {
             }
         }
         return e.isCancelled();
+    }
+
+    private boolean hasNoArguments(String command) {
+        return command.split(" ").length <= 1;
     }
 }
