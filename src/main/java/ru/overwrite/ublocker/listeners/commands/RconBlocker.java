@@ -30,10 +30,8 @@ public class RconBlocker implements Listener {
     public void onRconCommand(RemoteServerCommandEvent e) {
         String command = e.getCommand().toLowerCase();
         for (CommandGroup group : pluginConfig.getCommandBlockGroupSet()) {
-            if (Utils.DEBUG) {
-                plugin.getPluginLogger().info("Group checking now: " + group.getGroupId());
-                plugin.getPluginLogger().info("Block type: " + group.getBlockType());
-            }
+            Utils.printDebug("Group checking now: " + group.getGroupId());
+            Utils.printDebug("Block type: " + group.getBlockType());
             List<Action> actions = group.getActionsToExecute();
             if (actions.isEmpty()) {
                 continue;

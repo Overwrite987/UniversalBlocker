@@ -42,10 +42,8 @@ public class CommandBlocker implements Listener {
             return;
         String command = e.getMessage().toLowerCase();
         for (CommandGroup group : pluginConfig.getCommandBlockGroupSet()) {
-            if (Utils.DEBUG) {
-                plugin.getPluginLogger().info("Group checking now: " + group.getGroupId());
-                plugin.getPluginLogger().info("Block type: " + group.getBlockType());
-            }
+            Utils.printDebug("Group checking now: " + group.getGroupId());
+            Utils.printDebug("Block type: " + group.getBlockType());
             List<Action> actions = group.getActionsToExecute();
             if (actions.isEmpty()) {
                 continue;
