@@ -80,7 +80,7 @@ public class TabComplete implements Listener {
                 if (!aliases.isEmpty() && !aliases.contains(comInMap.getName())) {
                     aliases.add(comInMap.getName());
                 }
-                if (shouldBlockTabComplete(group, p, buffer, buffer, aliases, actions) || aliases.contains(buffer)) {
+                if (shouldBlockTabComplete(p, actions) || aliases.contains(buffer)) {
                     e.setCancelled(true);
                     break;
                 }
@@ -98,7 +98,7 @@ public class TabComplete implements Listener {
                 if (!aliases.isEmpty()) {
                     aliases.add(comInMap.getName());
                 }
-                if (shouldBlockTabComplete(group, p, matcher.group(), buffer, aliases, actions) || aliases.contains(matcher.group())) {
+                if (shouldBlockTabComplete(p, actions) || aliases.contains(matcher.group())) {
                     e.setCancelled(true);
                     break;
                 }
@@ -106,7 +106,7 @@ public class TabComplete implements Listener {
         }
     }
 
-    private boolean shouldBlockTabComplete(CommandGroup group, Player p, String com, String command, List<String> aliases, List<Action> actions) {
+    private boolean shouldBlockTabComplete(Player p, List<Action> actions) {
         for (Action action : actions) {
             switch (action.type()) {
                 case BLOCK_TAB_COMPLETE: {
