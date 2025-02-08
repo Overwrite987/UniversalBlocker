@@ -114,6 +114,8 @@ public class SyntaxBlocker implements Listener {
                     break;
                 }
                 case MESSAGE: {
+                    if (!e.isCancelled())
+                        return;
                     runner.runAsync(() -> {
                         String formattedMessage = Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
                         Component component = Utils.parseMessage(formattedMessage, Utils.HOVER_MARKERS);
@@ -122,6 +124,8 @@ public class SyntaxBlocker implements Listener {
                     break;
                 }
                 case TITLE: {
+                    if (!e.isCancelled())
+                        return;
                     runner.runAsync(() -> {
                         String coAction = Utils.COLORIZER.colorize(action.context());
                         String[] titleMessages = Utils.replaceEach(coAction, searchList, replacementList).split(";");
@@ -130,6 +134,8 @@ public class SyntaxBlocker implements Listener {
                     break;
                 }
                 case ACTIONBAR: {
+                    if (!e.isCancelled())
+                        return;
                     runner.runAsync(() -> {
                         String coAction = Utils.COLORIZER.colorize(action.context());
                         String message = Utils.replaceEach(coAction, searchList, replacementList);
@@ -138,6 +144,8 @@ public class SyntaxBlocker implements Listener {
                     break;
                 }
                 case SOUND: {
+                    if (!e.isCancelled())
+                        return;
                     runner.runAsync(() -> {
                         String[] sound = action.context().split(";");
                         Utils.sendSound(sound, p);
@@ -145,16 +153,22 @@ public class SyntaxBlocker implements Listener {
                     break;
                 }
                 case CONSOLE: {
+                    if (!e.isCancelled())
+                        return;
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), action.context().replace("%player%", p.getName()));
                     break;
                 }
                 case LOG: {
+                    if (!e.isCancelled())
+                        return;
                     String logMessage = Utils.extractMessage(action.context(), Utils.FILE_MARKER, true);
                     String file = Utils.extractValue(action.context(), Utils.FILE_PREFIX, "}");
                     plugin.logAction(Utils.replaceEach(logMessage, searchList, replacementList), file);
                     break;
                 }
                 case NOTIFY: {
+                    if (!e.isCancelled())
+                        return;
                     runner.runAsync(() -> {
                         String perm = Utils.getPermOrDefault(
                                 Utils.extractValue(action.context(), Utils.PERM_PREFIX, "}"),
@@ -175,6 +189,8 @@ public class SyntaxBlocker implements Listener {
                     break;
                 }
                 case NOTIFY_CONSOLE: {
+                    if (!e.isCancelled())
+                        return;
                     runner.runAsync(() -> {
                         String formattedMessage = Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
                         Bukkit.getConsoleSender().sendMessage(formattedMessage);
@@ -182,6 +198,8 @@ public class SyntaxBlocker implements Listener {
                     break;
                 }
                 case NOTIFY_SOUND: {
+                    if (!e.isCancelled())
+                        return;
                     runner.runAsync(() -> {
                         String perm = Utils.getPermOrDefault(
                                 Utils.extractValue(action.context(), Utils.PERM_PREFIX, "}"),

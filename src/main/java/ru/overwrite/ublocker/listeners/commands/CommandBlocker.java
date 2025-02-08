@@ -123,16 +123,18 @@ public class CommandBlocker implements Listener {
                 continue;
             }
 
-            switch (type) {
-                case MESSAGE -> sendMessageAsync(p, action, replacementList);
-                case TITLE -> sendTitleAsync(p, action, replacementList);
-                case ACTIONBAR -> sendActionBarAsync(p, action, replacementList);
-                case SOUND -> sendSoundAsync(p, action);
-                case CONSOLE -> executeConsoleCommand(p, action);
-                case LOG -> logAction(action, replacementList);
-                case NOTIFY -> sendNotifyAsync(p, action, replacementList);
-                case NOTIFY_CONSOLE -> sendNotifyConsoleAsync(action, replacementList);
-                case NOTIFY_SOUND -> sendNotifySoundAsync(action);
+            if (e.isCancelled()) {
+                switch (type) {
+                    case MESSAGE -> sendMessageAsync(p, action, replacementList);
+                    case TITLE -> sendTitleAsync(p, action, replacementList);
+                    case ACTIONBAR -> sendActionBarAsync(p, action, replacementList);
+                    case SOUND -> sendSoundAsync(p, action);
+                    case CONSOLE -> executeConsoleCommand(p, action);
+                    case LOG -> logAction(action, replacementList);
+                    case NOTIFY -> sendNotifyAsync(p, action, replacementList);
+                    case NOTIFY_CONSOLE -> sendNotifyConsoleAsync(action, replacementList);
+                    case NOTIFY_SOUND -> sendNotifySoundAsync(action);
+                }
             }
         }
         return e.isCancelled();
