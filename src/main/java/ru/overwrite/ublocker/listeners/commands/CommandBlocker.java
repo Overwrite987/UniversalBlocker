@@ -41,6 +41,11 @@ public class CommandBlocker implements Listener {
         if (plugin.isExcluded(p))
             return;
         String command = e.getMessage().toLowerCase();
+        // Дерьмо для фикса другого дерьма
+        if (command.charAt(1) == ' ') {
+            e.setCancelled(true);
+            Utils.printDebug("Player " + p.getName() + " tried to execute incorrect command: " + command);
+        }
         for (CommandGroup group : pluginConfig.getCommandBlockGroupSet()) {
             Utils.printDebug("Group checking now: " + group.getGroupId());
             Utils.printDebug("Block type: " + group.getBlockType());
