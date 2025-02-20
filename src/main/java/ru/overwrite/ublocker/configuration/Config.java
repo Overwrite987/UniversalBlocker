@@ -418,7 +418,7 @@ public class Config {
     }
 
     private ImmutableList<Condition> getConditionList(List<String> conditionStrings) {
-        List<Condition> conditionList = new ArrayList<>(conditionStrings.size());
+        ObjectList<Condition> conditionList = new ObjectArrayList<>(conditionStrings.size());
         for (String action : conditionStrings) {
             conditionList.add(Condition.fromString(action));
         }

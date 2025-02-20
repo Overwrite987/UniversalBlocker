@@ -2,6 +2,8 @@ package ru.overwrite.ublocker.utils;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -18,10 +20,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.function.Consumer;
 
 public final class Utils {
@@ -93,7 +93,7 @@ public final class Utils {
     public static final String[] NOTIFY_MARKERS = {HOVER_TEXT_PREFIX, CLICK_EVENT_PREFIX, PERM_PREFIX};
 
     public static Component parseMessage(String formattedMessage, String[] markers) {
-        List<Component> components = new ArrayList<>();
+        ObjectList<Component> components = new ObjectArrayList<>();
         int currentIndex = 0;
 
         String globalHoverText = null;
