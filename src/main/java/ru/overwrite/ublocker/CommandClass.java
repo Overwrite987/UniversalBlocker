@@ -63,7 +63,7 @@ public class CommandClass implements CommandExecutor {
                 sender.sendMessage(message);
                 return true;
             }
-            case "lockccommands": {
+            case "lockcommands": {
                 ConsoleBlocker.FULL_LOCK = !ConsoleBlocker.FULL_LOCK;
                 String message = "§cUniversalBlocker §7> §6Блокировка команд игроков переключена в значение: "
                         + (ConsoleBlocker.FULL_LOCK ? "§a" : "§c")
@@ -71,7 +71,7 @@ public class CommandClass implements CommandExecutor {
                 sender.sendMessage(message);
                 return true;
             }
-            case "lockcconsole": {
+            case "lockconsole": {
                 ConsoleBlocker.FULL_LOCK = !ConsoleBlocker.FULL_LOCK;
                 String message = "§cUniversalBlocker §7> §6Блокировка команд консоли переключена в значение: "
                         + (ConsoleBlocker.FULL_LOCK ? "§a" : "§c")
@@ -79,7 +79,7 @@ public class CommandClass implements CommandExecutor {
                 sender.sendMessage(message);
                 return true;
             }
-            case "lockcrcon": {
+            case "lockrcon": {
                 RconBlocker.FULL_LOCK = !RconBlocker.FULL_LOCK;
                 String message = "§cUniversalBlocker §7> §6Блокировка команд ркона переключена в значение: "
                         + (RconBlocker.FULL_LOCK ? "§a" : "§c")
