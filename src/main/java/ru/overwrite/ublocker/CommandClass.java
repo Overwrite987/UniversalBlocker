@@ -10,6 +10,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import ru.overwrite.ublocker.configuration.Config;
+import ru.overwrite.ublocker.listeners.commands.ConsoleBlocker;
+import ru.overwrite.ublocker.listeners.commands.RconBlocker;
 import ru.overwrite.ublocker.utils.Utils;
 
 public class CommandClass implements CommandExecutor {
@@ -58,6 +60,30 @@ public class CommandClass implements CommandExecutor {
                 String message = "§cUniversalBlocker §7> §6Дебаг переключен в значение: "
                         + (Utils.DEBUG ? "§a" : "§c")
                         + Utils.DEBUG;
+                sender.sendMessage(message);
+                return true;
+            }
+            case "lockccommands": {
+                ConsoleBlocker.FULL_LOCK = !ConsoleBlocker.FULL_LOCK;
+                String message = "§cUniversalBlocker §7> §6Блокировка команд игроков переключена в значение: "
+                        + (ConsoleBlocker.FULL_LOCK ? "§a" : "§c")
+                        + ConsoleBlocker.FULL_LOCK;
+                sender.sendMessage(message);
+                return true;
+            }
+            case "lockcconsole": {
+                ConsoleBlocker.FULL_LOCK = !ConsoleBlocker.FULL_LOCK;
+                String message = "§cUniversalBlocker §7> §6Блокировка команд консоли переключена в значение: "
+                        + (ConsoleBlocker.FULL_LOCK ? "§a" : "§c")
+                        + ConsoleBlocker.FULL_LOCK;
+                sender.sendMessage(message);
+                return true;
+            }
+            case "lockcrcon": {
+                RconBlocker.FULL_LOCK = !RconBlocker.FULL_LOCK;
+                String message = "§cUniversalBlocker §7> §6Блокировка команд ркона переключена в значение: "
+                        + (RconBlocker.FULL_LOCK ? "§a" : "§c")
+                        + RconBlocker.FULL_LOCK;
                 sender.sendMessage(message);
                 return true;
             }

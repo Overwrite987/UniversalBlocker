@@ -21,6 +21,8 @@ public class ConsoleBlocker implements Listener {
     private final UniversalBlocker plugin;
     private final Config pluginConfig;
 
+    public static boolean FULL_LOCK;
+
     public ConsoleBlocker(UniversalBlocker plugin) {
         this.plugin = plugin;
         this.pluginConfig = plugin.getPluginConfig();
@@ -28,6 +30,10 @@ public class ConsoleBlocker implements Listener {
 
     @EventHandler
     public void onConsoleCommand(ServerCommandEvent e) {
+        if (FULL_LOCK) {
+            e.setCancelled(true);
+            return;
+        }
         String command = e.getCommand().toLowerCase();
         for (CommandGroup group : pluginConfig.getCommandBlockGroupSet()) {
             Utils.printDebug("Group checking now: " + group.getGroupId());

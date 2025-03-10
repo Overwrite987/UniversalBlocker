@@ -29,6 +29,8 @@ public class CommandBlocker implements Listener {
     private final Config pluginConfig;
     private final Runner runner;
 
+    public static boolean FULL_LOCK;
+
     public CommandBlocker(UniversalBlocker plugin) {
         this.plugin = plugin;
         this.pluginConfig = plugin.getPluginConfig();
@@ -37,6 +39,10 @@ public class CommandBlocker implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onCommand(PlayerCommandPreprocessEvent e) {
+        if (FULL_LOCK) {
+            e.setCancelled(true);
+            return;
+        }
         Player p = e.getPlayer();
         if (plugin.isExcluded(p))
             return;

@@ -21,7 +21,6 @@ import ru.overwrite.ublocker.configuration.data.*;
 import ru.overwrite.ublocker.utils.Utils;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
