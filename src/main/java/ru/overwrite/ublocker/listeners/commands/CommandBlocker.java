@@ -48,7 +48,7 @@ public class CommandBlocker implements Listener {
             return;
         String command = e.getMessage().toLowerCase();
         // Дерьмо для фикса другого дерьма
-        if (command.charAt(1) == ' ') {
+        if (command.length() >= 2 && command.charAt(1) == ' ') {
             e.setCancelled(true);
             Utils.printDebug("Player " + p.getName() + " tried to execute incorrect command: " + command);
         }
