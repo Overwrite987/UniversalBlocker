@@ -1,5 +1,6 @@
 package ru.overwrite.ublocker.configuration.data;
 
+import it.unimi.dsi.fastutil.chars.CharSet;
 import ru.overwrite.ublocker.blockgroups.BlockType;
 
 import java.util.regex.Pattern;
@@ -13,7 +14,7 @@ public record BookCharsSettings(
         boolean notifySoundsEnabled,
         String[] notifySound,
         BlockType mode,
-        String string,
+        CharSet charSet,
         Pattern pattern
-) { }
-
+) {
+}

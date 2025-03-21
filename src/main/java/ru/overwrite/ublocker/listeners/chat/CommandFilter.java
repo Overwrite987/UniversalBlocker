@@ -30,84 +30,72 @@ public class CommandFilter implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void oncommandMessage(PlayerCommandPreprocessEvent e) {
+    public void onCommandMessage(PlayerCommandPreprocessEvent e) {
         CommandCharsSettings commandCharsSettings = pluginConfig.getCommandCharsSettings();
         if (commandCharsSettings == null) return;
 
         Player p = e.getPlayer();
-        if (plugin.isAdmin(p, "ublocker.bypass.commandchars")) {
-            return;
-        }
+        if (plugin.isAdmin(p, "ublocker.bypass.commandchars")) return;
+
         String message = e.getMessage();
-        if (containsBlockedChars(message)) {
-            cancelCommandEvent(p, message, e);
+        if (containsBlockedChars(message, commandCharsSettings)) {
+            cancelCommandEvent(p, message, e, commandCharsSettings);
         }
     }
 
     private final String[] searchList = {"%player%", "%symbol%", "%msg%"};
 
-    private void cancelCommandEvent(Player p, String message, Cancellable e) {
+    private void cancelCommandEvent(Player p, String message, Cancellable e, CommandCharsSettings settings) {
         e.setCancelled(true);
         runner.runAsync(() -> {
-            CommandCharsSettings commandCharsSettings = pluginConfig.getCommandCharsSettings();
-            p.sendMessage(commandCharsSettings.message());
-            if (commandCharsSettings.enableSounds()) {
-                Utils.sendSound(commandCharsSettings.sound(), p);
-            }
-            if (commandCharsSettings.notifyEnabled()) {
-                String[] replacementList = {p.getName(), getFirstBlockedChar(message), message};
+            p.sendMessage(settings.message());
 
-                String formattedMessage = Utils.replaceEach(commandCharsSettings.notifyMessage(), searchList, replacementList);
+            if (settings.enableSounds()) {
+                Utils.sendSound(settings.sound(), p);
+            }
+
+            if (settings.notifyEnabled()) {
+                String[] replacementList = {p.getName(), getFirstBlockedChar(message, settings), message};
+
+                String formattedMessage = Utils.replaceEach(settings.notifyMessage(), searchList, replacementList);
 
                 Component component = Utils.parseMessage(formattedMessage, Utils.NOTIFY_MARKERS);
 
                 for (Player admin : Bukkit.getOnlinePlayers()) {
                     if (admin.hasPermission("ublocker.admin")) {
                         admin.sendMessage(component);
-                        if (commandCharsSettings.notifySoundsEnabled()) {
-                            Utils.sendSound(commandCharsSettings.notifySound(), admin);
+                        if (settings.notifySoundsEnabled()) {
+                            Utils.sendSound(settings.notifySound(), admin);
                         }
                     }
                 }
+
                 if (plugin.getPluginMessage() != null) {
-                    String gsonMessage = GsonComponentSerializer.gson().serializer().toJsonTree(component).toString();
+                    String gsonMessage = GsonComponentSerializer.gson().serialize(component);
                     plugin.getPluginMessage().sendCrossProxyBasic(p, gsonMessage);
                 }
             }
         });
     }
 
-    private boolean containsBlockedChars(String message) {
-        CommandCharsSettings commandCharsSettings = pluginConfig.getCommandCharsSettings();
-        switch (commandCharsSettings.mode()) {
-            case STRING: {
-                for (char character : message.toCharArray()) {
-                    if (commandCharsSettings.string().indexOf(character) == -1)
-                        return true;
-                }
-                break;
-
-            }
-            case PATTERN: {
-                return !commandCharsSettings.pattern().matcher(message).matches();
-            }
-        }
-        return false;
+    private boolean containsBlockedChars(String message, CommandCharsSettings settings) {
+        return switch (settings.mode()) {
+            case STRING -> Utils.containsInvalidCharacters(message, settings.charSet());
+            case PATTERN -> !settings.pattern().matcher(message).matches();
+        };
     }
 
-    private String getFirstBlockedChar(String message) {
-        CommandCharsSettings commandCharsSettings = pluginConfig.getCommandCharsSettings();
-        return switch (commandCharsSettings.mode()) {
-            case STRING -> Character.toString(
-                    message.codePoints()
-                            .filter(codePoint -> commandCharsSettings.string().indexOf(codePoint) == -1).findFirst()
-                            .getAsInt());
+    private String getFirstBlockedChar(String message, CommandCharsSettings settings) {
+        return switch (settings.mode()) {
+            case STRING -> Character.toString(Utils.getFirstBlockedChar(message, settings.charSet()));
             case PATTERN -> {
-                Predicate<String> allowedCharsPattern = commandCharsSettings.pattern().asMatchPredicate();
+                Predicate<String> predicate = settings.pattern().asMatchPredicate();
                 yield Character.toString(
                         message.codePoints()
-                                .filter(codePoint -> !allowedCharsPattern.test(Character.toString(codePoint)))
-                                .findFirst().getAsInt());
+                                .filter(codePoint -> !predicate.test(Character.toString(codePoint)))
+                                .findFirst()
+                                .orElseThrow()
+                );
             }
         };
     }

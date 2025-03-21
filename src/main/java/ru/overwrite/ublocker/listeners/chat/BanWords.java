@@ -4,7 +4,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -43,9 +42,9 @@ public class BanWords implements Listener {
                     if (message.contains(banword)) {
                         if (banWordsSettings.block()) {
                             e.setCancelled(true);
-                            executeBlockActions(p, banword, message, e);
+                            executeBlockActions(p, banword, message, banWordsSettings);
                         } else {
-                            notifyAdmins(p, banword, message);
+                            notifyAdmins(p, banword, message, banWordsSettings);
                             String censored = "*".repeat(banword.length());
                             e.setMessage(message.replace(banword, censored));
                         }
@@ -59,9 +58,9 @@ public class BanWords implements Listener {
                     if (matcher.find()) {
                         if (banWordsSettings.block()) {
                             e.setCancelled(true);
-                            executeBlockActions(p, matcher.group(), message, e);
+                            executeBlockActions(p, matcher.group(), message, banWordsSettings);
                         } else {
-                            notifyAdmins(p, matcher.group(), message);
+                            notifyAdmins(p, matcher.group(), message, banWordsSettings);
                             String censored = "*".repeat(matcher.group().length());
                             e.setMessage(message.replace(matcher.group(), censored));
                         }
@@ -72,19 +71,17 @@ public class BanWords implements Listener {
         }
     }
 
-    private void executeBlockActions(Player p, String banword, String message, Cancellable e) {
-        BanWordsSettings banWordsSettings = pluginConfig.getBanWordsSettings();
+    private void executeBlockActions(Player p, String banword, String message, BanWordsSettings banWordsSettings) {
         p.sendMessage(banWordsSettings.message().replace("%word%", banword));
         if (banWordsSettings.enableSounds()) {
             Utils.sendSound(banWordsSettings.sound(), p);
         }
-        notifyAdmins(p, banword, message);
+        notifyAdmins(p, banword, message, banWordsSettings);
     }
 
     private final String[] searchList = {"%player%", "%word%", "%msg%"};
 
-    private void notifyAdmins(Player p, String banword, String message) {
-        BanWordsSettings banWordsSettings = pluginConfig.getBanWordsSettings();
+    private void notifyAdmins(Player p, String banword, String message, BanWordsSettings banWordsSettings) {
         if (banWordsSettings.notifyEnabled()) {
             String[] replacementList = {p.getName(), banword, message};
 

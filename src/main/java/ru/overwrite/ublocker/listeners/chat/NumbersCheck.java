@@ -45,7 +45,7 @@ public class NumbersCheck implements Listener {
                 }
             }
             if (count > numberCheckSettings.maxNumbers() && !plugin.isAdmin(p, "ublocker.bypass.numbers")) {
-                cancelChatEvent(p, message, e);
+                cancelChatEvent(p, message, e, numberCheckSettings);
             }
         } else {
             Matcher matcher = IP_PATTERN.matcher(message);
@@ -58,15 +58,14 @@ public class NumbersCheck implements Listener {
                 }
             }
             if (digitsCount > numberCheckSettings.maxNumbers() && !plugin.isAdmin(p, "ublocker.bypass.numbers")) {
-                cancelChatEvent(p, message, e);
+                cancelChatEvent(p, message, e, numberCheckSettings);
             }
         }
     }
 
     private final String[] searchList = {"%player%", "%limit%", "%msg%"};
 
-    private void cancelChatEvent(Player p, String message, Cancellable e) {
-        NumberCheckSettings numberCheckSettings = pluginConfig.getNumberCheckSettings();
+    private void cancelChatEvent(Player p, String message, Cancellable e, NumberCheckSettings numberCheckSettings) {
         e.setCancelled(true);
         p.sendMessage(numberCheckSettings.message().replace("%limit%", Integer.toString(numberCheckSettings.maxNumbers())));
         if (numberCheckSettings.enableSounds()) {

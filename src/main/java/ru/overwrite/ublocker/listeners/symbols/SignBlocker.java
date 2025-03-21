@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.actions.Action;
+import ru.overwrite.ublocker.actions.ActionType;
 import ru.overwrite.ublocker.blockgroups.SymbolGroup;
 import ru.overwrite.ublocker.conditions.ConditionChecker;
 import ru.overwrite.ublocker.configuration.Config;
@@ -95,124 +96,132 @@ public class SignBlocker implements Listener {
 
     private final String[] searchList = {"%player%", "%world%", "%symbol%", "%msg%"};
 
-    private void executeActions(Cancellable e, Player p, String combined, String symbol, List<Action> actions, String world) {
+    public void executeActions(Cancellable e, Player p, String combined, String symbol, List<Action> actions, String world) {
         final String[] replacementList = {p.getName(), world, symbol, combined};
+
         for (Action action : actions) {
-            switch (action.type()) {
-                case BLOCK: {
-                    e.setCancelled(true);
-                    break;
-                }
-                case LITE_BLOCK: {
-                    String perm = Utils.getPermOrDefault(
-                            Utils.extractValue(action.context(), Utils.PERM_PREFIX, "}"),
-                            "ublocker.bypass.symbols");
-                    if (!p.hasPermission(perm)) {
-                        e.setCancelled(true);
-                    }
-                    break;
-                }
-                case MESSAGE: {
-                    if (!e.isCancelled())
-                        return;
-                    runner.runAsync(() -> {
-                        String formattedMessage = Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
-                        Component component = Utils.parseMessage(formattedMessage, Utils.HOVER_MARKERS);
-                        p.sendMessage(component);
-                    });
-                    break;
-                }
-                case TITLE: {
-                    if (!e.isCancelled())
-                        return;
-                    runner.runAsync(() -> {
-                        String coAction = Utils.COLORIZER.colorize(action.context());
-                        String[] titleMessages = Utils.replaceEach(coAction, searchList, replacementList).split(";");
-                        Utils.sendTitleMessage(titleMessages, p);
-                    });
-                    break;
-                }
-                case ACTIONBAR: {
-                    if (!e.isCancelled())
-                        return;
-                    runner.runAsync(() -> {
-                        String coAction = Utils.COLORIZER.colorize(action.context());
-                        String message = Utils.replaceEach(coAction, searchList, replacementList);
-                        p.sendActionBar(message);
-                    });
-                    break;
-                }
-                case SOUND: {
-                    if (!e.isCancelled())
-                        return;
-                    runner.runAsync(() -> {
-                        String[] sound = action.context().split(";");
-                        Utils.sendSound(sound, p);
-                    });
-                    break;
-                }
-                case CONSOLE: {
-                    if (!e.isCancelled())
-                        return;
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), action.context().replace("%player%", p.getName()));
-                    break;
-                }
-                case LOG: {
-                    if (!e.isCancelled())
-                        return;
-                    String logMessage = Utils.extractMessage(action.context(), Utils.FILE_MARKER, true);
-                    String file = Utils.extractValue(action.context(), Utils.FILE_PREFIX, "}");
-                    plugin.logAction(Utils.replaceEach(logMessage, searchList, replacementList), file);
-                    break;
-                }
-                case NOTIFY: {
-                    if (!e.isCancelled())
-                        return;
-                    runner.runAsync(() -> {
-                        String perm = Utils.getPermOrDefault(
-                                Utils.extractValue(action.context(), Utils.PERM_PREFIX, "}"),
-                                "ublocker.admin");
+            ActionType type = action.type();
 
-                        String formattedMessage = Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
-                        Component component = Utils.parseMessage(formattedMessage, Utils.NOTIFY_MARKERS);
+            if (shouldBlockAction(type, p, action)) {
+                e.setCancelled(true);
+                continue;
+            }
 
-                        Bukkit.getOnlinePlayers().stream()
-                                .filter(player -> player.hasPermission(perm))
-                                .forEach(player -> player.sendMessage(component));
-
-                        if (plugin.getPluginMessage() != null) {
-                            String gsonMessage = GsonComponentSerializer.gson().serializer().toJsonTree(component).toString();
-                            plugin.getPluginMessage().sendCrossProxyPerm(p, perm + " " + gsonMessage);
-                        }
-                    });
-                    break;
+            if (e.isCancelled()) {
+                switch (type) {
+                    case MESSAGE -> sendMessageAsync(p, action, replacementList);
+                    case TITLE -> sendTitleAsync(p, action, replacementList);
+                    case ACTIONBAR -> sendActionBarAsync(p, action, replacementList);
+                    case SOUND -> sendSoundAsync(p, action);
+                    case CONSOLE -> executeConsoleCommand(p, action);
+                    case LOG -> logAction(action, replacementList);
+                    case NOTIFY -> sendNotifyAsync(p, action, replacementList);
+                    case NOTIFY_CONSOLE -> sendNotifyConsoleAsync(action, replacementList);
+                    case NOTIFY_SOUND -> sendNotifySoundAsync(action);
                 }
-                case NOTIFY_CONSOLE: {
-                    if (!e.isCancelled())
-                        return;
-                    runner.runAsync(() -> {
-                        String formattedMessage = Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
-                        Bukkit.getConsoleSender().sendMessage(formattedMessage);
-                    });
-                    break;
-                }
-                case NOTIFY_SOUND: {
-                    if (!e.isCancelled())
-                        return;
-                    runner.runAsync(() -> {
-                        String perm = Utils.getPermOrDefault(
-                                Utils.extractValue(action.context(), Utils.PERM_PREFIX, "}"),
-                                "ublocker.admin");
-                        String[] sound = Utils.extractMessage(action.context(), Utils.PERM_MARKER, true).split(";");
-                        Bukkit.getOnlinePlayers().stream()
-                                .filter(player -> player.hasPermission(perm))
-                                .forEach(player -> Utils.sendSound(sound, player));
-                    });
-                    break;
-                }
-                default:
-                    break;
             }
         }
+    }
+
+    private boolean shouldBlockAction(ActionType type, Player p, Action action) {
+        return switch (type) {
+            case BLOCK -> true;
+            case LITE_BLOCK -> !hasBypassPermission(p, action);
+            default -> false;
+        };
+    }
+
+    private void sendMessageAsync(Player p, Action action, String[] replacementList) {
+        runner.runAsync(() -> {
+            String formattedMessage = formatActionMessage(action, replacementList);
+            Component component = Utils.parseMessage(formattedMessage, Utils.HOVER_MARKERS);
+            p.sendMessage(component);
+        });
+    }
+
+    private void sendTitleAsync(Player p, Action action, String[] replacementList) {
+        runner.runAsync(() -> {
+            String formattedMessage = formatActionMessage(action, replacementList);
+            String[] titleMessages = formattedMessage.split(";");
+            Utils.sendTitleMessage(titleMessages, p);
+        });
+    }
+
+    private void sendActionBarAsync(Player p, Action action, String[] replacementList) {
+        runner.runAsync(() -> {
+            String message = formatActionMessage(action, replacementList);
+            p.sendActionBar(message);
+        });
+    }
+
+    private void sendSoundAsync(Player p, Action action) {
+        runner.runAsync(() -> Utils.sendSound(action.context().split(";"), p));
+    }
+
+    private void executeConsoleCommand(Player p, Action action) {
+        runner.run(() -> Bukkit.dispatchCommand(
+                Bukkit.getConsoleSender(),
+                action.context().replace("%player%", p.getName())
+        ));
+    }
+
+    private void logAction(Action action, String[] replacementList) {
+        String logMessage = Utils.extractMessage(action.context(), Utils.FILE_MARKER, true);
+        String file = Utils.extractValue(action.context(), Utils.FILE_PREFIX, "}");
+        plugin.logAction(Utils.replaceEach(logMessage, searchList, replacementList), file);
+    }
+
+    private void sendNotifyAsync(Player p, Action action, String[] replacementList) {
+        runner.runAsync(() -> {
+            String perm = getActionPermission(action, "ublocker.admin");
+            String formattedMessage = formatActionMessage(action, replacementList);
+            Component component = Utils.parseMessage(formattedMessage, Utils.NOTIFY_MARKERS);
+
+            Bukkit.getOnlinePlayers().stream()
+                    .filter(player -> player.hasPermission(perm))
+                    .forEach(player -> player.sendMessage(component));
+
+            if (plugin.getPluginMessage() != null) {
+                String gsonMessage = GsonComponentSerializer.gson().serialize(component);
+                plugin.getPluginMessage().sendCrossProxyPerm(p, perm + " " + gsonMessage);
+            }
+        });
+    }
+
+    private void sendNotifyConsoleAsync(Action action, String[] replacementList) {
+        runner.runAsync(() -> {
+            String formattedMessage = formatActionMessage(action, replacementList);
+            Bukkit.getConsoleSender().sendMessage(formattedMessage);
+        });
+    }
+
+    private void sendNotifySoundAsync(Action action) {
+        runner.runAsync(() -> {
+            String perm = getActionPermission(action, "ublocker.admin");
+            String[] sound = Utils.extractMessage(action.context(), Utils.PERM_MARKER, true).split(";");
+
+            Bukkit.getOnlinePlayers().stream()
+                    .filter(player -> player.hasPermission(perm))
+                    .forEach(player -> Utils.sendSound(sound, player));
+        });
+    }
+
+    private String formatActionMessage(Action action, String[] replacementList) {
+        return Utils.replaceEach(
+                Utils.COLORIZER.colorize(action.context()),
+                searchList,
+                replacementList
+        );
+    }
+
+    private boolean hasBypassPermission(Player p, Action action) {
+        return p.hasPermission(getActionPermission(action, "ublocker.bypass.symbols"));
+    }
+
+    private String getActionPermission(Action action, String defaultPerm) {
+        return Utils.getPermOrDefault(
+                Utils.extractValue(action.context(), Utils.PERM_PREFIX, "}"),
+                defaultPerm
+        );
     }
 }

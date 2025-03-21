@@ -17,4 +17,5 @@ public record BanWordsSettings(
         String notifyMessage,
         boolean notifySoundsEnabled,
         String[] notifySound
-) { }
+) {
+}

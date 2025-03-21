@@ -1,5 +1,6 @@
 package ru.overwrite.ublocker.utils;
 
+import it.unimi.dsi.fastutil.chars.CharSet;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -297,6 +298,20 @@ public final class Utils {
     public static String cutCommand(String str) {
         int index = str.indexOf(' ');
         return index == -1 ? str : str.substring(0, index);
+    }
+
+    public static boolean containsInvalidCharacters(String str, CharSet charSet) {
+        return getFirstBlockedChar(str, charSet) != null;
+    }
+
+    public static Character getFirstBlockedChar(String str, CharSet charSet) {
+        for (int i = 0; i < str.length(); i++) {
+            char charAt = str.charAt(i);
+            if (!charSet.contains(charAt)) {
+                return charAt;
+            }
+        }
+        return null;
     }
 
     public static String getPermOrDefault(String perm, String defaultPerm) {

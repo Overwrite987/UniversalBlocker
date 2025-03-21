@@ -37,9 +37,8 @@ public class SignFilter implements Listener {
         if (signCharsSettings == null) return;
 
         Player p = e.getPlayer();
-        if (plugin.isAdmin(p, "ublocker.bypass.signchars")) {
-            return;
-        }
+        if (plugin.isAdmin(p, "ublocker.bypass.signchars")) return;
+
         String line0 = e.getLine(0);
         String line1 = e.getLine(1);
         String line2 = e.getLine(2);
@@ -48,8 +47,8 @@ public class SignFilter implements Listener {
         for (String message : messages) {
             if (message == null || message.isBlank())
                 continue;
-            if (containsBlockedChars(message)) {
-                cancelSignEvent(p, message, e);
+            if (containsBlockedChars(message, signCharsSettings)) {
+                cancelSignEvent(p, message, e, signCharsSettings);
             }
             break;
         }
@@ -57,68 +56,57 @@ public class SignFilter implements Listener {
 
     private final String[] searchList = {"%player%", "%symbol%", "%msg%"};
 
-    private void cancelSignEvent(Player p, String message, Cancellable e) {
+    private void cancelSignEvent(Player p, String message, Cancellable e, SignCharsSettings settings) {
         e.setCancelled(true);
         runner.runAsync(() -> {
-            SignCharsSettings signCharsSettings = pluginConfig.getSignCharsSettings();
-            p.sendMessage(signCharsSettings.message());
-            if (signCharsSettings.enableSounds()) {
-                Utils.sendSound(signCharsSettings.sound(), p);
-            }
-            if (signCharsSettings.notifyEnabled()) {
-                String[] replacementList = {p.getName(), getFirstBlockedChar(message), message};
+            p.sendMessage(settings.message());
 
-                String formattedMessage = Utils.replaceEach(signCharsSettings.notifyMessage(), searchList, replacementList);
+            if (settings.enableSounds()) {
+                Utils.sendSound(settings.sound(), p);
+            }
+
+            if (settings.notifyEnabled()) {
+                String[] replacementList = {p.getName(), getFirstBlockedChar(message, settings), message};
+
+                String formattedMessage = Utils.replaceEach(settings.notifyMessage(), searchList, replacementList);
 
                 Component component = Utils.parseMessage(formattedMessage, Utils.NOTIFY_MARKERS);
 
                 for (Player admin : Bukkit.getOnlinePlayers()) {
                     if (admin.hasPermission("ublocker.admin")) {
                         admin.sendMessage(component);
-                        if (signCharsSettings.notifySoundsEnabled()) {
-                            Utils.sendSound(signCharsSettings.notifySound(), admin);
+                        if (settings.notifySoundsEnabled()) {
+                            Utils.sendSound(settings.notifySound(), admin);
                         }
                     }
                 }
+
                 if (plugin.getPluginMessage() != null) {
-                    String gsonMessage = GsonComponentSerializer.gson().serializer().toJsonTree(component).toString();
+                    String gsonMessage = GsonComponentSerializer.gson().serialize(component);
                     plugin.getPluginMessage().sendCrossProxyBasic(p, gsonMessage);
                 }
             }
         });
     }
 
-    private boolean containsBlockedChars(String message) {
-        SignCharsSettings signCharsSettings = pluginConfig.getSignCharsSettings();
-        switch (signCharsSettings.mode()) {
-            case STRING: {
-                for (char character : message.toCharArray()) {
-                    if (signCharsSettings.string().indexOf(character) == -1) {
-                        return true;
-                    }
-                }
-                break;
-            }
-            case PATTERN: {
-                return !signCharsSettings.pattern().matcher(message).matches();
-            }
-        }
-        return false;
+    private boolean containsBlockedChars(String message, SignCharsSettings settings) {
+        return switch (settings.mode()) {
+            case STRING -> Utils.containsInvalidCharacters(message, settings.charSet());
+            case PATTERN -> !settings.pattern().matcher(message).matches();
+        };
     }
 
-    private String getFirstBlockedChar(String message) {
-        SignCharsSettings signCharsSettings = pluginConfig.getSignCharsSettings();
-        return switch (signCharsSettings.mode()) {
-            case STRING -> Character.toString(
-                    message.codePoints()
-                            .filter(codePoint -> signCharsSettings.string().indexOf(codePoint) == -1).findFirst()
-                            .getAsInt());
+    private String getFirstBlockedChar(String message, SignCharsSettings settings) {
+        return switch (settings.mode()) {
+            case STRING -> Character.toString(Utils.getFirstBlockedChar(message, settings.charSet()));
             case PATTERN -> {
-                Predicate<String> allowedCharsPattern = signCharsSettings.pattern().asMatchPredicate();
+                Predicate<String> predicate = settings.pattern().asMatchPredicate();
                 yield Character.toString(
                         message.codePoints()
-                                .filter(codePoint -> !allowedCharsPattern.test(Character.toString(codePoint)))
-                                .findFirst().getAsInt());
+                                .filter(codePoint -> !predicate.test(Character.toString(codePoint)))
+                                .findFirst()
+                                .orElseThrow()
+                );
             }
         };
     }

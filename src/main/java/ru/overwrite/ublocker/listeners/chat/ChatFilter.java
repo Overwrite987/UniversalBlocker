@@ -36,22 +36,21 @@ public class ChatFilter implements Listener {
             return;
         }
         String message = e.getMessage();
-        if (containsBlockedChars(message)) {
-            cancelChatEvent(p, message, e);
+        if (containsBlockedChars(message, chatCharsSettings)) {
+            cancelChatEvent(p, message, e, chatCharsSettings);
         }
     }
 
     private final String[] searchList = {"%player%", "%symbol%", "%msg%"};
 
-    private void cancelChatEvent(Player p, String message, Cancellable e) {
-        ChatCharsSettings chatCharsSettings = pluginConfig.getChatCharsSettings();
+    private void cancelChatEvent(Player p, String message, Cancellable e, ChatCharsSettings chatCharsSettings) {
         e.setCancelled(true);
         p.sendMessage(chatCharsSettings.message());
         if (chatCharsSettings.enableSounds()) {
             Utils.sendSound(chatCharsSettings.sound(), p);
         }
         if (chatCharsSettings.notifyEnabled()) {
-            String[] replacementList = {p.getName(), getFirstBlockedChar(message), message};
+            String[] replacementList = {p.getName(), getFirstBlockedChar(message, chatCharsSettings), message};
 
             String formattedMessage = Utils.replaceEach(chatCharsSettings.notifyMessage(), searchList, replacementList);
 
@@ -72,37 +71,24 @@ public class ChatFilter implements Listener {
         }
     }
 
-    private boolean containsBlockedChars(String message) {
-        ChatCharsSettings chatCharsSettings = pluginConfig.getChatCharsSettings();
-        switch (chatCharsSettings.mode()) {
-            case STRING: {
-                for (char character : message.toCharArray()) {
-                    if (chatCharsSettings.string().indexOf(character) == -1) {
-                        return true;
-                    }
-                }
-                break;
-            }
-            case PATTERN: {
-                return !chatCharsSettings.pattern().matcher(message).matches();
-            }
-        }
-        return false;
+    private boolean containsBlockedChars(String message, ChatCharsSettings chatCharsSettings) {
+        return switch (chatCharsSettings.mode()) {
+            case STRING -> Utils.containsInvalidCharacters(message, chatCharsSettings.charSet());
+            case PATTERN -> !chatCharsSettings.pattern().matcher(message).matches();
+        };
     }
 
-    private String getFirstBlockedChar(String message) {
-        ChatCharsSettings chatCharsSettings = pluginConfig.getChatCharsSettings();
+    private String getFirstBlockedChar(String message, ChatCharsSettings chatCharsSettings) {
         return switch (chatCharsSettings.mode()) {
-            case STRING -> Character.toString(
-                    message.codePoints()
-                            .filter(codePoint -> chatCharsSettings.string().indexOf(codePoint) == -1).findFirst()
-                            .getAsInt());
+            case STRING -> Character.toString(Utils.getFirstBlockedChar(message, chatCharsSettings.charSet()));
             case PATTERN -> {
                 Predicate<String> allowedCharsPattern = chatCharsSettings.pattern().asMatchPredicate();
                 yield Character.toString(
                         message.codePoints()
                                 .filter(codePoint -> !allowedCharsPattern.test(Character.toString(codePoint)))
-                                .findFirst().getAsInt());
+                                .findFirst()
+                                .orElseThrow()
+                );
             }
         };
     }

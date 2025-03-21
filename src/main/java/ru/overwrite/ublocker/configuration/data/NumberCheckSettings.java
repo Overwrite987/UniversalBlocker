@@ -10,5 +10,5 @@ public record NumberCheckSettings(
         String notifyMessage,
         boolean notifySoundsEnabled,
         String[] notifySound
-) { }
-
+) {
+}
