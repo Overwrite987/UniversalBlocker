@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.chars.CharSet;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
@@ -286,8 +287,8 @@ public class Config {
         }
 
         BlockType mode = BlockType.valueOf(banWords.getString("mode").toUpperCase());
-        Set<String> banWordsString = null;
-        Set<Pattern> banWordsPattern = null;
+        ObjectSet<String> banWordsString = null;
+        ObjectSet<Pattern> banWordsPattern = null;
         switch (mode) {
             case STRING:
                 banWordsString = new ObjectOpenHashSet<>();
@@ -336,8 +337,8 @@ public class Config {
 
     public void setupCommands(String path) {
         final FileConfiguration commands = getFile(path, "commands.yml");
-        Set<CommandGroup> commandBlockGroupSet = new ObjectOpenHashSet<>();
-        Set<CommandGroup> commandHideGroupSet = new ObjectOpenHashSet<>();
+        ObjectSet<CommandGroup> commandBlockGroupSet = new ObjectOpenHashSet<>();
+        ObjectSet<CommandGroup> commandHideGroupSet = new ObjectOpenHashSet<>();
         for (String commandsID : commands.getConfigurationSection("commands").getKeys(false)) {
             final ConfigurationSection section = commands.getConfigurationSection("commands." + commandsID);
             BlockType blockType = BlockType.valueOf(section.getString("mode").toUpperCase());
@@ -388,7 +389,7 @@ public class Config {
 
     public void setupSymbols(String path) {
         final FileConfiguration symbols = getFile(path, "symbols.yml");
-        Set<SymbolGroup> symbolBlockGroupSet = new ObjectOpenHashSet<>();
+        ObjectSet<SymbolGroup> symbolBlockGroupSet = new ObjectOpenHashSet<>();
         for (String symbolsID : symbols.getConfigurationSection("symbols").getKeys(false)) {
             final ConfigurationSection section = symbols.getConfigurationSection("symbols." + symbolsID);
             BlockType blockType = BlockType.valueOf(section.getString("mode").toUpperCase());
