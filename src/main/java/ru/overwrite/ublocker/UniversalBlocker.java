@@ -11,6 +11,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.messaging.Messenger;
 import ru.overwrite.ublocker.configuration.Config;
 import ru.overwrite.ublocker.listeners.chat.*;
 import ru.overwrite.ublocker.listeners.commands.*;
@@ -131,9 +132,10 @@ public final class UniversalBlocker extends JavaPlugin {
 
     private void setupProxy(ConfigurationSection settings) {
         if (settings.getBoolean("proxy")) {
-            server.getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+            Messenger messenger = server.getMessenger();
+            messenger.registerOutgoingPluginChannel(this, "BungeeCord");
             pluginMessage = new PluginMessage(this);
-            server.getMessenger().registerIncomingPluginChannel(this, "BungeeCord", pluginMessage);
+            messenger.registerIncomingPluginChannel(this, "BungeeCord", pluginMessage);
         }
     }
 

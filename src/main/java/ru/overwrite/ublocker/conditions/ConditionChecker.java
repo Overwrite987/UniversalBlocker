@@ -1,17 +1,19 @@
 package ru.overwrite.ublocker.conditions;
 
 import it.unimi.dsi.fastutil.objects.ObjectList;
+import lombok.experimental.UtilityClass;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import ru.overwrite.ublocker.utils.WGUtils;
 
 import java.util.List;
 
+@UtilityClass
 public class ConditionChecker {
 
-    private static Boolean hasWorldGuard = null;
+    private Boolean hasWorldGuard = null;
 
-    public static boolean hasWorldGuard() {
+    public boolean hasWorldGuard() {
         if (hasWorldGuard == null) {
             try {
                 Class.forName("com.sk89q.worldguard.protection.flags.registry.FlagConflictException");
@@ -23,7 +25,7 @@ public class ConditionChecker {
         return hasWorldGuard;
     }
 
-    public static boolean isMeetsRequirements(Player p, List<Condition> conditions) {
+    public boolean isMeetsRequirements(Player p, List<Condition> conditions) {
         if (conditions == null || conditions.isEmpty()) {
             return true;
         }
@@ -63,7 +65,7 @@ public class ConditionChecker {
         return true;
     }
 
-    private static boolean evaluateCondition(String operator, boolean conditionMet) {
+    private boolean evaluateCondition(String operator, boolean conditionMet) {
         return switch (operator) {
             case "==" -> conditionMet;
             case "!=" -> !conditionMet;

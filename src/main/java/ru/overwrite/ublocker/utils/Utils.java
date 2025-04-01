@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
+import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -25,9 +26,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.function.Consumer;
 
-public final class Utils {
+@UtilityClass
+public class Utils {
 
-    public static final boolean FOLIA;
+    public final boolean FOLIA;
 
     static {
         boolean folia;
@@ -40,9 +42,9 @@ public final class Utils {
         FOLIA = folia;
     }
 
-    public static Colorizer COLORIZER;
+    public Colorizer COLORIZER;
 
-    public static void setupColorizer(ConfigurationSection mainSettings) {
+    public void setupColorizer(ConfigurationSection mainSettings) {
         COLORIZER = switch (mainSettings.getString("serializer", "LEGACY").toUpperCase()) {
             case "MINIMESSAGE" -> new MiniMessageColorizer();
             case "LEGACY" -> new LegacyColorizer();
@@ -51,15 +53,15 @@ public final class Utils {
         };
     }
 
-    public static boolean DEBUG;
+    public boolean DEBUG;
 
-    public static void printDebug(String messgae) {
+    public void printDebug(String messgae) {
         if (DEBUG) {
             Bukkit.getConsoleSender().sendMessage("[UniversalBlocker-Debug] " + messgae);
         }
     }
 
-    public static void sendTitleMessage(@NotNull String[] titleMessages, @NotNull Player p) {
+    public void sendTitleMessage(@NotNull String[] titleMessages, @NotNull Player p) {
         if (titleMessages.length > 5) {
             Bukkit.getConsoleSender().sendMessage("Unable to send title. " + Arrays.toString(titleMessages));
             return;
@@ -72,7 +74,7 @@ public final class Utils {
         p.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
     }
 
-    public static void sendSound(@NotNull String[] soundArgs, @NotNull Player p) {
+    public void sendSound(@NotNull String[] soundArgs, @NotNull Player p) {
         if (soundArgs.length > 3) {
             Bukkit.getConsoleSender().sendMessage("Unable to send sound. " + Arrays.toString(soundArgs));
             return;
@@ -83,17 +85,17 @@ public final class Utils {
         p.playSound(p.getLocation(), sound, volume, pitch);
     }
 
-    public static final String PERM_PREFIX = "perm={";
-    public static final String FILE_PREFIX = "file={";
-    public static final String HOVER_TEXT_PREFIX = "hoverText={";
-    public static final String CLICK_EVENT_PREFIX = "clickEvent={";
-    public static final String BUTTON_PREFIX = "button={";
-    public static final String[] PERM_MARKER = {PERM_PREFIX};
-    public static final String[] FILE_MARKER = {FILE_PREFIX};
-    public static final String[] HOVER_MARKERS = {HOVER_TEXT_PREFIX, CLICK_EVENT_PREFIX};
-    public static final String[] NOTIFY_MARKERS = {HOVER_TEXT_PREFIX, CLICK_EVENT_PREFIX, PERM_PREFIX};
+    public final String PERM_PREFIX = "perm={";
+    public final String FILE_PREFIX = "file={";
+    public final String HOVER_TEXT_PREFIX = "hoverText={";
+    public final String CLICK_EVENT_PREFIX = "clickEvent={";
+    public final String BUTTON_PREFIX = "button={";
+    public final String[] PERM_MARKER = {PERM_PREFIX};
+    public final String[] FILE_MARKER = {FILE_PREFIX};
+    public final String[] HOVER_MARKERS = {HOVER_TEXT_PREFIX, CLICK_EVENT_PREFIX};
+    public final String[] NOTIFY_MARKERS = {HOVER_TEXT_PREFIX, CLICK_EVENT_PREFIX, PERM_PREFIX};
 
-    public static Component parseMessage(String formattedMessage, String[] markers) {
+    public Component parseMessage(String formattedMessage, String[] markers) {
         ObjectList<Component> components = new ObjectArrayList<>();
         int currentIndex = 0;
 
@@ -166,7 +168,7 @@ public final class Utils {
         return finalComponent;
     }
 
-    private static int findClosingBracket(String message, int startIndex) {
+    private int findClosingBracket(String message, int startIndex) {
         int depth = 0;
         for (int i = startIndex; i < message.length(); i++) {
             char currentChar = message.charAt(i);
@@ -183,7 +185,7 @@ public final class Utils {
         return -1;
     }
 
-    private static Component parseButtonContent(String buttonContent) {
+    private Component parseButtonContent(String buttonContent) {
         String buttonText = null;
         String hoverText = null;
         String clickEvent = null;
@@ -216,7 +218,7 @@ public final class Utils {
         return buttonComponent;
     }
 
-    public static String extractValue(String message, String prefix, String suffix) {
+    public String extractValue(String message, String prefix, String suffix) {
         int startIndex = message.indexOf(prefix);
         if (startIndex != -1) {
             startIndex += prefix.length();
@@ -228,7 +230,7 @@ public final class Utils {
         return null;
     }
 
-    public static String extractMessage(String message, String[] markers, boolean removeMarkers) {
+    public String extractMessage(String message, String[] markers, boolean removeMarkers) {
         IntList indices = new IntArrayList();
         for (String marker : markers) {
             int index = message.indexOf(marker);
@@ -255,12 +257,12 @@ public final class Utils {
         return baseMessage.trim();
     }
 
-    public static Component createHoverEvent(Component message, String hoverText) {
+    public Component createHoverEvent(Component message, String hoverText) {
         HoverEvent<Component> hover = HoverEvent.showText(LegacyComponentSerializer.legacySection().deserialize(hoverText));
         return message.hoverEvent(hover);
     }
 
-    public static Component createClickEvent(Component message, String clickEvent) {
+    public Component createClickEvent(Component message, String clickEvent) {
         String[] clickEventArgs = clickEvent.split(";", 2);
         ClickEvent.Action action = ClickEvent.Action.valueOf(clickEventArgs[0].toUpperCase());
         String context = clickEventArgs[1];
@@ -268,9 +270,9 @@ public final class Utils {
         return message.clickEvent(click);
     }
 
-    public static final char COLOR_CHAR = '§';
+    public final char COLOR_CHAR = '§';
 
-    public static String translateAlternateColorCodes(char altColorChar, String textToTranslate) {
+    public String translateAlternateColorCodes(char altColorChar, String textToTranslate) {
         final char[] b = textToTranslate.toCharArray();
 
         for (int i = 0, length = b.length - 1; i < length; ++i) {
@@ -283,7 +285,7 @@ public final class Utils {
         return new String(b);
     }
 
-    private static boolean isValidColorCharacter(char c) {
+    private boolean isValidColorCharacter(char c) {
         return (c >= '0' && c <= '9') ||
                 (c >= 'a' && c <= 'f') ||
                 c == 'r' ||
@@ -295,16 +297,16 @@ public final class Utils {
                 c == 'X';
     }
 
-    public static String cutCommand(String str) {
+    public String cutCommand(String str) {
         int index = str.indexOf(' ');
         return index == -1 ? str : str.substring(0, index);
     }
 
-    public static boolean containsInvalidCharacters(String str, CharSet charSet) {
+    public boolean containsInvalidCharacters(String str, CharSet charSet) {
         return getFirstBlockedChar(str, charSet) != null;
     }
 
-    public static Character getFirstBlockedChar(String str, CharSet charSet) {
+    public Character getFirstBlockedChar(String str, CharSet charSet) {
         for (int i = 0; i < str.length(); i++) {
             char charAt = str.charAt(i);
             if (!charSet.contains(charAt)) {
@@ -314,14 +316,14 @@ public final class Utils {
         return null;
     }
 
-    public static String getPermOrDefault(String perm, String defaultPerm) {
+    public String getPermOrDefault(String perm, String defaultPerm) {
         if (perm == null || perm.isBlank()) {
             return defaultPerm;
         }
         return perm;
     }
 
-    public static String replaceEach(String text, String[] searchList, String[] replacementList) {
+    public String replaceEach(String text, String[] searchList, String[] replacementList) {
         if (text.isEmpty() || searchList.length == 0 || replacementList.length == 0) {
             return text;
         }
@@ -347,7 +349,7 @@ public final class Utils {
         return result.toString();
     }
 
-    public static void checkUpdates(UniversalBlocker plugin, Consumer<String> consumer) {
+    public void checkUpdates(UniversalBlocker plugin, Consumer<String> consumer) {
         plugin.getRunner().runDelayedAsync(() -> {
             try (BufferedReader reader = new BufferedReader(
                     new InputStreamReader(

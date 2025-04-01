@@ -19,6 +19,7 @@ public final class PluginMessage implements PluginMessageListener {
         this.plugin = plugin;
     }
 
+    @Override
     public void onPluginMessageReceived(String channel, @NotNull Player player, byte[] message) {
         if (!channel.equals("BungeeCord"))
             return;
@@ -26,9 +27,9 @@ public final class PluginMessage implements PluginMessageListener {
         String subchannel = input.readUTF();
         if (subchannel.equalsIgnoreCase("ublocker_1")) {
             Component comp = GsonComponentSerializer.gson().serializer().fromJson(input.readUTF(), Component.class);
-            for (Player ps : Bukkit.getOnlinePlayers()) {
-                if (ps.hasPermission("ublocker.admin")) {
-                    ps.sendMessage(comp);
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                if (p.hasPermission("ublocker.admin")) {
+                    p.sendMessage(comp);
                 }
             }
             return;
@@ -38,9 +39,9 @@ public final class PluginMessage implements PluginMessageListener {
             String perm = split[0];
             String notifyMessage = split[1];
             Component comp = GsonComponentSerializer.gson().serializer().fromJson(notifyMessage, Component.class);
-            for (Player ps : Bukkit.getOnlinePlayers()) {
-                if (ps.hasPermission(perm)) {
-                    ps.sendMessage(comp);
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                if (p.hasPermission(perm)) {
+                    p.sendMessage(comp);
                 }
             }
         }

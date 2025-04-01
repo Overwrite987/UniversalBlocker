@@ -7,11 +7,13 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
+import lombok.experimental.UtilityClass;
 import org.bukkit.Location;
 
-public final class WGUtils {
+@UtilityClass
+public class WGUtils {
 
-    public static ObjectList<String> getRegions(Location location) {
+    public ObjectList<String> getRegions(Location location) {
         ObjectList<String> regions = new ObjectArrayList<>();
         if (getApplicableRegions(location) == null || getApplicableRegions(location).size() == 0) {
             return regions;
@@ -22,7 +24,7 @@ public final class WGUtils {
         return regions;
     }
 
-    private static ApplicableRegionSet getApplicableRegions(Location location) {
+    private ApplicableRegionSet getApplicableRegions(Location location) {
         RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer()
                 .get(BukkitAdapter.adapt(location.getWorld()));
         if (regionManager == null || regionManager.getRegions().isEmpty())
