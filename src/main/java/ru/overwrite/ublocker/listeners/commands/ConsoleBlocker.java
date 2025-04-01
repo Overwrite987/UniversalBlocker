@@ -106,7 +106,7 @@ public class ConsoleBlocker implements Listener {
                 case LOG: {
                     if (!e.isCancelled())
                         break;
-                    String logMessage = Utils.extractMessage(action.context(), Utils.FILE_MARKER, true);
+                    String logMessage = Utils.extractMessage(action.context(), Utils.FILE_MARKER);
                     String file = Utils.extractValue(action.context(), Utils.FILE_PREFIX, "}");
                     plugin.logAction(logMessage, file);
                     break;

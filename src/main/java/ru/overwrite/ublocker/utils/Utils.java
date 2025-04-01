@@ -112,7 +112,7 @@ public class Utils {
                     globalHoverText = extractValue(remainingText, HOVER_TEXT_PREFIX, "}");
                     globalClickEvent = extractValue(remainingText, CLICK_EVENT_PREFIX, "}");
 
-                    remainingText = extractMessage(remainingText, markers, true);
+                    remainingText = extractMessage(remainingText, markers);
                     if (!remainingText.isEmpty()) {
                         components.add(LegacyComponentSerializer.legacySection().deserialize(remainingText));
                     }
@@ -126,7 +126,7 @@ public class Utils {
                 globalHoverText = extractValue(beforeButton, HOVER_TEXT_PREFIX, "}");
                 globalClickEvent = extractValue(beforeButton, CLICK_EVENT_PREFIX, "}");
 
-                beforeButton = extractMessage(beforeButton, markers, true);
+                beforeButton = extractMessage(beforeButton, markers);
                 if (!beforeButton.isEmpty()) {
                     components.add(LegacyComponentSerializer.legacySection().deserialize(beforeButton));
                 }
@@ -190,14 +190,20 @@ public class Utils {
         String hoverText = null;
         String clickEvent = null;
 
-        String[] parts = buttonContent.split(";");
-        for (String part : parts) {
+        ObjectList<String> parts = getParts(buttonContent);
+
+        for (int i = 0; i < parts.size(); i++) {
+            String part = parts.get(i);
             if (part.startsWith(HOVER_TEXT_PREFIX)) {
                 hoverText = extractValue(part, HOVER_TEXT_PREFIX, "}");
             } else if (part.startsWith(CLICK_EVENT_PREFIX)) {
                 clickEvent = extractValue(part, CLICK_EVENT_PREFIX, "}");
             } else {
-                buttonText = part;
+                if (buttonText == null) {
+                    buttonText = part;
+                } else {
+                    throw new IllegalArgumentException("Некорректный формат кнопки: несколько текстовых частей.");
+                }
             }
         }
 
@@ -218,6 +224,25 @@ public class Utils {
         return buttonComponent;
     }
 
+    private ObjectList<String> getParts(String buttonContent) {
+        ObjectList<String> parts = new ObjectArrayList<>();
+        int start = 0;
+        int depth = 0;
+        for (int i = 0; i < buttonContent.length(); i++) {
+            char c = buttonContent.charAt(i);
+            if (c == '{') {
+                depth++;
+            } else if (c == '}') {
+                depth--;
+            } else if (c == ';' && depth == 0) {
+                parts.add(buttonContent.substring(start, i).trim());
+                start = i + 1;
+            }
+        }
+        parts.add(buttonContent.substring(start).trim());
+        return parts;
+    }
+
     public String extractValue(String message, String prefix, String suffix) {
         int startIndex = message.indexOf(prefix);
         if (startIndex != -1) {
@@ -230,9 +255,27 @@ public class Utils {
         return null;
     }
 
-    public String extractMessage(String message, String[] markers, boolean removeMarkers) {
+    public String extractMessage(String message, String[] markers) {
+        String baseMessage = getBaseMessage(message, markers);
+
+        for (int i = 0; i < markers.length; i++) {
+            String marker = markers[i];
+            int startIndex = message.indexOf(marker);
+            if (startIndex != -1) {
+                int endIndexMarker = findClosingBracket(message, startIndex + marker.length() - 1);
+                if (endIndexMarker != -1) {
+                    message = message.substring(0, startIndex).trim() + " " + message.substring(endIndexMarker + 1).trim();
+                }
+            }
+        }
+
+        return baseMessage.trim();
+    }
+
+    private String getBaseMessage(String message, String[] markers) {
         IntList indices = new IntArrayList();
-        for (String marker : markers) {
+        for (int i = 0; i < markers.length; i++) {
+            String marker = markers[i];
             int index = message.indexOf(marker);
             if (index != -1) {
                 indices.add(index);
@@ -240,21 +283,7 @@ public class Utils {
         }
         int endIndex = indices.isEmpty() ? message.length() : Collections.min(indices);
 
-        String baseMessage = message.substring(0, endIndex).trim();
-
-        if (removeMarkers) {
-            for (String marker : markers) {
-                int startIndex = message.indexOf(marker);
-                if (startIndex != -1) {
-                    int endIndexMarker = findClosingBracket(message, startIndex + marker.length() - 1);
-                    if (endIndexMarker != -1) {
-                        message = message.substring(0, startIndex).trim() + " " + message.substring(endIndexMarker + 1).trim();
-                    }
-                }
-            }
-        }
-
-        return baseMessage.trim();
+        return message.substring(0, endIndex).trim();
     }
 
     public Component createHoverEvent(Component message, String hoverText) {

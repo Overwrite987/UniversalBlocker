@@ -167,7 +167,7 @@ public class SyntaxBlocker implements Listener {
     }
 
     private void logAction(Action action, String[] replacementList) {
-        String logMessage = Utils.extractMessage(action.context(), Utils.FILE_MARKER, true);
+        String logMessage = Utils.extractMessage(action.context(), Utils.FILE_MARKER);
         String file = Utils.extractValue(action.context(), Utils.FILE_PREFIX, "}");
         plugin.logAction(Utils.replaceEach(logMessage, searchList, replacementList), file);
     }
@@ -199,7 +199,7 @@ public class SyntaxBlocker implements Listener {
     private void sendNotifySoundAsync(Action action) {
         runner.runAsync(() -> {
             String perm = getActionPermission(action, "ublocker.admin");
-            String[] sound = Utils.extractMessage(action.context(), Utils.PERM_MARKER, true).split(";");
+            String[] sound = Utils.extractMessage(action.context(), Utils.PERM_MARKER).split(";");
 
             Bukkit.getOnlinePlayers().stream()
                     .filter(player -> player.hasPermission(perm))
