@@ -160,6 +160,9 @@ public final class UniversalBlocker extends JavaPlugin {
             if (pluginConfig.getNumberCheckSettings() != null) {
                 pm.registerEvents(new NumbersCheck(this), this);
             }
+            if (pluginConfig.getSameMessagesSettings() != null) {
+                pm.registerEvents(new SameMessageLimiter(this), this);
+            }
         }
         if (settings.getBoolean("enable_symbol_module")) {
             pluginConfig.setupSymbols(path);

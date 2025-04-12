@@ -11,6 +11,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.configuration.Config;
 import ru.overwrite.ublocker.configuration.data.BanWordsSettings;
+import ru.overwrite.ublocker.configuration.data.CancellationSettings;
 import ru.overwrite.ublocker.utils.Utils;
 
 import java.util.regex.Matcher;
@@ -42,9 +43,9 @@ public class BanWords implements Listener {
                     if (message.contains(banword)) {
                         if (banWordsSettings.block()) {
                             e.setCancelled(true);
-                            executeBlockActions(p, banword, message, banWordsSettings);
+                            executeBlockActions(p, banword, message, banWordsSettings.cancellationSettings());
                         } else {
-                            notifyAdmins(p, banword, message, banWordsSettings);
+                            notifyAdmins(p, banword, message, banWordsSettings.cancellationSettings());
                             String censored = "*".repeat(banword.length());
                             e.setMessage(message.replace(banword, censored));
                         }
@@ -58,9 +59,9 @@ public class BanWords implements Listener {
                     if (matcher.find()) {
                         if (banWordsSettings.block()) {
                             e.setCancelled(true);
-                            executeBlockActions(p, matcher.group(), message, banWordsSettings);
+                            executeBlockActions(p, matcher.group(), message, banWordsSettings.cancellationSettings());
                         } else {
-                            notifyAdmins(p, matcher.group(), message, banWordsSettings);
+                            notifyAdmins(p, matcher.group(), message, banWordsSettings.cancellationSettings());
                             String censored = "*".repeat(matcher.group().length());
                             e.setMessage(message.replace(matcher.group(), censored));
                         }
@@ -71,30 +72,26 @@ public class BanWords implements Listener {
         }
     }
 
-    private void executeBlockActions(Player p, String banword, String message, BanWordsSettings banWordsSettings) {
-        p.sendMessage(banWordsSettings.message().replace("%word%", banword));
-        if (banWordsSettings.enableSounds()) {
-            Utils.sendSound(banWordsSettings.sound(), p);
-        }
-        notifyAdmins(p, banword, message, banWordsSettings);
+    private void executeBlockActions(Player p, String banword, String message, CancellationSettings cancellationSettings) {
+        p.sendMessage(cancellationSettings.message().replace("%word%", banword));
+        Utils.sendSound(cancellationSettings.sound(), p);
+        notifyAdmins(p, banword, message, cancellationSettings);
     }
 
     private final String[] searchList = {"%player%", "%word%", "%msg%"};
 
-    private void notifyAdmins(Player p, String banword, String message, BanWordsSettings banWordsSettings) {
-        if (banWordsSettings.notifyEnabled()) {
+    private void notifyAdmins(Player p, String banword, String message, CancellationSettings cancellationSettings) {
+        if (cancellationSettings.notifyEnabled()) {
             String[] replacementList = {p.getName(), banword, message};
 
-            String formattedMessage = Utils.replaceEach(banWordsSettings.notifyMessage(), searchList, replacementList);
+            String formattedMessage = Utils.replaceEach(cancellationSettings.notifyMessage(), searchList, replacementList);
 
             Component component = Utils.parseMessage(formattedMessage, Utils.NOTIFY_MARKERS);
 
             for (Player admin : Bukkit.getOnlinePlayers()) {
                 if (admin.hasPermission("ublocker.admin")) {
                     admin.sendMessage(component);
-                    if (banWordsSettings.notifySoundsEnabled()) {
-                        Utils.sendSound(banWordsSettings.notifySound(), admin);
-                    }
+                    Utils.sendSound(cancellationSettings.notifySound(), admin);
                 }
             }
             if (plugin.getPluginMessage() != null) {

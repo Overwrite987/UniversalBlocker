@@ -62,6 +62,9 @@ public class Utils {
     }
 
     public void sendTitleMessage(@NotNull String[] titleMessages, @NotNull Player p) {
+        if (titleMessages.length == 0) {
+            return;
+        }
         if (titleMessages.length > 5) {
             Bukkit.getConsoleSender().sendMessage("Unable to send title. " + Arrays.toString(titleMessages));
             return;
@@ -75,6 +78,9 @@ public class Utils {
     }
 
     public void sendSound(@NotNull String[] soundArgs, @NotNull Player p) {
+        if (soundArgs.length == 0) {
+            return;
+        }
         if (soundArgs.length > 3) {
             Bukkit.getConsoleSender().sendMessage("Unable to send sound. " + Arrays.toString(soundArgs));
             return;

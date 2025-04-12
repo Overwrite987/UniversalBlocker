@@ -10,12 +10,6 @@ public record BanWordsSettings(
         Set<String> banWordsString,
         Set<Pattern> banWordsPattern,
         boolean block,
-        String message,
-        boolean enableSounds,
-        String[] sound,
-        boolean notifyEnabled,
-        String notifyMessage,
-        boolean notifySoundsEnabled,
-        String[] notifySound
+        CancellationSettings cancellationSettings
 ) {
 }

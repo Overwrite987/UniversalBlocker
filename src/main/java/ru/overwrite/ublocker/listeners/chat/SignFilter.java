@@ -23,12 +23,11 @@ public class SignFilter implements Listener {
 
     private final UniversalBlocker plugin;
     private final Config pluginConfig;
-    private final Runner runner;
+    private final String[] searchList = {"%player%", "%symbol%", "%msg%"};
 
     public SignFilter(UniversalBlocker plugin) {
         this.plugin = plugin;
         this.pluginConfig = plugin.getPluginConfig();
-        this.runner = plugin.getRunner();
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -48,45 +47,11 @@ public class SignFilter implements Listener {
             if (message == null || message.isBlank())
                 continue;
             if (containsBlockedChars(message, signCharsSettings)) {
-                cancelSignEvent(p, message, e, signCharsSettings);
+                String[] replacementList = {p.getName(), getFirstBlockedChar(message, signCharsSettings)};
+                BlockingUtils.cancelEvent(p, searchList, replacementList, e, signCharsSettings.cancellationSettings(), plugin.getPluginMessage());
             }
             break;
         }
-    }
-
-    private final String[] searchList = {"%player%", "%symbol%", "%msg%"};
-
-    private void cancelSignEvent(Player p, String message, Cancellable e, SignCharsSettings settings) {
-        e.setCancelled(true);
-        runner.runAsync(() -> {
-            p.sendMessage(settings.message());
-
-            if (settings.enableSounds()) {
-                Utils.sendSound(settings.sound(), p);
-            }
-
-            if (settings.notifyEnabled()) {
-                String[] replacementList = {p.getName(), getFirstBlockedChar(message, settings), message};
-
-                String formattedMessage = Utils.replaceEach(settings.notifyMessage(), searchList, replacementList);
-
-                Component component = Utils.parseMessage(formattedMessage, Utils.NOTIFY_MARKERS);
-
-                for (Player admin : Bukkit.getOnlinePlayers()) {
-                    if (admin.hasPermission("ublocker.admin")) {
-                        admin.sendMessage(component);
-                        if (settings.notifySoundsEnabled()) {
-                            Utils.sendSound(settings.notifySound(), admin);
-                        }
-                    }
-                }
-
-                if (plugin.getPluginMessage() != null) {
-                    String gsonMessage = GsonComponentSerializer.gson().serialize(component);
-                    plugin.getPluginMessage().sendCrossProxyBasic(p, gsonMessage);
-                }
-            }
-        });
     }
 
     private boolean containsBlockedChars(String message, SignCharsSettings settings) {
