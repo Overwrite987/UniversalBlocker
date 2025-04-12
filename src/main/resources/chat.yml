@@ -15,14 +15,12 @@ chat_settings:
     pattern: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ ~`1!2@3#4$5%6^7&§89(0)-_=+*|[{]}\;:"',<.>/?!№
     message: '&7&l(&c&l!&7&l) &cВаше сообщение содержит запрещенные символы'
     # Настройка звука, который будет проигрываться при нарушении
-    sound:
-      value: ENTITY_ITEM_BREAK;1.0;1.0 # ID:громкость:тон
+    sound: ENTITY_ITEM_BREAK;1.0;1.0 # ID:громкость:тон
     # Настройка оповещений для администрации
     notify:
       enable: true
       message: '&7&l(&c&l!&7&l) &cИгрок &3%player% &cиспользовал запрещеннный символ в чате &8(&4%symbol%&8) hoverText={&7Сообщение игрока: &c%msg%}'
-      sound:
-        value: BLOCK_NOTE_BLOCK_PLING;1.0;1.0
+      sound: BLOCK_NOTE_BLOCK_PLING;1.0;1.0
   # Какие символы можно писать в книге
   # Плейсхолдеры: 
   ## %symbol% - заблокированный символ (если таких символов много - отобразится только первый заблокированный)
@@ -33,13 +31,11 @@ chat_settings:
     mode: PATTERN
     pattern: "[A-Za-zА-Яа-я,!?\\s]+"
     message: '&7&l(&c&l!&7&l) &cВ книге нельзя писать символы, которых нет на клавиатуре'
-    sound:
-      value: ENTITY_ITEM_BREAK;1.0;1.0
+    sound: ENTITY_ITEM_BREAK;1.0;1.0
     notify:
       enable: true
       message: '&7&l(&c&l!&7&l) &cИгрок &3%player% &cпытался написать запрещенные символы в книге &8(&4%symbol%&8).'
-      sound:
-        value: BLOCK_NOTE_BLOCK_PLING;1.0;1.0
+      sound: BLOCK_NOTE_BLOCK_PLING;1.0;1.0
   # Какие символы можно писать на табличке
   # Плейсхолдеры: 
   ## %symbol% - заблокированный символ (если таких символов много - отобразится только первый заблокированный)
@@ -50,13 +46,11 @@ chat_settings:
     mode: PATTERN
     pattern: "[A-Za-zА-Яа-я,!?\\s]+"
     message: '&7&l(&c&l!&7&l) &cНа табличке нельзя писать символы, которых нет на клавиатуре'
-    sound:
-      value: ENTITY_ITEM_BREAK;1.0;1.0
+    sound: ENTITY_ITEM_BREAK;1.0;1.0
     notify:
       enable: true
       message: '&7&l(&c&l!&7&l) &cИгрок &3%player% &cпытался написать запрещенные символы на табличке &8(&4%symbol%&8).'
-      sound:
-        value: BLOCK_NOTE_BLOCK_PLING;1.0;1.0
+      sound: BLOCK_NOTE_BLOCK_PLING;1.0;1.0
   # Какие символы можно писать командах
   # Плейсхолдеры: 
   ## %symbol% - заблокированный символ (если таких символов много - отобразится только первый заблокированный)
@@ -67,13 +61,11 @@ chat_settings:
     mode: STRING
     pattern: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ ~`1!2@3#4$5%6^7&§89(0)-_=+*|[{]}\;:"',<.>/?!№
     message: '&7&l(&c&l!&7&l) &cНа табличке нельзя писать символы, которых нет на клавиатуре'
-    sound:
-      value: ENTITY_ITEM_BREAK;1.0;1.0
+    sound: ENTITY_ITEM_BREAK;1.0;1.0
     notify:
       enable: true
       message: '&7&l(&c&l!&7&l) &cИгрок &3%player% &cпытался написать запрещенные символы в команде &8(&4%symbol%&8). hoverText={&7Сообщение игрока: &c%msg%}'
-      sound:
-        value: BLOCK_NOTE_BLOCK_PLING;1.0;1.0
+      sound: BLOCK_NOTE_BLOCK_PLING;1.0;1.0
   # Максимальное кол_во цифр в сообщении
   # Плейсхолдеры: 
   ## %limit% - лимит цифр
@@ -88,13 +80,11 @@ chat_settings:
     # Если отключено _ плагин будет блокировать только попытки написать IP (по типу 228.13.37.69 _ число цифр в IP 11, а разрешено 7)
     strict: true
     message: '&7&l(&c&l!&7&l) &eМаксимальное кол_во цифр в сообщении &a%limit%'
-    sound:
-      value: ENTITY_ITEM_BREAK;1.0;1.0
+    sound: ENTITY_ITEM_BREAK;1.0;1.0
     notify:
       enable: true
       message: '&7&l(&c&l!&7&l) &cИгрок &3%player% &cпытался написать более 7 цифр в сообщении. hoverText={&7Сообщение игрока: &c%msg%}'
-      sound:
-        value: BLOCK_NOTE_BLOCK_PLING;1.0;1.0
+      sound: BLOCK_NOTE_BLOCK_PLING;1.0;1.0
   # Запрещенные слова в чате.
   # Плейсхолдеры: 
   ## %word% - заблокированное слово
@@ -119,13 +109,11 @@ chat_settings:
       - '.me'
       - '.org'
     message: '&7&l(&c&l!&7&l) &3Нельзя использовать слово &4%word%'
-    sound:
-      value: ENTITY_ITEM_BREAK;1.0;1.0
+    sound: ENTITY_ITEM_BREAK;1.0;1.0
     notify:
       enable: true
       message: '&7&l(&c&l!&7&l) &cИгрок &3%player% &cиспользовал запрещенное слово &8(&4%word%&8) hoverText={&7Полное сообщение: &4%msg%}'
-      sound:
-        value: BLOCK_NOTE_BLOCK_PLING;1.0;1.0
+      sound: BLOCK_NOTE_BLOCK_PLING;1.0;1.0
   # Лимитёр однотипных сообщений
   # Плейсхолдеры:
   ## %msg% - полное сообщение
@@ -140,10 +128,8 @@ chat_settings:
     # Насколько % должны совпадать сообщения?
     same_percents: 70
     message: '&7&l(&c&l!&7&l) &3Нельзя спамить однотипными сообщениями.'
-    sound:
-      value: ENTITY_ITEM_BREAK;1.0;1.0
+    sound: ENTITY_ITEM_BREAK;1.0;1.0
     notify:
       enable: true
       message: '&7&l(&c&l!&7&l) &cИгрок &3%player% &cпопытался спамить однотипным сообщением. hoverText={&7Полное сообщение: &4%msg%}'
-      sound:
-        value: BLOCK_NOTE_BLOCK_PLING;1.0;1.0
+      sound: BLOCK_NOTE_BLOCK_PLING;1.0;1.0

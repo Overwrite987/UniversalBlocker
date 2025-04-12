@@ -70,14 +70,12 @@ public class Config {
         }
 
         String message = Utils.COLORIZER.colorize(allowedChars.getString("message"));
-
-        final ConfigurationSection allowedChatCharsSound = allowedChars.getConfigurationSection("sound");
-        String[] sound = allowedChatCharsSound.getString("value").split(";");
+        String[] sound = allowedChars.getString("sound", "ENTITY_ITEM_BREAK;1.0;1.0").split(";");
 
         final ConfigurationSection allowedChatCharsNotify = allowedChars.getConfigurationSection("notify");
         boolean notifyEnabled = allowedChatCharsNotify.getBoolean("enable");
         String notifyMessage = Utils.COLORIZER.colorize(allowedChatCharsNotify.getString("message"));
-        String[] notifySound = allowedChatCharsNotify.getString("sound.value").split(";");
+        String[] notifySound = allowedChatCharsNotify.getString("sound", "BLOCK_NOTE_BLOCK_PLING;1.0;1.0").split(";");
 
         BlockType mode = BlockType.valueOf(allowedChars.getString("mode").toUpperCase());
         CharSet charSet = null;
@@ -113,14 +111,12 @@ public class Config {
         }
 
         String message = Utils.COLORIZER.colorize(allowedBookChars.getString("message"));
-
-        final ConfigurationSection allowedBookCharsSound = allowedBookChars.getConfigurationSection("sound");
-        String[] sound = allowedBookCharsSound.getString("value").split(";");
+        String[] sound = allowedBookChars.getString("sound", "ENTITY_ITEM_BREAK;1.0;1.0").split(";");
 
         final ConfigurationSection allowedBookCharsNotify = allowedBookChars.getConfigurationSection("notify");
         boolean notifyEnabled = allowedBookCharsNotify.getBoolean("enable");
         String notifyMessage = Utils.COLORIZER.colorize(allowedBookCharsNotify.getString("message"));
-        String[] notifySound = allowedBookCharsNotify.getString("sound.value").split(";");
+        String[] notifySound = allowedBookCharsNotify.getString("sound", "BLOCK_NOTE_BLOCK_PLING;1.0;1.0").split(";");
 
         BlockType mode = BlockType.valueOf(allowedBookChars.getString("mode").toUpperCase());
         CharSet charSet = null;
@@ -156,14 +152,12 @@ public class Config {
         }
 
         String message = Utils.COLORIZER.colorize(allowedSignChars.getString("message"));
-
-        final ConfigurationSection allowedSignCharsSound = allowedSignChars.getConfigurationSection("sound");
-        String[] sound = allowedSignCharsSound.getString("value").split(";");
+        String[] sound = allowedSignChars.getString("sound", "ENTITY_ITEM_BREAK;1.0;1.0").split(";");
 
         final ConfigurationSection allowedSignCharsNotify = allowedSignChars.getConfigurationSection("notify");
         boolean notifyEnabled = allowedSignCharsNotify.getBoolean("enable");
         String notifyMessage = Utils.COLORIZER.colorize(allowedSignCharsNotify.getString("message"));
-        String[] notifySound = allowedSignCharsNotify.getString("sound.value").split(";");
+        String[] notifySound = allowedSignCharsNotify.getString("sound", "BLOCK_NOTE_BLOCK_PLING;1.0;1.0").split(";");
 
         BlockType mode = BlockType.valueOf(allowedSignChars.getString("mode").toUpperCase());
         CharSet charSet = null;
@@ -199,14 +193,12 @@ public class Config {
         }
 
         String message = Utils.COLORIZER.colorize(allowedCommandChars.getString("message"));
-
-        final ConfigurationSection allowedCommandCharsSound = allowedCommandChars.getConfigurationSection("sound");
-        String[] sound = allowedCommandCharsSound.getString("value").split(";");
+        String[] sound = allowedCommandChars.getString("sound", "ENTITY_ITEM_BREAK;1.0;1.0").split(";");
 
         final ConfigurationSection allowedCommandCharsNotify = allowedCommandChars.getConfigurationSection("notify");
         boolean notifyEnabled = allowedCommandCharsNotify.getBoolean("enable");
         String notifyMessage = Utils.COLORIZER.colorize(allowedCommandCharsNotify.getString("message"));
-        String[] notifySound = allowedCommandCharsNotify.getString("sound.value").split(";");
+        String[] notifySound = allowedCommandCharsNotify.getString("sound", "BLOCK_NOTE_BLOCK_PLING;1.0;1.0").split(";");
 
         BlockType mode = BlockType.valueOf(allowedCommandChars.getString("mode").toUpperCase());
         CharSet charSet = null;
@@ -245,14 +237,12 @@ public class Config {
         boolean strictCheck = numbersCheck.getBoolean("strict");
 
         String message = Utils.COLORIZER.colorize(numbersCheck.getString("message"));
-
-        final ConfigurationSection numbersCheckSound = numbersCheck.getConfigurationSection("sound");
-        String[] sound = numbersCheckSound.getString("value").split(";");
+        String[] sound = numbersCheck.getString("sound", "ENTITY_ITEM_BREAK;1.0;1.0").split(";");
 
         final ConfigurationSection numbersCheckNotify = numbersCheck.getConfigurationSection("notify");
         boolean notifyEnabled = numbersCheckNotify.getBoolean("enable");
         String notifyMessage = Utils.COLORIZER.colorize(numbersCheckNotify.getString("message"));
-        String[] notifySound = numbersCheckNotify.getString("sound.value").split(";");
+        String[] notifySound = numbersCheckNotify.getString("sound", "BLOCK_NOTE_BLOCK_PLING;1.0;1.0").split(";");
 
         this.numberCheckSettings = new NumberCheckSettings(
                 maxNumbers,
@@ -298,14 +288,12 @@ public class Config {
         boolean block = banWords.getBoolean("block");
 
         String message = Utils.COLORIZER.colorize(banWords.getString("message"));
-
-        final ConfigurationSection banWordsSound = banWords.getConfigurationSection("sound");
-        String[] sound = banWordsSound.getString("value").split(";");
+        String[] sound = banWords.getString("sound", "ENTITY_ITEM_BREAK;1.0;1.0").split(";");
 
         final ConfigurationSection banWordsNotify = banWords.getConfigurationSection("notify");
         boolean notifyEnabled = banWordsNotify.getBoolean("enable");
         String notifyMessage = Utils.COLORIZER.colorize(banWordsNotify.getString("message"));
-        String[] notifySound = banWordsNotify.getString("sound.value").split(";");
+        String[] notifySound = banWordsNotify.getString("sound", "BLOCK_NOTE_BLOCK_PLING;1.0;1.0").split(";");
 
         this.banWordsSettings = new BanWordsSettings(
                 mode,
@@ -338,14 +326,12 @@ public class Config {
         int samePercents = sameMessages.getInt("same_percents");
 
         String message = Utils.COLORIZER.colorize(sameMessages.getString("message"));
-
-        final ConfigurationSection sameMessagesSound = sameMessages.getConfigurationSection("sound");
-        String[] sound = sameMessagesSound.getString("value").split(";");
+        String[] sound = sameMessages.getString("sound", "ENTITY_ITEM_BREAK;1.0;1.0").split(";");
 
         final ConfigurationSection sameMessagesNotify = sameMessages.getConfigurationSection("notify");
         boolean notifyEnabled = sameMessagesNotify.getBoolean("enable");
         String notifyMessage = Utils.COLORIZER.colorize(sameMessagesNotify.getString("message"));
-        String[] notifySound = sameMessagesNotify.getString("sound.value").split(";");
+        String[] notifySound = sameMessagesNotify.getString("sound", "BLOCK_NOTE_BLOCK_PLING;1.0;1.0").split(";");
 
         this.sameMessagesSettings = new SameMessagesSettings(
                 maxSameMessage,
