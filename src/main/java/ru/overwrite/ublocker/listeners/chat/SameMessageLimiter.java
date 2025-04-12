@@ -48,7 +48,6 @@ public class SameMessageLimiter implements Listener {
                 int similarity = getSimilarityPercent(lastMessage, newMessage);
                 isSame = similarity >= sameMessagesSettings.samePercents();
             }
-            System.out.println(isSame);
 
             if (isSame) {
                 int count = repeatCounter.getOrDefault(name, 1);
