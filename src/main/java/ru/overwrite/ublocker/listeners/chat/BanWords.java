@@ -41,14 +41,7 @@ public class BanWords implements Listener {
             case STRING: {
                 for (String banword : banWordsSettings.banWordsString()) {
                     if (message.contains(banword)) {
-                        if (banWordsSettings.block()) {
-                            e.setCancelled(true);
-                            executeBlockActions(p, banword, message, banWordsSettings.cancellationSettings());
-                        } else {
-                            notifyAdmins(p, banword, message, banWordsSettings.cancellationSettings());
-                            String censored = "*".repeat(banword.length());
-                            e.setMessage(message.replace(banword, censored));
-                        }
+                        blockBanWord(p, banword, message, e, banWordsSettings);
                     }
                 }
                 break;
@@ -57,18 +50,22 @@ public class BanWords implements Listener {
                 for (Pattern banword : banWordsSettings.banWordsPattern()) {
                     Matcher matcher = banword.matcher(message);
                     if (matcher.find()) {
-                        if (banWordsSettings.block()) {
-                            e.setCancelled(true);
-                            executeBlockActions(p, matcher.group(), message, banWordsSettings.cancellationSettings());
-                        } else {
-                            notifyAdmins(p, matcher.group(), message, banWordsSettings.cancellationSettings());
-                            String censored = "*".repeat(matcher.group().length());
-                            e.setMessage(message.replace(matcher.group(), censored));
-                        }
+                        blockBanWord(p, matcher.group(), message, e, banWordsSettings);
                     }
                 }
                 break;
             }
+        }
+    }
+
+    private void blockBanWord(Player p, String banword, String message, AsyncPlayerChatEvent e, BanWordsSettings banWordsSettings) {
+        if (banWordsSettings.block()) {
+            e.setCancelled(true);
+            executeBlockActions(p, banword, message, banWordsSettings.cancellationSettings());
+        } else {
+            notifyAdmins(p, banword, message, banWordsSettings.cancellationSettings());
+            String censored = "*".repeat(banword.length());
+            e.setMessage(message.replace(banword, censored));
         }
     }
 
