@@ -176,8 +176,9 @@ public class Utils {
 
     private int findClosingBracket(String message, int startIndex) {
         int depth = 0;
-        for (int i = startIndex; i < message.length(); i++) {
-            char currentChar = message.charAt(i);
+        char[] chars = message.toCharArray();
+        for (int i = startIndex; i < chars.length; i++) {
+            char currentChar = chars[i];
             if (currentChar == '{') {
                 depth++;
             } else if (currentChar == '}') {
