@@ -1,8 +1,6 @@
 package ru.overwrite.ublocker.utils;
 
 import it.unimi.dsi.fastutil.chars.CharSet;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import lombok.experimental.UtilityClass;
@@ -23,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.function.Consumer;
 
 @UtilityClass
@@ -266,8 +263,7 @@ public class Utils {
     public String extractMessage(String message, String[] markers) {
         String baseMessage = getBaseMessage(message, markers);
 
-        for (int i = 0; i < markers.length; i++) {
-            String marker = markers[i];
+        for (String marker : markers) {
             int startIndex = message.indexOf(marker);
             if (startIndex != -1) {
                 int endIndexMarker = findClosingBracket(message, startIndex + marker.length() - 1);
@@ -281,17 +277,19 @@ public class Utils {
     }
 
     private String getBaseMessage(String message, String[] markers) {
-        IntList indices = new IntArrayList();
-        for (int i = 0; i < markers.length; i++) {
-            String marker = markers[i];
-            int index = message.indexOf(marker);
-            if (index != -1) {
-                indices.add(index);
+        int endIndex = message.length();
+
+        for (String marker : markers) {
+            int idx = message.indexOf(marker);
+            if (idx != -1 && idx < endIndex) {
+                endIndex = idx;
+                if (endIndex == 0) break;
             }
         }
-        int endIndex = indices.isEmpty() ? message.length() : Collections.min(indices);
 
-        return message.substring(0, endIndex).trim();
+        return endIndex == 0
+                ? ""
+                : message.substring(0, endIndex).trim();
     }
 
     public Component createHoverEvent(Component message, String hoverText) {
@@ -323,15 +321,11 @@ public class Utils {
     }
 
     private boolean isValidColorCharacter(char c) {
-        return (c >= '0' && c <= '9') ||
-                (c >= 'a' && c <= 'f') ||
-                c == 'r' ||
-                (c >= 'k' && c <= 'o') ||
-                c == 'x' ||
-                (c >= 'A' && c <= 'F') ||
-                c == 'R' ||
-                (c >= 'K' && c <= 'O') ||
-                c == 'X';
+        return switch (c) {
+            case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'A', 'B', 'C', 'D',
+                 'E', 'F', 'r', 'R', 'k', 'K', 'l', 'L', 'm', 'M', 'n', 'N', 'o', 'O', 'x', 'X' -> true;
+            default -> false;
+        };
     }
 
     public String cutCommand(String str) {
