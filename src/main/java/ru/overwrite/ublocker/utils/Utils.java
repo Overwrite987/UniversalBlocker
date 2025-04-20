@@ -62,7 +62,7 @@ public class Utils {
     }
 
     public void sendTitleMessage(@NotNull String[] titleMessages, @NotNull Player p) {
-        if (titleMessages.length == 0) {
+        if (titleMessages[0].isEmpty()) {
             return;
         }
         if (titleMessages.length > 5) {
@@ -78,7 +78,7 @@ public class Utils {
     }
 
     public void sendSound(@NotNull String[] soundArgs, @NotNull Player p) {
-        if (soundArgs.length == 0) {
+        if (soundArgs[0].isEmpty()) {
             return;
         }
         if (soundArgs.length > 3) {
@@ -234,8 +234,9 @@ public class Utils {
         ObjectList<String> parts = new ObjectArrayList<>();
         int start = 0;
         int depth = 0;
-        for (int i = 0; i < buttonContent.length(); i++) {
-            char c = buttonContent.charAt(i);
+        char[] chars = buttonContent.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            char c = chars[i];
             if (c == '{') {
                 depth++;
             } else if (c == '}') {
