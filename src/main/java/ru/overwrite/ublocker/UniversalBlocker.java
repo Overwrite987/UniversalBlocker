@@ -209,8 +209,9 @@ public final class UniversalBlocker extends JavaPlugin {
             server.shutdown();
         }
         if (pluginMessage != null) {
-            server.getMessenger().unregisterOutgoingPluginChannel(this);
-            server.getMessenger().unregisterIncomingPluginChannel(this);
+            Messenger messenger = server.getMessenger();
+            messenger.unregisterOutgoingPluginChannel(this);
+            messenger.unregisterIncomingPluginChannel(this);
         }
     }
 }

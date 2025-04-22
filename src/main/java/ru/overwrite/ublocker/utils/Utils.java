@@ -338,10 +338,10 @@ public class Utils {
     }
 
     public Character getFirstBlockedChar(String str, CharSet charSet) {
-        for (int i = 0; i < str.length(); i++) {
-            char charAt = str.charAt(i);
-            if (!charSet.contains(charAt)) {
-                return charAt;
+        char[] chars = str.toCharArray();
+        for (char c : chars) {
+            if (!charSet.contains(c)) {
+                return c;
             }
         }
         return null;
