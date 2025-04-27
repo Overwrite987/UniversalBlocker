@@ -4,10 +4,10 @@ author: OverwriteMC
 version: '${project.version}'
 api-version: 1.16
 folia-supported: true
-softdepend: [WorldGuard]
+softdepend: [ WorldGuard ]
 commands:
   universalblocker:
-    aliases: [ublocker, ub]
+    aliases: [ ublocker, ub ]
 permissions:
   ublocker.bypass.*:
     children:
@@ -20,3 +20,4 @@ permissions:
       ublocker.bypass.commands: true
       ublocker.bypass.symbols: true
       ublocker.bypass.samemessage: true
+      ublocker.bypass.case: true

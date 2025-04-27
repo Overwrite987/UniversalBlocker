@@ -142,14 +142,11 @@ public final class UniversalBlocker extends JavaPlugin {
     public void registerEvents(PluginManager pm, ConfigurationSection settings) {
         if (settings.getBoolean("enable_chat_module")) {
             pluginConfig.setupChat(path);
-            if (pluginConfig.getBanWordsSettings() != null) {
-                pm.registerEvents(new BanWords(this), this);
+            if (pluginConfig.getChatCharsSettings() != null) {
+                pm.registerEvents(new ChatFilter(this), this);
             }
             if (pluginConfig.getBookCharsSettings() != null) {
                 pm.registerEvents(new BookChecker(this), this);
-            }
-            if (pluginConfig.getChatCharsSettings() != null) {
-                pm.registerEvents(new ChatFilter(this), this);
             }
             if (pluginConfig.getSignCharsSettings() != null) {
                 pm.registerEvents(new SignFilter(this), this);
@@ -160,8 +157,14 @@ public final class UniversalBlocker extends JavaPlugin {
             if (pluginConfig.getNumberCheckSettings() != null) {
                 pm.registerEvents(new NumbersCheck(this), this);
             }
+            if (pluginConfig.getCaseCheckSettings() != null) {
+                pm.registerEvents(new CaseCheck(this), this);
+            }
             if (pluginConfig.getSameMessagesSettings() != null) {
                 pm.registerEvents(new SameMessageLimiter(this), this);
+            }
+            if (pluginConfig.getBanWordsSettings() != null) {
+                pm.registerEvents(new BanWords(this), this);
             }
         }
         if (settings.getBoolean("enable_symbol_module")) {

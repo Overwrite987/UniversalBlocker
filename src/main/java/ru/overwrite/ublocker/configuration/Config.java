@@ -54,8 +54,9 @@ public class Config {
         setupSignChars(settings.getConfigurationSection("allowed_sign_chars"));
         setupCommandChars(settings.getConfigurationSection("allowed_command_chars"));
         setupNumberCheck(settings.getConfigurationSection("numbers_check"));
-        setupBanWords(settings.getConfigurationSection("ban_words_chat"));
+        setupCaseCheck(settings.getConfigurationSection("case_check"));
         setupSameMessages(settings.getConfigurationSection("same_messages"));
+        setupBanWords(settings.getConfigurationSection("ban_words_chat"));
     }
 
     private ChatCharsSettings chatCharsSettings;
@@ -257,6 +258,78 @@ public class Config {
         );
     }
 
+    private CaseCheckSettings caseCheckSettings;
+
+    private void setupCaseCheck(ConfigurationSection caseCheck) {
+        if (isNullSection(caseCheck)) {
+            return;
+        }
+
+        if (!caseCheck.getBoolean("enable")) {
+            return;
+        }
+
+        int maxUpperCasePercent = caseCheck.getInt("maxuppercasepercent");
+        boolean strictCheck = caseCheck.getBoolean("strict");
+        String message = Utils.COLORIZER.colorize(caseCheck.getString("message"));
+
+        String[] sound = caseCheck.getString("sound", "ENTITY_ITEM_BREAK;1.0;1.0").split(";");
+
+        ConfigurationSection caseCheckNotify = caseCheck.getConfigurationSection("notify");
+        boolean notifyEnabled = caseCheckNotify.getBoolean("enable");
+        String notifyMessage = Utils.COLORIZER.colorize(caseCheckNotify.getString("message"));
+        String[] notifySound = caseCheckNotify.getString("sound", "BLOCK_NOTE_BLOCK_PLING;1.0;1.0").split(";");
+
+        this.caseCheckSettings = new CaseCheckSettings(
+                maxUpperCasePercent,
+                strictCheck,
+                new CancellationSettings(
+                        message,
+                        sound,
+                        notifyEnabled,
+                        notifyMessage,
+                        notifySound
+                )
+        );
+    }
+
+    private SameMessagesSettings sameMessagesSettings;
+
+    private void setupSameMessages(ConfigurationSection sameMessages) {
+        if (isNullSection(sameMessages)) {
+            return;
+        }
+
+        if (!sameMessages.getBoolean("enable")) {
+            return;
+        }
+
+        int maxSameMessage = sameMessages.getInt("max_same_message");
+        boolean strict = sameMessages.getBoolean("strict");
+        int samePercents = sameMessages.getInt("same_percents");
+
+        String message = Utils.COLORIZER.colorize(sameMessages.getString("message"));
+        String[] sound = sameMessages.getString("sound", "ENTITY_ITEM_BREAK;1.0;1.0").split(";");
+
+        final ConfigurationSection sameMessagesNotify = sameMessages.getConfigurationSection("notify");
+        boolean notifyEnabled = sameMessagesNotify.getBoolean("enable");
+        String notifyMessage = Utils.COLORIZER.colorize(sameMessagesNotify.getString("message"));
+        String[] notifySound = sameMessagesNotify.getString("sound", "BLOCK_NOTE_BLOCK_PLING;1.0;1.0").split(";");
+
+        this.sameMessagesSettings = new SameMessagesSettings(
+                maxSameMessage,
+                strict,
+                samePercents,
+                new CancellationSettings(
+                        message,
+                        sound,
+                        notifyEnabled,
+                        notifyMessage,
+                        notifySound
+                )
+        );
+    }
+
     private BanWordsSettings banWordsSettings;
 
     private void setupBanWords(ConfigurationSection banWords) {
@@ -300,43 +373,6 @@ public class Config {
                 banWordsString,
                 banWordsPattern,
                 block,
-                new CancellationSettings(
-                        message,
-                        sound,
-                        notifyEnabled,
-                        notifyMessage,
-                        notifySound
-                )
-        );
-    }
-
-    private SameMessagesSettings sameMessagesSettings;
-
-    private void setupSameMessages(ConfigurationSection sameMessages) {
-        if (isNullSection(sameMessages)) {
-            return;
-        }
-
-        if (!sameMessages.getBoolean("enable")) {
-            return;
-        }
-
-        int maxSameMessage = sameMessages.getInt("max_same_message");
-        boolean strict = sameMessages.getBoolean("strict");
-        int samePercents = sameMessages.getInt("same_percents");
-
-        String message = Utils.COLORIZER.colorize(sameMessages.getString("message"));
-        String[] sound = sameMessages.getString("sound", "ENTITY_ITEM_BREAK;1.0;1.0").split(";");
-
-        final ConfigurationSection sameMessagesNotify = sameMessages.getConfigurationSection("notify");
-        boolean notifyEnabled = sameMessagesNotify.getBoolean("enable");
-        String notifyMessage = Utils.COLORIZER.colorize(sameMessagesNotify.getString("message"));
-        String[] notifySound = sameMessagesNotify.getString("sound", "BLOCK_NOTE_BLOCK_PLING;1.0;1.0").split(";");
-
-        this.sameMessagesSettings = new SameMessagesSettings(
-                maxSameMessage,
-                strict,
-                samePercents,
                 new CancellationSettings(
                         message,
                         sound,
