@@ -93,7 +93,9 @@ public class SameMessageLimiter implements Listener {
         int[] prev = new int[n + 1];
         int[] curr = new int[n + 1];
 
-        for (int j = 0; j <= n; j++) prev[j] = j;
+        for (int j = 0; j <= n; j++) {
+            prev[j] = j;
+        }
 
         for (int i = 1; i <= m; i++) {
             curr[0] = i;
