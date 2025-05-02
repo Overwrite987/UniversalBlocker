@@ -1,6 +1,5 @@
 package ru.overwrite.ublocker.listeners.chat;
 
-import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.configuration.Config;
 import ru.overwrite.ublocker.configuration.data.SameMessagesSettings;
+import ru.overwrite.ublocker.utils.objects.Pair;
 
 import java.util.Map;
 
