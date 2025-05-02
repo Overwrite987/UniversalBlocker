@@ -6,10 +6,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import ru.overwrite.ublocker.UniversalBlocker;
-import ru.overwrite.ublocker.configuration.Config;
 import ru.overwrite.ublocker.configuration.data.BanWordsSettings;
 import ru.overwrite.ublocker.configuration.data.CancellationSettings;
 import ru.overwrite.ublocker.utils.Utils;
@@ -17,25 +15,21 @@ import ru.overwrite.ublocker.utils.Utils;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BanWords implements Listener {
+public class BanWords extends ChatListener {
 
-    private final UniversalBlocker plugin;
-    private final Config pluginConfig;
+    private final String[] searchList = {"%player%", "%word%", "%msg%"};
 
     public BanWords(UniversalBlocker plugin) {
-        this.plugin = plugin;
-        this.pluginConfig = plugin.getPluginConfig();
+        super(plugin);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onChat(AsyncPlayerChatEvent e) {
-        BanWordsSettings banWordsSettings = pluginConfig.getBanWordsSettings();
-        if (banWordsSettings == null) return;
-
+    public void onBanWord(AsyncPlayerChatEvent e) {
         Player p = e.getPlayer();
-        if (plugin.isAdmin(p, "ublocker.bypass.banwords")) {
+        if (super.isAdmin(p, "ublocker.bypass.banwords")) {
             return;
         }
+        BanWordsSettings banWordsSettings = pluginConfig.getBanWordsSettings();
         String message = e.getMessage().toLowerCase();
         switch (banWordsSettings.mode()) {
             case STRING: {
@@ -74,8 +68,6 @@ public class BanWords implements Listener {
         Utils.sendSound(cancellationSettings.sound(), p);
         notifyAdmins(p, banword, message, cancellationSettings);
     }
-
-    private final String[] searchList = {"%player%", "%word%", "%msg%"};
 
     private void notifyAdmins(Player p, String banword, String message, CancellationSettings cancellationSettings) {
         if (cancellationSettings.notifyEnabled()) {

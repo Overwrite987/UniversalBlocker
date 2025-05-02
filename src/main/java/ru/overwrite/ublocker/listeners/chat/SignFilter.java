@@ -1,41 +1,30 @@
 package ru.overwrite.ublocker.listeners.chat;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 import ru.overwrite.ublocker.UniversalBlocker;
-import ru.overwrite.ublocker.configuration.Config;
 import ru.overwrite.ublocker.configuration.data.SignCharsSettings;
-import ru.overwrite.ublocker.task.Runner;
 import ru.overwrite.ublocker.utils.Utils;
 
 import java.util.function.Predicate;
 
-public class SignFilter implements Listener {
+public class SignFilter extends ChatListener {
 
-    private final UniversalBlocker plugin;
-    private final Config pluginConfig;
     private final String[] searchList = {"%player%", "%symbol%", "%msg%"};
 
     public SignFilter(UniversalBlocker plugin) {
-        this.plugin = plugin;
-        this.pluginConfig = plugin.getPluginConfig();
+        super(plugin);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onSignMessage(SignChangeEvent e) {
-        SignCharsSettings signCharsSettings = pluginConfig.getSignCharsSettings();
-        if (signCharsSettings == null) return;
-
         Player p = e.getPlayer();
-        if (plugin.isAdmin(p, "ublocker.bypass.signchars")) return;
-
+        if (super.isAdmin(p, "ublocker.bypass.signchars")) {
+            return;
+        }
+        SignCharsSettings signCharsSettings = pluginConfig.getSignCharsSettings();
         String line0 = e.getLine(0);
         String line1 = e.getLine(1);
         String line2 = e.getLine(2);
@@ -46,7 +35,7 @@ public class SignFilter implements Listener {
                 continue;
             if (containsBlockedChars(message, signCharsSettings)) {
                 String[] replacementList = {p.getName(), getFirstBlockedChar(message, signCharsSettings)};
-                BlockingUtils.cancelEvent(p, searchList, replacementList, e, signCharsSettings.cancellationSettings(), plugin.getPluginMessage());
+                super.cancelEvent(p, searchList, replacementList, e, signCharsSettings.cancellationSettings(), plugin.getPluginMessage());
             }
             break;
         }

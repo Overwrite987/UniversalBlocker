@@ -3,39 +3,32 @@ package ru.overwrite.ublocker.listeners.chat;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import ru.overwrite.ublocker.UniversalBlocker;
-import ru.overwrite.ublocker.configuration.Config;
 import ru.overwrite.ublocker.configuration.data.ChatCharsSettings;
 import ru.overwrite.ublocker.utils.Utils;
 
 import java.util.function.Predicate;
 
-public class ChatFilter implements Listener {
+public class ChatFilter extends ChatListener {
 
-    private final UniversalBlocker plugin;
-    private final Config pluginConfig;
     private final String[] searchList = {"%player%", "%symbol%", "%msg%"};
 
     public ChatFilter(UniversalBlocker plugin) {
-        this.plugin = plugin;
-        this.pluginConfig = plugin.getPluginConfig();
+        super(plugin);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onChatMessage(AsyncPlayerChatEvent e) {
-        ChatCharsSettings chatCharsSettings = pluginConfig.getChatCharsSettings();
-        if (chatCharsSettings == null) return;
-
         Player p = e.getPlayer();
-        if (plugin.isAdmin(p, "ublocker.bypass.chatchars")) {
+        if (super.isAdmin(p, "ublocker.bypass.chatchars")) {
             return;
         }
+        ChatCharsSettings chatCharsSettings = pluginConfig.getChatCharsSettings();
         String message = e.getMessage();
         if (containsBlockedChars(message, chatCharsSettings)) {
             String[] replacementList = {p.getName(), getFirstBlockedChar(message, chatCharsSettings)};
-            BlockingUtils.cancelEvent(p, searchList, replacementList, e, chatCharsSettings.cancellationSettings(), plugin.getPluginMessage());
+            super.cancelEvent(p, searchList, replacementList, e, chatCharsSettings.cancellationSettings(), plugin.getPluginMessage());
         }
     }
 

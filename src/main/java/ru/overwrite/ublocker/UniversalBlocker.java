@@ -9,6 +9,7 @@ import org.bukkit.Server;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.Messenger;
@@ -34,6 +35,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 public final class UniversalBlocker extends JavaPlugin {
@@ -48,7 +51,8 @@ public final class UniversalBlocker extends JavaPlugin {
     private final Runner runner = Utils.FOLIA ? new PaperRunner(this) : new BukkitRunner(this);
 
     private final Config pluginConfig = new Config(this);
-    private final SameMessageLimiter sameMessageLimiter = new SameMessageLimiter(this);
+
+    private final Map<String, ChatListener> chatListeners = new HashMap<>();
 
     @Setter
     private String path;
@@ -142,27 +146,14 @@ public final class UniversalBlocker extends JavaPlugin {
 
     public void registerEvents(PluginManager pm, ConfigurationSection settings) {
         if (settings.getBoolean("enable_chat_module")) {
+            Map<String, ChatListener> chatListeners = getChatListeners();
             pluginConfig.setupChat(path);
-            if (pluginConfig.getChatCharsSettings() != null) {
-                pm.registerEvents(new ChatFilter(this), this);
-            }
-            if (pluginConfig.getBookCharsSettings() != null) {
-                pm.registerEvents(new BookChecker(this), this);
-            }
-            if (pluginConfig.getSignCharsSettings() != null) {
-                pm.registerEvents(new SignFilter(this), this);
-            }
-            if (pluginConfig.getCommandCharsSettings() != null) {
-                pm.registerEvents(new CommandFilter(this), this);
-            }
-            if (pluginConfig.getNumberCheckSettings() != null) {
-                pm.registerEvents(new NumbersCheck(this), this);
-            }
-            if (pluginConfig.getCaseCheckSettings() != null) {
-                pm.registerEvents(new CaseCheck(this), this);
-            }
-            if (pluginConfig.getBanWordsSettings() != null) {
-                pm.registerEvents(new BanWords(this), this);
+            for (Map.Entry<String, ChatListener> entry : chatListeners.entrySet()) {
+                ChatListener listener = entry.getValue();
+                if (listener.isRegistered()) {
+                    pm.registerEvents(listener, this);
+                    Utils.printDebug("Registered " + entry.getKey() + " chat check");
+                }
             }
         }
         if (settings.getBoolean("enable_symbol_module")) {
@@ -182,8 +173,34 @@ public final class UniversalBlocker extends JavaPlugin {
         }
     }
 
-    public boolean isAdmin(Player player, String permission) {
-        return (player.hasPermission(permission) || isExcluded(player));
+    public Map<String, ChatListener> getChatListeners() {
+        if (chatListeners.isEmpty()) {
+            ChatFilter chatFilter = new ChatFilter(this);
+            chatListeners.put(chatFilter.getClass().getSimpleName(), chatFilter);
+
+            BookFilter bookFilter = new BookFilter(this);
+            chatListeners.put(bookFilter.getClass().getSimpleName(), bookFilter);
+
+            SignFilter signFilter = new SignFilter(this);
+            chatListeners.put(signFilter.getClass().getSimpleName(), signFilter);
+
+            CommandFilter commandFilter = new CommandFilter(this);
+            chatListeners.put(commandFilter.getClass().getSimpleName(), commandFilter);
+
+            NumbersCheck numbersCheck = new NumbersCheck(this);
+            chatListeners.put(numbersCheck.getClass().getSimpleName(), numbersCheck);
+
+            CaseCheck caseCheck = new CaseCheck(this);
+            chatListeners.put(caseCheck.getClass().getSimpleName(), caseCheck);
+
+            SameMessageLimiter sameMessageLimiter = new SameMessageLimiter(this);
+            chatListeners.put(sameMessageLimiter.getClass().getSimpleName(), sameMessageLimiter);
+
+            BanWords banWords = new BanWords(this);
+            chatListeners.put(banWords.getClass().getSimpleName(), banWords);
+        }
+        System.out.println(chatListeners);
+        return chatListeners;
     }
 
     public boolean isExcluded(Player p) {

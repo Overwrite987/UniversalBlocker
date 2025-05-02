@@ -4,55 +4,43 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.jetbrains.annotations.Nullable;
 import ru.overwrite.ublocker.UniversalBlocker;
-import ru.overwrite.ublocker.configuration.Config;
 import ru.overwrite.ublocker.configuration.data.SameMessagesSettings;
 import ru.overwrite.ublocker.utils.objects.Pair;
 
 import java.util.Map;
 
-public class SameMessageLimiter implements Listener {
-
-    private final UniversalBlocker plugin;
-    private final Config pluginConfig;
+public class SameMessageLimiter extends ChatListener {
 
     private final Map<String, Pair<Buffer, Double>> sent = new Object2ObjectOpenHashMap<>();
     private final String[] searchList = {"%player%", "%msg%"};
 
-    public boolean isRegistered = false;
-
     public SameMessageLimiter(UniversalBlocker plugin) {
-        this.plugin = plugin;
-        this.pluginConfig = plugin.getPluginConfig();
+        super(plugin);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onChatSameMessage(AsyncPlayerChatEvent e) {
-        SameMessagesSettings sameMessagesSettings = pluginConfig.getSameMessagesSettings();
-        if (sameMessagesSettings == null) return;
-
         Player p = e.getPlayer();
-        if (plugin.isAdmin(p, "ublocker.bypass.samemessage")) return;
-
+        if (super.isAdmin(p, "ublocker.bypass.samemessage")) {
+            return;
+        }
+        SameMessagesSettings sameMessagesSettings = pluginConfig.getSameMessagesSettings();
         String message = e.getMessage();
-
-        if (test(p, message)) {
-            String[] replacementList = {p.getName(), message};
-            BlockingUtils.cancelEvent(p, searchList, replacementList, e, sameMessagesSettings.cancellationSettings(), plugin.getPluginMessage());
+        String playerName = p.getName();
+        if (checkMessage(playerName, message, sameMessagesSettings)) {
+            String[] replacementList = {playerName, message};
+            super.cancelEvent(p, searchList, replacementList, e, sameMessagesSettings.cancellationSettings(), plugin.getPluginMessage());
         }
     }
 
-    public boolean test(Player p, String message) {
-        if (message == null) return false;
-        SameMessagesSettings sameMessagesSettings = pluginConfig.getSameMessagesSettings();
-        Pair<Buffer, Double> pair = sent.get(p.getName());
+    public boolean checkMessage(String playerName, String message, SameMessagesSettings sameMessagesSettings) {
+        Pair<Buffer, Double> pair = sent.get(playerName);
         if (pair == null) {
-            sent.put(p.getName(), Pair.of(new Buffer(message, sameMessagesSettings.historySize()), 0d));
+            sent.put(playerName, Pair.of(new Buffer(message, sameMessagesSettings.historySize()), 0d));
             return false;
         }
 
@@ -74,15 +62,18 @@ public class SameMessageLimiter implements Listener {
         }
 
         buffer.add(message);
-        pair.right(Math.max(pair.right() - sameMessagesSettings.reduce(), 0));
-
+        pair.right(Math.max(pair.right() - sameMessagesSettings.reduce(), 0d));
         return true;
     }
 
-    public static double similarityPercentage(String s1, @Nullable String s2) {
-        if (s2 == null) return 0d;
+    public static double similarityPercentage(String s1, String s2) {
+        if (s2 == null) {
+            return 0d;
+        }
         final int maxLength = Math.max(s1.length(), s2.length());
-        if (maxLength == 0) return 100.0;
+        if (maxLength == 0) {
+            return 100.0;
+        }
         final int distance = levenshteinDistance(s1, s2);
         return (1.0 - (double) distance / maxLength) * 100;
     }
@@ -127,12 +118,13 @@ public class SameMessageLimiter implements Listener {
     private static final class Buffer {
 
         private final String[] buffer;
-        private int start = 0;
-        private int size = 0;
+        private int start;
+        private int size;
 
         private Buffer(String message, int bufferSize) {
             this.buffer = new String[bufferSize];
             this.buffer[0] = message;
+            this.size = 1;
         }
 
         public void add(String element) {

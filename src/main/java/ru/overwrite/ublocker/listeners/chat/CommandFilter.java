@@ -3,38 +3,32 @@ package ru.overwrite.ublocker.listeners.chat;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import ru.overwrite.ublocker.UniversalBlocker;
-import ru.overwrite.ublocker.configuration.Config;
 import ru.overwrite.ublocker.configuration.data.CommandCharsSettings;
 import ru.overwrite.ublocker.utils.Utils;
 
 import java.util.function.Predicate;
 
-public class CommandFilter implements Listener {
+public class CommandFilter extends ChatListener {
 
-    private final UniversalBlocker plugin;
-    private final Config pluginConfig;
     private final String[] searchList = {"%player%", "%symbol%", "%msg%"};
 
     public CommandFilter(UniversalBlocker plugin) {
-        this.plugin = plugin;
-        this.pluginConfig = plugin.getPluginConfig();
+        super(plugin);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onCommandMessage(PlayerCommandPreprocessEvent e) {
-        CommandCharsSettings commandCharsSettings = pluginConfig.getCommandCharsSettings();
-        if (commandCharsSettings == null) return;
-
         Player p = e.getPlayer();
-        if (plugin.isAdmin(p, "ublocker.bypass.commandchars")) return;
-
+        if (super.isAdmin(p, "ublocker.bypass.commandchars")) {
+            return;
+        }
+        CommandCharsSettings commandCharsSettings = pluginConfig.getCommandCharsSettings();
         String message = e.getMessage();
         if (containsBlockedChars(message, commandCharsSettings)) {
             String[] replacementList = {p.getName(), getFirstBlockedChar(message, commandCharsSettings)};
-            BlockingUtils.cancelEvent(p, searchList, replacementList, e, commandCharsSettings.cancellationSettings(), plugin.getPluginMessage());
+            super.cancelEvent(p, searchList, replacementList, e, commandCharsSettings.cancellationSettings(), plugin.getPluginMessage());
         }
     }
 

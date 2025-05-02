@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import ru.overwrite.ublocker.configuration.Config;
+import ru.overwrite.ublocker.listeners.chat.ChatListener;
 import ru.overwrite.ublocker.listeners.commands.ConsoleBlocker;
 import ru.overwrite.ublocker.listeners.commands.RconBlocker;
 import ru.overwrite.ublocker.utils.Utils;
@@ -37,6 +38,9 @@ public class CommandClass implements CommandExecutor {
             case "reload": {
                 long startTime = System.currentTimeMillis();
                 plugin.getRunner().cancelTasks();
+                for (ChatListener listener : plugin.getChatListeners().values()) {
+                    listener.setRegistered(false);
+                }
                 HandlerList.unregisterAll(plugin);
                 plugin.reloadConfig();
                 final FileConfiguration config = plugin.getConfig();

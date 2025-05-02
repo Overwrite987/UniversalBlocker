@@ -13,7 +13,6 @@ import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.event.HandlerList;
 import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.actions.ActionType;
@@ -22,6 +21,7 @@ import ru.overwrite.ublocker.blockgroups.CommandGroup;
 import ru.overwrite.ublocker.blockgroups.SymbolGroup;
 import ru.overwrite.ublocker.conditions.Condition;
 import ru.overwrite.ublocker.configuration.data.*;
+import ru.overwrite.ublocker.listeners.chat.*;
 import ru.overwrite.ublocker.utils.Utils;
 
 import java.io.File;
@@ -67,8 +67,12 @@ public class Config {
             return;
         }
 
-        if (!allowedChars.getBoolean("enable")) {
-            return;
+        ChatListener chatListener = plugin.getChatListeners().get(ChatFilter.class.getSimpleName());
+
+        boolean shouldBeRegistered = allowedChars.getBoolean("enable");
+
+        if (chatListener.isRegistered() != shouldBeRegistered) {
+            chatListener.setRegistered(shouldBeRegistered);
         }
 
         String message = Utils.COLORIZER.colorize(allowedChars.getString("message"));
@@ -108,8 +112,12 @@ public class Config {
             return;
         }
 
-        if (!allowedBookChars.getBoolean("enable")) {
-            return;
+        ChatListener chatListener = plugin.getChatListeners().get(BookFilter.class.getSimpleName());
+
+        boolean shouldBeRegistered = allowedBookChars.getBoolean("enable");
+
+        if (chatListener.isRegistered() != shouldBeRegistered) {
+            chatListener.setRegistered(shouldBeRegistered);
         }
 
         String message = Utils.COLORIZER.colorize(allowedBookChars.getString("message"));
@@ -149,8 +157,12 @@ public class Config {
             return;
         }
 
-        if (!allowedSignChars.getBoolean("enable")) {
-            return;
+        ChatListener chatListener = plugin.getChatListeners().get(SignFilter.class.getSimpleName());
+
+        boolean shouldBeRegistered = allowedSignChars.getBoolean("enable");
+
+        if (chatListener.isRegistered() != shouldBeRegistered) {
+            chatListener.setRegistered(shouldBeRegistered);
         }
 
         String message = Utils.COLORIZER.colorize(allowedSignChars.getString("message"));
@@ -190,8 +202,12 @@ public class Config {
             return;
         }
 
-        if (!allowedCommandChars.getBoolean("enable")) {
-            return;
+        ChatListener chatListener = plugin.getChatListeners().get(CommandFilter.class.getSimpleName());
+
+        boolean shouldBeRegistered = allowedCommandChars.getBoolean("enable");
+
+        if (chatListener.isRegistered() != shouldBeRegistered) {
+            chatListener.setRegistered(shouldBeRegistered);
         }
 
         String message = Utils.COLORIZER.colorize(allowedCommandChars.getString("message"));
@@ -231,8 +247,12 @@ public class Config {
             return;
         }
 
-        if (!numbersCheck.getBoolean("enable")) {
-            return;
+        ChatListener chatListener = plugin.getChatListeners().get(NumbersCheck.class.getSimpleName());
+
+        boolean shouldBeRegistered = numbersCheck.getBoolean("enable");
+
+        if (chatListener.isRegistered() != shouldBeRegistered) {
+            chatListener.setRegistered(shouldBeRegistered);
         }
 
         int maxNumbers = numbersCheck.getInt("maxmsgnumbers");
@@ -266,8 +286,12 @@ public class Config {
             return;
         }
 
-        if (!caseCheck.getBoolean("enable")) {
-            return;
+        ChatListener chatListener = plugin.getChatListeners().get(CaseCheck.class.getSimpleName());
+
+        boolean shouldBeRegistered = caseCheck.getBoolean("enable");
+
+        if (chatListener.isRegistered() != shouldBeRegistered) {
+            chatListener.setRegistered(shouldBeRegistered);
         }
 
         int maxUpperCasePercent = caseCheck.getInt("maxuppercasepercent");
@@ -301,17 +325,12 @@ public class Config {
             return;
         }
 
-        if (!sameMessages.getBoolean("enable")) {
-            if (plugin.getSameMessageLimiter().isRegistered) {
-                plugin.getSameMessageLimiter().isRegistered = false;
-                HandlerList.unregisterAll(plugin.getSameMessageLimiter());
-            }
-            return;
-        }
+        ChatListener chatListener = plugin.getChatListeners().get(SameMessageLimiter.class.getSimpleName());
 
-        if (!plugin.getSameMessageLimiter().isRegistered) {
-            plugin.getSameMessageLimiter().isRegistered = true;
-            plugin.getServer().getPluginManager().registerEvents(plugin.getSameMessageLimiter(), plugin);
+        boolean shouldBeRegistered = sameMessages.getBoolean("enable");
+
+        if (chatListener.isRegistered() != shouldBeRegistered) {
+            chatListener.setRegistered(shouldBeRegistered);
         }
 
         int samePercents = sameMessages.getInt("same_percents");
@@ -349,8 +368,12 @@ public class Config {
             return;
         }
 
-        if (!banWords.getBoolean("enable")) {
-            return;
+        ChatListener chatListener = plugin.getChatListeners().get(BanWords.class.getSimpleName());
+
+        boolean shouldBeRegistered = banWords.getBoolean("enable");
+
+        if (chatListener.isRegistered() != shouldBeRegistered) {
+            chatListener.setRegistered(shouldBeRegistered);
         }
 
         BlockType mode = BlockType.valueOf(banWords.getString("mode").toUpperCase());
