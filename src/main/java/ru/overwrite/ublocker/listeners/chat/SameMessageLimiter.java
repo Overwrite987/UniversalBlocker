@@ -9,13 +9,12 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.configuration.data.SameMessagesSettings;
-import ru.overwrite.ublocker.utils.objects.Pair;
 
 import java.util.Map;
 
 public class SameMessageLimiter extends ChatListener {
 
-    private final Map<String, Pair<Buffer, Double>> sent = new Object2ObjectOpenHashMap<>();
+    private final Map<String, Buffer> sent = new Object2ObjectOpenHashMap<>();
     private final String[] searchList = {"%player%", "%msg%"};
 
     public SameMessageLimiter(UniversalBlocker plugin) {
@@ -38,13 +37,12 @@ public class SameMessageLimiter extends ChatListener {
     }
 
     public boolean checkMessage(String playerName, String message, SameMessagesSettings sameMessagesSettings) {
-        Pair<Buffer, Double> pair = sent.get(playerName);
-        if (pair == null) {
-            sent.put(playerName, Pair.of(new Buffer(message, sameMessagesSettings.historySize()), 0d));
+        Buffer buffer = sent.get(playerName);
+        if (buffer == null) {
+            sent.put(playerName, new Buffer(message, sameMessagesSettings.historySize()));
             return false;
         }
 
-        final Buffer buffer = pair.left();
         int same = 0;
         for (int i = 0; i < buffer.size(); i++) {
             final String oldMessage = buffer.get(i);
@@ -53,17 +51,14 @@ public class SameMessageLimiter extends ChatListener {
                     ? 100.0
                     : similarityPercentage(message, oldMessage);
 
-            if (similarity >= sameMessagesSettings.samePercents()) {
-                if (++same > sameMessagesSettings.maxSameMessage()) {
-                    pair.right(pair.right() + 1);
-                    return false;
-                }
+            if (similarity >= sameMessagesSettings.samePercents()
+                    && ++same >= sameMessagesSettings.maxSameMessage()) {
+                return true;
             }
         }
 
         buffer.add(message);
-        pair.right(Math.max(pair.right() - sameMessagesSettings.reduce(), 0d));
-        return true;
+        return false;
     }
 
     public static double similarityPercentage(String s1, String s2) {
