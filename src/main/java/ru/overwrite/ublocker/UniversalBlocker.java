@@ -48,6 +48,7 @@ public final class UniversalBlocker extends JavaPlugin {
     private final Runner runner = Utils.FOLIA ? new PaperRunner(this) : new BukkitRunner(this);
 
     private final Config pluginConfig = new Config(this);
+    private final SameMessageLimiter sameMessageLimiter = new SameMessageLimiter(this);
 
     @Setter
     private String path;
@@ -159,9 +160,6 @@ public final class UniversalBlocker extends JavaPlugin {
             }
             if (pluginConfig.getCaseCheckSettings() != null) {
                 pm.registerEvents(new CaseCheck(this), this);
-            }
-            if (pluginConfig.getSameMessagesSettings() != null) {
-                pm.registerEvents(new SameMessageLimiter(this), this);
             }
             if (pluginConfig.getBanWordsSettings() != null) {
                 pm.registerEvents(new BanWords(this), this);

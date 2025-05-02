@@ -13,6 +13,7 @@ import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.HandlerList;
 import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.actions.ActionType;
@@ -301,12 +302,22 @@ public class Config {
         }
 
         if (!sameMessages.getBoolean("enable")) {
+            if (plugin.getSameMessageLimiter().isRegistered) {
+                plugin.getSameMessageLimiter().isRegistered = false;
+                HandlerList.unregisterAll(plugin.getSameMessageLimiter());
+            }
             return;
         }
 
-        int maxSameMessage = sameMessages.getInt("max_same_message");
-        boolean strict = sameMessages.getBoolean("strict");
+        if (!plugin.getSameMessageLimiter().isRegistered) {
+            plugin.getSameMessageLimiter().isRegistered = true;
+            plugin.getServer().getPluginManager().registerEvents(plugin.getSameMessageLimiter(), plugin);
+        }
+
         int samePercents = sameMessages.getInt("same_percents");
+        int maxSameMessage = sameMessages.getInt("max_same_message");
+        double reduce = sameMessages.getDouble("reduce");
+        int historySize = sameMessages.getInt("history_size");
 
         String message = Utils.COLORIZER.colorize(sameMessages.getString("message"));
         String[] sound = sameMessages.getString("sound", "ENTITY_ITEM_BREAK;1.0;1.0").split(";");
@@ -317,9 +328,10 @@ public class Config {
         String[] notifySound = sameMessagesNotify.getString("sound", "BLOCK_NOTE_BLOCK_PLING;1.0;1.0").split(";");
 
         this.sameMessagesSettings = new SameMessagesSettings(
-                maxSameMessage,
-                strict,
                 samePercents,
+                maxSameMessage,
+                reduce,
+                historySize,
                 new CancellationSettings(
                         message,
                         sound,
