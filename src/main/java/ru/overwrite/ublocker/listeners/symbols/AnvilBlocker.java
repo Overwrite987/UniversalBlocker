@@ -79,7 +79,7 @@ public class AnvilBlocker implements Listener {
     }
 
     private void checkStringBlock(InventoryClickEvent e, Player p, String name, SymbolGroup group) {
-        for (String symbol : group.getSymbolsToBlock()) {
+        for (String symbol : group.symbolsToBlock()) {
             List<Action> actions = group.actionsToExecute();
             if (name.contains(symbol)) {
                 executeActions(e, p, name, symbol, actions, p.getWorld().getName());
@@ -88,7 +88,7 @@ public class AnvilBlocker implements Listener {
     }
 
     private void checkPatternBlock(InventoryClickEvent e, Player p, String name, SymbolGroup group) {
-        for (Pattern pattern : group.getPatternsToBlock()) {
+        for (Pattern pattern : group.patternsToBlock()) {
             Matcher matcher = pattern.matcher(name);
             if (matcher.find()) {
                 List<Action> actions = group.actionsToExecute();

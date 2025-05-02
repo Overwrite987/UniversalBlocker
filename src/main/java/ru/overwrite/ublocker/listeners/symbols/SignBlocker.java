@@ -75,7 +75,7 @@ public class SignBlocker implements Listener {
     }
 
     private void checkStringBlock(SignChangeEvent e, Player p, String line0, String line1, String line2, String line3, SymbolGroup group) {
-        for (String symbol : group.getSymbolsToBlock()) {
+        for (String symbol : group.symbolsToBlock()) {
             List<Action> actions = group.actionsToExecute();
             if (line0.contains(symbol) || line1.contains(symbol) || line2.contains(symbol) || line3.contains(symbol)) {
                 String combined = line0 + line1 + line2 + line3;
@@ -85,7 +85,7 @@ public class SignBlocker implements Listener {
     }
 
     private void checkPatternBlock(SignChangeEvent e, Player p, String combined, SymbolGroup group) {
-        for (Pattern pattern : group.getPatternsToBlock()) {
+        for (Pattern pattern : group.patternsToBlock()) {
             Matcher matcher = pattern.matcher(combined.replace("\n", ""));
             if (matcher.find()) {
                 List<Action> actions = group.actionsToExecute();

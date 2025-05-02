@@ -71,7 +71,7 @@ public class ChatBlocker implements Listener {
     }
 
     private void checkStringBlock(AsyncPlayerChatEvent e, Player p, String message, SymbolGroup group) {
-        for (String symbol : group.getSymbolsToBlock()) {
+        for (String symbol : group.symbolsToBlock()) {
             List<Action> actions = group.actionsToExecute();
             if (message.contains(symbol)) {
                 executeActions(e, p, message, symbol, actions, p.getWorld().getName());
@@ -80,7 +80,7 @@ public class ChatBlocker implements Listener {
     }
 
     private void checkPatternBlock(AsyncPlayerChatEvent e, Player p, String message, SymbolGroup group) {
-        for (Pattern pattern : group.getPatternsToBlock()) {
+        for (Pattern pattern : group.patternsToBlock()) {
             Matcher matcher = pattern.matcher(message);
             if (matcher.find()) {
                 List<Action> actions = group.actionsToExecute();

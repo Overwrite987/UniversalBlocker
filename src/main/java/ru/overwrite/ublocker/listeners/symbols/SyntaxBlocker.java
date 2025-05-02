@@ -71,9 +71,9 @@ public class SyntaxBlocker implements Listener {
     }
 
     private void checkStringBlock(PlayerCommandPreprocessEvent e, Player p, String command, SymbolGroup group) {
-        for (String symbol : group.getSymbolsToBlock()) {
+        for (String symbol : group.symbolsToBlock()) {
             List<Action> actions = group.actionsToExecute();
-            if (startWithExcludedString(command, group.getExcludedCommandsString())) {
+            if (startWithExcludedString(command, group.excludedCommandsString())) {
                 continue;
             }
             if (command.contains(symbol)) {
@@ -83,9 +83,9 @@ public class SyntaxBlocker implements Listener {
     }
 
     private void checkPatternBlock(PlayerCommandPreprocessEvent e, Player p, String command, SymbolGroup group) {
-        for (Pattern pattern : group.getPatternsToBlock()) {
+        for (Pattern pattern : group.patternsToBlock()) {
             Matcher matcher = pattern.matcher(command);
-            if (startWithExcludedPattern(command, group.getExcludedCommandsPattern())) {
+            if (startWithExcludedPattern(command, group.excludedCommandsPattern())) {
                 continue;
             }
             if (matcher.find()) {
