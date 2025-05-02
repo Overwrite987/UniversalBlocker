@@ -116,12 +116,12 @@ public class SameMessageLimiter implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
-        sent.remove(e.getPlayer().getUniqueId());
+        sent.remove(e.getPlayer().getName());
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onKick(PlayerKickEvent e) {
-        sent.remove(e.getPlayer().getUniqueId());
+        sent.remove(e.getPlayer().getName());
     }
 
     private static final class Buffer {
