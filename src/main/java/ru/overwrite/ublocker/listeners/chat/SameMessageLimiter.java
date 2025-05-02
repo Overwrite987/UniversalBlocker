@@ -15,14 +15,13 @@ import ru.overwrite.ublocker.configuration.Config;
 import ru.overwrite.ublocker.configuration.data.SameMessagesSettings;
 
 import java.util.Map;
-import java.util.UUID;
 
 public class SameMessageLimiter implements Listener {
 
     private final UniversalBlocker plugin;
     private final Config pluginConfig;
 
-    private final Map<UUID, Pair<Buffer, Double>> sent;
+    private final Map<String, Pair<Buffer, Double>> sent;
     private final String[] searchList;
 
     public boolean isRegistered = false;
@@ -53,9 +52,9 @@ public class SameMessageLimiter implements Listener {
     public boolean test(Player p, String message) {
         if (message == null) return false;
         SameMessagesSettings sameMessagesSettings = pluginConfig.getSameMessagesSettings();
-        Pair<Buffer, Double> pair = sent.get(p.getUniqueId());
+        Pair<Buffer, Double> pair = sent.get(p.getName());
         if (pair == null) {
-            sent.put(p.getUniqueId(), Pair.of(new Buffer(message, sameMessagesSettings.historySize()), 0d));
+            sent.put(p.getName(), Pair.of(new Buffer(message, sameMessagesSettings.historySize()), 0d));
             return false;
         }
 
