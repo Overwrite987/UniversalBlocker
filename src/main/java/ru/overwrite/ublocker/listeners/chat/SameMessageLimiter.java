@@ -21,8 +21,8 @@ public class SameMessageLimiter implements Listener {
     private final UniversalBlocker plugin;
     private final Config pluginConfig;
 
-    private final Map<String, Pair<Buffer, Double>> sent = new Object2ObjectOpenHashMap<>();;
-    private final String[] searchList = new String[]{"%player%", "%msg%"};;
+    private final Map<String, Pair<Buffer, Double>> sent = new Object2ObjectOpenHashMap<>();
+    private final String[] searchList = new String[]{"%player%", "%msg%"};
 
     public boolean isRegistered = false;
 
