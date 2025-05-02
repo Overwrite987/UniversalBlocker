@@ -15,8 +15,6 @@ import ru.overwrite.ublocker.configuration.data.SignCharsSettings;
 import ru.overwrite.ublocker.task.Runner;
 import ru.overwrite.ublocker.utils.Utils;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.Predicate;
 
 public class SignFilter implements Listener {
@@ -42,7 +40,7 @@ public class SignFilter implements Listener {
         String line1 = e.getLine(1);
         String line2 = e.getLine(2);
         String line3 = e.getLine(3);
-        List<String> messages = Arrays.asList(line0, line1, line2, line3);
+        String[] messages = {line0, line1, line2, line3};
         for (String message : messages) {
             if (message == null || message.isBlank())
                 continue;
