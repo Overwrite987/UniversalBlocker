@@ -21,16 +21,14 @@ public class SameMessageLimiter implements Listener {
     private final UniversalBlocker plugin;
     private final Config pluginConfig;
 
-    private final Map<String, Pair<Buffer, Double>> sent;
-    private final String[] searchList;
+    private final Map<String, Pair<Buffer, Double>> sent = new Object2ObjectOpenHashMap<>();;
+    private final String[] searchList = new String[]{"%player%", "%msg%"};;
 
     public boolean isRegistered = false;
 
     public SameMessageLimiter(UniversalBlocker plugin) {
         this.plugin = plugin;
         this.pluginConfig = plugin.getPluginConfig();
-        this.sent = new Object2ObjectOpenHashMap<>();
-        this.searchList = new String[]{"%player%", "%msg%"};
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
