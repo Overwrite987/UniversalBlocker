@@ -41,20 +41,20 @@ public class ChatBlocker implements Listener {
             return;
         String message = e.getMessage().toLowerCase();
         for (SymbolGroup group : pluginConfig.getSymbolBlockGroupSet()) {
-            Utils.printDebug("Group checking now: " + group.getGroupId());
-            if (group.getBlockFactor().isEmpty() || !group.getBlockFactor().contains("chat")) {
-                Utils.printDebug("Group " + group.getGroupId() + " does not have 'chat' block factor. Skipping...");
+            Utils.printDebug("Group checking now: " + group.groupId());
+            if (group.blockFactor().isEmpty() || !group.blockFactor().contains("chat")) {
+                Utils.printDebug("Group " + group.groupId() + " does not have 'chat' block factor. Skipping...");
                 continue;
             }
-            List<Action> actions = group.getActionsToExecute();
+            List<Action> actions = group.actionsToExecute();
             if (actions.isEmpty()) {
                 continue;
             }
-            if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
+            if (!ConditionChecker.isMeetsRequirements(p, group.conditionsToCheck())) {
                 Utils.printDebug("Blocking does not fulfill the requirements. Skipping group...");
                 continue;
             }
-            switch (group.getBlockType()) {
+            switch (group.blockType()) {
                 case STRING: {
                     checkStringBlock(e, p, message, group);
                     break;
@@ -72,7 +72,7 @@ public class ChatBlocker implements Listener {
 
     private void checkStringBlock(AsyncPlayerChatEvent e, Player p, String message, SymbolGroup group) {
         for (String symbol : group.getSymbolsToBlock()) {
-            List<Action> actions = group.getActionsToExecute();
+            List<Action> actions = group.actionsToExecute();
             if (message.contains(symbol)) {
                 executeActions(e, p, message, symbol, actions, p.getWorld().getName());
             }
@@ -83,7 +83,7 @@ public class ChatBlocker implements Listener {
         for (Pattern pattern : group.getPatternsToBlock()) {
             Matcher matcher = pattern.matcher(message);
             if (matcher.find()) {
-                List<Action> actions = group.getActionsToExecute();
+                List<Action> actions = group.actionsToExecute();
                 executeActions(e, p, message, matcher.group(), actions, p.getWorld().getName());
             }
         }

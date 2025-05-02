@@ -36,13 +36,13 @@ public class ConsoleBlocker implements Listener {
         }
         String command = e.getCommand().toLowerCase();
         for (CommandGroup group : pluginConfig.getCommandBlockGroupSet()) {
-            Utils.printDebug("Group checking now: " + group.getGroupId());
-            Utils.printDebug("Block type: " + group.getBlockType());
-            List<Action> actions = group.getActionsToExecute();
+            Utils.printDebug("Group checking now: " + group.groupId());
+            Utils.printDebug("Block type: " + group.blockType());
+            List<Action> actions = group.actionsToExecute();
             if (actions.isEmpty()) {
                 continue;
             }
-            switch (group.getBlockType()) {
+            switch (group.blockType()) {
                 case STRING: {
                     checkStringBlock(e, command, group);
                     break;
@@ -59,7 +59,7 @@ public class ConsoleBlocker implements Listener {
     }
 
     private void checkStringBlock(ServerCommandEvent e, String command, CommandGroup group) {
-        for (String com : group.getCommandsToBlockString()) {
+        for (String com : group.commandsToBlockString()) {
             Command comInMap = Bukkit.getCommandMap().getCommand(com.replace("/", ""));
             List<String> aliases = comInMap == null ? List.of() : comInMap.getAliases();
             if (!aliases.isEmpty() && !aliases.contains(comInMap.getName())) {
@@ -67,7 +67,7 @@ public class ConsoleBlocker implements Listener {
             }
             String executedCommandBase = command.contains(" ") ? Utils.cutCommand(command) : command;
             if (executedCommandBase.equalsIgnoreCase(com) || aliases.contains(executedCommandBase.substring(1))) {
-                List<Action> actions = group.getActionsToExecute();
+                List<Action> actions = group.actionsToExecute();
                 if (shouldBlockCommand(e, actions)) {
                     break;
                 }
@@ -76,7 +76,7 @@ public class ConsoleBlocker implements Listener {
     }
 
     private void checkPatternBlock(ServerCommandEvent e, String command, CommandGroup group) {
-        for (Pattern pattern : group.getCommandsToBlockPattern()) {
+        for (Pattern pattern : group.commandsToBlockPattern()) {
             Matcher matcher = pattern.matcher(Utils.cutCommand(command).replace("/", ""));
             if (matcher.matches()) {
                 Command comInMap = Bukkit.getCommandMap().getCommand(matcher.group());
@@ -84,7 +84,7 @@ public class ConsoleBlocker implements Listener {
                 if (!aliases.isEmpty()) {
                     aliases.add(comInMap.getName());
                 }
-                List<Action> actions = group.getActionsToExecute();
+                List<Action> actions = group.actionsToExecute();
                 if (aliases.contains(matcher.group())) {
                     if (shouldBlockCommand(e, actions)) {
                         break;

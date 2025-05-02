@@ -31,9 +31,9 @@ public class CommandHider implements Listener {
             return;
         e.getCommands().removeIf(command -> {
             for (CommandGroup group : pluginConfig.getCommandHideGroupSet()) {
-                Utils.printDebug("Group checking now: " + group.getGroupId());
-                Utils.printDebug("Block type: " + group.getBlockType());
-                List<Action> actions = group.getActionsToExecute();
+                Utils.printDebug("Group checking now: " + group.groupId());
+                Utils.printDebug("Block type: " + group.blockType());
+                List<Action> actions = group.actionsToExecute();
                 if (actions.isEmpty()) {
                     continue;
                 }
@@ -46,14 +46,14 @@ public class CommandHider implements Listener {
     }
 
     private boolean checkStringBlock(Player p, String command, CommandGroup group) {
-        for (String com : group.getCommandsToBlockString()) {
+        for (String com : group.commandsToBlockString()) {
             Command comInMap = Bukkit.getCommandMap().getCommand(com);
             List<String> aliases = comInMap == null ? List.of() : comInMap.getAliases();
             if (!aliases.isEmpty() && !aliases.contains(comInMap.getName())) {
                 aliases.add(comInMap.getName());
             }
             if (command.equalsIgnoreCase(com) || aliases.contains(command)) {
-                List<Action> actions = group.getActionsToExecute();
+                List<Action> actions = group.actionsToExecute();
                 return shouldHideCommand(p, actions);
             }
         }

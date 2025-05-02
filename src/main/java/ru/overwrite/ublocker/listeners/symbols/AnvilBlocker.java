@@ -49,20 +49,20 @@ public class AnvilBlocker implements Listener {
             return;
         String name = resultItem.getItemMeta().getDisplayName();
         for (SymbolGroup group : pluginConfig.getSymbolBlockGroupSet()) {
-            Utils.printDebug("Group checking now: " + group.getGroupId());
-            if (group.getBlockFactor().isEmpty() || !group.getBlockFactor().contains("anvil")) {
-                Utils.printDebug("Group " + group.getGroupId() + " does not have 'anvil' block factor. Skipping...");
+            Utils.printDebug("Group checking now: " + group.groupId());
+            if (group.blockFactor().isEmpty() || !group.blockFactor().contains("anvil")) {
+                Utils.printDebug("Group " + group.groupId() + " does not have 'anvil' block factor. Skipping...");
                 continue;
             }
-            List<Action> actions = group.getActionsToExecute();
+            List<Action> actions = group.actionsToExecute();
             if (actions.isEmpty()) {
                 continue;
             }
-            if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
+            if (!ConditionChecker.isMeetsRequirements(p, group.conditionsToCheck())) {
                 Utils.printDebug("Blocking does not fulfill the requirements. Skipping group...");
                 continue;
             }
-            switch (group.getBlockType()) {
+            switch (group.blockType()) {
                 case STRING: {
                     checkStringBlock(e, p, name, group);
                     break;
@@ -80,7 +80,7 @@ public class AnvilBlocker implements Listener {
 
     private void checkStringBlock(InventoryClickEvent e, Player p, String name, SymbolGroup group) {
         for (String symbol : group.getSymbolsToBlock()) {
-            List<Action> actions = group.getActionsToExecute();
+            List<Action> actions = group.actionsToExecute();
             if (name.contains(symbol)) {
                 executeActions(e, p, name, symbol, actions, p.getWorld().getName());
             }
@@ -91,7 +91,7 @@ public class AnvilBlocker implements Listener {
         for (Pattern pattern : group.getPatternsToBlock()) {
             Matcher matcher = pattern.matcher(name);
             if (matcher.find()) {
-                List<Action> actions = group.getActionsToExecute();
+                List<Action> actions = group.actionsToExecute();
                 executeActions(e, p, name, matcher.group(), actions, p.getWorld().getName());
             }
         }

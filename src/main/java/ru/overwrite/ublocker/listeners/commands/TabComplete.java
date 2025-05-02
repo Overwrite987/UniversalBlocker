@@ -45,17 +45,17 @@ public class TabComplete implements Listener {
             return;
         }
         for (CommandGroup group : pluginConfig.getCommandBlockGroupSet()) {
-            Utils.printDebug("Group checking now: " + group.getGroupId());
-            Utils.printDebug("Block type: " + group.getBlockType());
-            List<Action> actions = group.getActionsToExecute();
+            Utils.printDebug("Group checking now: " + group.groupId());
+            Utils.printDebug("Block type: " + group.blockType());
+            List<Action> actions = group.actionsToExecute();
             if (actions.isEmpty()) {
                 continue;
             }
-            if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
+            if (!ConditionChecker.isMeetsRequirements(p, group.conditionsToCheck())) {
                 Utils.printDebug("Blocking does not fulfill the requirements. Skipping group...");
                 continue;
             }
-            switch (group.getBlockType()) {
+            switch (group.blockType()) {
                 case STRING: {
                     checkStringBlock(e, p, buffer, group);
                     break;
@@ -72,9 +72,9 @@ public class TabComplete implements Listener {
     }
 
     private void checkStringBlock(AsyncTabCompleteEvent e, Player p, String buffer, CommandGroup group) {
-        for (String command : group.getCommandsToBlockString()) {
+        for (String command : group.commandsToBlockString()) {
             if (buffer.equalsIgnoreCase(command + " ")) {
-                List<Action> actions = group.getActionsToExecute();
+                List<Action> actions = group.actionsToExecute();
                 Command comInMap = Bukkit.getCommandMap().getCommand(buffer);
                 List<String> aliases = comInMap == null ? List.of() : comInMap.getAliases();
                 if (!aliases.isEmpty() && !aliases.contains(comInMap.getName())) {
@@ -89,8 +89,8 @@ public class TabComplete implements Listener {
     }
 
     private void checkPatternBlock(AsyncTabCompleteEvent e, Player p, String buffer, CommandGroup group) {
-        for (Pattern pattern : group.getCommandsToBlockPattern()) {
-            List<Action> actions = group.getActionsToExecute();
+        for (Pattern pattern : group.commandsToBlockPattern()) {
+            List<Action> actions = group.actionsToExecute();
             Matcher matcher = pattern.matcher(buffer.split(" ")[0]);
             if (matcher.matches()) {
                 Command comInMap = Bukkit.getCommandMap().getCommand(matcher.group());

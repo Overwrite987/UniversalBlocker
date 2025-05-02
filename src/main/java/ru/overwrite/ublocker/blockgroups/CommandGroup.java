@@ -2,7 +2,6 @@ package ru.overwrite.ublocker.blockgroups;
 
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import lombok.Getter;
 import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.conditions.Condition;
 
@@ -10,22 +9,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-@Getter
-public final class CommandGroup {
-
-    private final String groupId;
-
-    private final BlockType blockType;
-
-    private Set<String> commandsToBlockString;
-
-    private Set<Pattern> commandsToBlockPattern;
-
-    private final List<Condition> conditionsToCheck;
-
-    private final List<Action> actionsToExecute;
-
-    private final boolean blockAliases;
+public record CommandGroup(
+        String groupId,
+        BlockType blockType,
+        boolean blockAliases,
+        Set<String> commandsToBlockString,
+        Set<Pattern> commandsToBlockPattern,
+        List<Condition> conditionsToCheck,
+        List<Action> actionsToExecute
+) {
 
     public CommandGroup(String groupId,
                         BlockType blockType,
@@ -33,36 +25,30 @@ public final class CommandGroup {
                         List<String> commandsToBlock,
                         List<Condition> conditionsToCheck,
                         List<Action> actionsToExecute) {
-        this.groupId = groupId;
-        this.blockType = blockType;
-        this.blockAliases = blockAliases;
-        this.setupBlockingList(commandsToBlock);
-        this.conditionsToCheck = conditionsToCheck;
-        this.actionsToExecute = actionsToExecute;
+        this(
+                groupId,
+                blockType,
+                blockAliases,
+                blockType == BlockType.STRING ? setupStringSet(commandsToBlock) : null,
+                blockType == BlockType.PATTERN ? setupPatternSet(commandsToBlock) : null,
+                conditionsToCheck,
+                actionsToExecute
+        );
     }
 
-    private void setupBlockingList(List<String> commandsToBlock) {
-        switch (this.blockType) {
-            case STRING: {
-                Set<String> commandsToBlockString = new ObjectOpenHashSet<>(commandsToBlock.size());
-                for (String s : commandsToBlock) {
-                    commandsToBlockString.add(s.toLowerCase());
-                }
-                this.commandsToBlockString = ImmutableSet.copyOf(commandsToBlockString);
-                break;
-            }
-            case PATTERN: {
-                Set<Pattern> commandsToBlockPattern = new ObjectOpenHashSet<>(commandsToBlock.size());
-                for (String s : commandsToBlock) {
-                    Pattern pattern = Pattern.compile(s);
-                    commandsToBlockPattern.add(pattern);
-                }
-                this.commandsToBlockPattern = ImmutableSet.copyOf(commandsToBlockPattern);
-                break;
-            }
-            default: {
-                break;
-            }
+    private static ImmutableSet<String> setupStringSet(List<String> commands) {
+        Set<String> set = new ObjectOpenHashSet<>(commands.size());
+        for (String s : commands) {
+            set.add(s.toLowerCase());
         }
+        return ImmutableSet.copyOf(set);
+    }
+
+    private static ImmutableSet<Pattern> setupPatternSet(List<String> commands) {
+        Set<Pattern> set = new ObjectOpenHashSet<>(commands.size());
+        for (String s : commands) {
+            set.add(Pattern.compile(s));
+        }
+        return ImmutableSet.copyOf(set);
     }
 }

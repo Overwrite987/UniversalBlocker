@@ -41,20 +41,20 @@ public class SyntaxBlocker implements Listener {
             return;
         String command = e.getMessage().toLowerCase();
         for (SymbolGroup group : pluginConfig.getSymbolBlockGroupSet()) {
-            Utils.printDebug("Group checking now: " + group.getGroupId());
-            if (group.getBlockFactor().isEmpty() || !group.getBlockFactor().contains("command")) {
-                Utils.printDebug("Group " + group.getGroupId() + " does not have 'command' block factor. Skipping...");
+            Utils.printDebug("Group checking now: " + group.groupId());
+            if (group.blockFactor().isEmpty() || !group.blockFactor().contains("command")) {
+                Utils.printDebug("Group " + group.groupId() + " does not have 'command' block factor. Skipping...");
                 continue;
             }
-            List<Action> actions = group.getActionsToExecute();
+            List<Action> actions = group.actionsToExecute();
             if (actions.isEmpty()) {
                 continue;
             }
-            if (!ConditionChecker.isMeetsRequirements(p, group.getConditionsToCheck())) {
+            if (!ConditionChecker.isMeetsRequirements(p, group.conditionsToCheck())) {
                 Utils.printDebug("Blocking does not fulfill the requirements. Skipping group...");
                 continue;
             }
-            switch (group.getBlockType()) {
+            switch (group.blockType()) {
                 case STRING: {
                     checkStringBlock(e, p, command, group);
                     break;
@@ -72,7 +72,7 @@ public class SyntaxBlocker implements Listener {
 
     private void checkStringBlock(PlayerCommandPreprocessEvent e, Player p, String command, SymbolGroup group) {
         for (String symbol : group.getSymbolsToBlock()) {
-            List<Action> actions = group.getActionsToExecute();
+            List<Action> actions = group.actionsToExecute();
             if (startWithExcludedString(command, group.getExcludedCommandsString())) {
                 continue;
             }
@@ -89,7 +89,7 @@ public class SyntaxBlocker implements Listener {
                 continue;
             }
             if (matcher.find()) {
-                List<Action> actions = group.getActionsToExecute();
+                List<Action> actions = group.actionsToExecute();
                 executeActions(e, p, command, matcher.group(), actions, p.getWorld().getName());
             }
         }
