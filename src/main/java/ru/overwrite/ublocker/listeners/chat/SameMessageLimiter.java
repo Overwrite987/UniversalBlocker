@@ -45,17 +45,17 @@ public class SameMessageLimiter extends ChatListener {
         }
 
         final Buffer buffer = pair.left();
+        int same = 0;
         for (int i = 0; i < buffer.size(); i++) {
             final String oldMessage = buffer.get(i);
-            double currentScore = pair.right();
 
             final double similarity = message.equals(oldMessage)
                     ? 100.0
                     : similarityPercentage(message, oldMessage);
 
             if (similarity >= sameMessagesSettings.samePercents()) {
-                if (++currentScore > sameMessagesSettings.maxSameMessage()) {
-                    buffer.add(message);
+                if (++same > sameMessagesSettings.maxSameMessage()) {
+                    pair.right(pair.right() + 1);
                     return false;
                 }
             }
