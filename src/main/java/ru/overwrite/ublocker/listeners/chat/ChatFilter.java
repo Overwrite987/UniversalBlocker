@@ -27,7 +27,7 @@ public class ChatFilter extends ChatListener {
         ChatCharsSettings chatCharsSettings = pluginConfig.getChatCharsSettings();
         String message = e.getMessage();
         if (containsBlockedChars(message, chatCharsSettings)) {
-            String[] replacementList = {p.getName(), getFirstBlockedChar(message, chatCharsSettings)};
+            String[] replacementList = {p.getName(), getFirstBlockedChar(message, chatCharsSettings), message};
             super.cancelEvent(p, searchList, replacementList, e, chatCharsSettings.cancellationSettings(), plugin.getPluginMessage());
         }
     }
