@@ -72,11 +72,12 @@ public class SyntaxBlocker implements Listener {
 
     private void checkStringBlock(PlayerCommandPreprocessEvent e, Player p, String command, SymbolGroup group) {
         for (String symbol : group.symbolsToBlock()) {
-            List<Action> actions = group.actionsToExecute();
             if (startWithExcludedString(command, group.excludedCommandsString())) {
                 continue;
             }
             if (command.contains(symbol)) {
+                Utils.printDebug("Command '" + command + "' contains blocked symbol" + symbol + ". (String)", Utils.DEBUG_SYMBOLS);
+                List<Action> actions = group.actionsToExecute();
                 executeActions(e, p, command, symbol, actions, p.getWorld().getName());
             }
         }
@@ -89,6 +90,7 @@ public class SyntaxBlocker implements Listener {
                 continue;
             }
             if (matcher.find()) {
+                Utils.printDebug("Command '" + command + "' contains blocked symbol" + matcher.group() + ". (Pattern)", Utils.DEBUG_SYMBOLS);
                 List<Action> actions = group.actionsToExecute();
                 executeActions(e, p, command, matcher.group(), actions, p.getWorld().getName());
             }

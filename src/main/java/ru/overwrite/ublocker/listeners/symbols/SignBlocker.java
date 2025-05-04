@@ -76,9 +76,10 @@ public class SignBlocker implements Listener {
 
     private void checkStringBlock(SignChangeEvent e, Player p, String line0, String line1, String line2, String line3, SymbolGroup group) {
         for (String symbol : group.symbolsToBlock()) {
-            List<Action> actions = group.actionsToExecute();
             if (line0.contains(symbol) || line1.contains(symbol) || line2.contains(symbol) || line3.contains(symbol)) {
                 String combined = line0 + line1 + line2 + line3;
+                Utils.printDebug("Sign message '" + combined + "' contains blocked symbol" + symbol + ". (String)", Utils.DEBUG_SYMBOLS);
+                List<Action> actions = group.actionsToExecute();
                 executeActions(e, p, combined, symbol, actions, p.getWorld().getName());
             }
         }
@@ -88,6 +89,7 @@ public class SignBlocker implements Listener {
         for (Pattern pattern : group.patternsToBlock()) {
             Matcher matcher = pattern.matcher(combined.replace("\n", ""));
             if (matcher.find()) {
+                Utils.printDebug("Sign message '" + combined + "' contains blocked symbol" + matcher.group() + ". (Patten)", Utils.DEBUG_SYMBOLS);
                 List<Action> actions = group.actionsToExecute();
                 executeActions(e, p, combined, matcher.group(), actions, p.getWorld().getName());
             }

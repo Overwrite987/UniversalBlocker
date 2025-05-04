@@ -80,8 +80,9 @@ public class AnvilBlocker implements Listener {
 
     private void checkStringBlock(InventoryClickEvent e, Player p, String name, SymbolGroup group) {
         for (String symbol : group.symbolsToBlock()) {
-            List<Action> actions = group.actionsToExecute();
             if (name.contains(symbol)) {
+                Utils.printDebug("Item name '" + name + "' contains blocked symbol" + symbol + ". (String)", Utils.DEBUG_SYMBOLS);
+                List<Action> actions = group.actionsToExecute();
                 executeActions(e, p, name, symbol, actions, p.getWorld().getName());
             }
         }
@@ -91,6 +92,7 @@ public class AnvilBlocker implements Listener {
         for (Pattern pattern : group.patternsToBlock()) {
             Matcher matcher = pattern.matcher(name);
             if (matcher.find()) {
+                Utils.printDebug("Item name '" + name + "' contains blocked symbol" + matcher.group() + ". (Pattern)", Utils.DEBUG_SYMBOLS);
                 List<Action> actions = group.actionsToExecute();
                 executeActions(e, p, name, matcher.group(), actions, p.getWorld().getName());
             }
