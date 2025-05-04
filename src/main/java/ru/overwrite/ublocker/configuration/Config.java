@@ -335,7 +335,6 @@ public class Config {
 
         int samePercents = sameMessages.getInt("same_percents");
         int maxSameMessage = sameMessages.getInt("max_same_message");
-        double reduce = sameMessages.getDouble("reduce");
         int historySize = sameMessages.getInt("history_size");
 
         String message = Utils.COLORIZER.colorize(sameMessages.getString("message"));
@@ -349,7 +348,6 @@ public class Config {
         this.sameMessagesSettings = new SameMessagesSettings(
                 samePercents,
                 maxSameMessage,
-                reduce,
                 historySize,
                 new CancellationSettings(
                         message,
