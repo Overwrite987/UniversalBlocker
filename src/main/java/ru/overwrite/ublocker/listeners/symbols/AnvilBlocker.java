@@ -49,9 +49,9 @@ public class AnvilBlocker implements Listener {
             return;
         String name = resultItem.getItemMeta().getDisplayName();
         for (SymbolGroup group : pluginConfig.getSymbolBlockGroupSet()) {
-            Utils.printDebug("Group checking now: " + group.groupId());
+            Utils.printDebug("Group checking now: " + group.groupId(), Utils.DEBUG_SYMBOLS);
             if (group.blockFactor().isEmpty() || !group.blockFactor().contains("anvil")) {
-                Utils.printDebug("Group " + group.groupId() + " does not have 'anvil' block factor. Skipping...");
+                Utils.printDebug("Group " + group.groupId() + " does not have 'anvil' block factor. Skipping...", Utils.DEBUG_SYMBOLS);
                 continue;
             }
             List<Action> actions = group.actionsToExecute();
@@ -59,7 +59,7 @@ public class AnvilBlocker implements Listener {
                 continue;
             }
             if (!ConditionChecker.isMeetsRequirements(p, group.conditionsToCheck())) {
-                Utils.printDebug("Blocking does not fulfill the requirements. Skipping group...");
+                Utils.printDebug("Blocking does not fulfill the requirements. Skipping group...", Utils.DEBUG_SYMBOLS);
                 continue;
             }
             switch (group.blockType()) {

@@ -152,7 +152,7 @@ public final class UniversalBlocker extends JavaPlugin {
                 ChatListener listener = entry.getValue();
                 if (listener.isRegistered()) {
                     pm.registerEvents(listener, this);
-                    Utils.printDebug("Registered " + entry.getKey() + " chat check");
+                    Utils.printDebug("Registered " + entry.getKey() + " chat check", Utils.DEBUG_CHAT);
                 }
             }
         }
@@ -199,7 +199,6 @@ public final class UniversalBlocker extends JavaPlugin {
             BanWords banWords = new BanWords(this);
             chatListeners.put(banWords.getClass().getSimpleName(), banWords);
         }
-        System.out.println(chatListeners);
         return chatListeners;
     }
 

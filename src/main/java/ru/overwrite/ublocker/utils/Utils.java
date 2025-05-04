@@ -50,10 +50,12 @@ public class Utils {
         };
     }
 
-    public boolean DEBUG;
+    public boolean DEBUG_CHAT;
+    public boolean DEBUG_COMMANDS;
+    public boolean DEBUG_SYMBOLS;
 
-    public void printDebug(String messgae) {
-        if (DEBUG) {
+    public void printDebug(String messgae, boolean shouldPrint) {
+        if (shouldPrint) {
             Bukkit.getConsoleSender().sendMessage("[UniversalBlocker-Debug] " + messgae);
         }
     }

@@ -60,10 +60,38 @@ public class CommandClass implements CommandExecutor {
                 return true;
             }
             case "debug": {
-                Utils.DEBUG = !Utils.DEBUG;
-                String message = "§cUniversalBlocker §7> §6Дебаг переключен в значение: "
-                        + (Utils.DEBUG ? "§a" : "§c")
-                        + Utils.DEBUG;
+                if (args.length < 2) {
+                    sender.sendMessage("§cUniversalBlocker §7> §6Использование: /ublocker debug <chat|commands|symbols>");
+                    return true;
+                }
+
+                String debugType = args[1].toLowerCase();
+                boolean newValue;
+                String debugName;
+
+                switch (debugType) {
+                    case "chat":
+                        newValue = !Utils.DEBUG_CHAT;
+                        Utils.DEBUG_CHAT = newValue;
+                        debugName = "чат";
+                        break;
+                    case "commands":
+                        newValue = !Utils.DEBUG_COMMANDS;
+                        Utils.DEBUG_COMMANDS = newValue;
+                        debugName = "команды";
+                        break;
+                    case "symbols":
+                        newValue = !Utils.DEBUG_SYMBOLS;
+                        Utils.DEBUG_SYMBOLS = newValue;
+                        debugName = "символы";
+                        break;
+                    default:
+                        sender.sendMessage("§cUniversalBlocker §7> §6Неизвестный тип дебага. Доступные: chat, commands, symbols");
+                        return true;
+                }
+
+                String message = "§cUniversalBlocker §7> §6Дебаг для " + debugName + " переключен в значение: "
+                        + (newValue ? "§a" : "§c") + newValue;
                 sender.sendMessage(message);
                 return true;
             }

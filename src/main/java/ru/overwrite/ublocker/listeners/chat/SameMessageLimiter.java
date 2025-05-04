@@ -9,6 +9,7 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.configuration.data.SameMessagesSettings;
+import ru.overwrite.ublocker.utils.Utils;
 
 import java.util.Map;
 
@@ -53,6 +54,9 @@ public class SameMessageLimiter extends ChatListener {
 
             if (similarity >= sameMessagesSettings.samePercents()
                     && ++same >= sameMessagesSettings.maxSameMessage()) {
+                Utils.printDebug("Blocked message: " + message, Utils.DEBUG_CHAT);
+                Utils.printDebug("Old message: " + oldMessage, Utils.DEBUG_CHAT);
+                Utils.printDebug("Similarity: " + similarity, Utils.DEBUG_CHAT);
                 return true;
             }
         }

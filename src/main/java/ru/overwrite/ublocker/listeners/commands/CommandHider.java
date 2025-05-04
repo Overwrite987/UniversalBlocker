@@ -31,8 +31,8 @@ public class CommandHider implements Listener {
             return;
         e.getCommands().removeIf(command -> {
             for (CommandGroup group : pluginConfig.getCommandHideGroupSet()) {
-                Utils.printDebug("Group checking now: " + group.groupId());
-                Utils.printDebug("Block type: " + group.blockType());
+                Utils.printDebug("Group checking now: " + group.groupId(), Utils.DEBUG_COMMANDS);
+                Utils.printDebug("Block type: " + group.blockType(), Utils.DEBUG_COMMANDS);
                 List<Action> actions = group.actionsToExecute();
                 if (actions.isEmpty()) {
                     continue;
