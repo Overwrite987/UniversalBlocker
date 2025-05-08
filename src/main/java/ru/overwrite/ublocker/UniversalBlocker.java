@@ -54,7 +54,6 @@ public final class UniversalBlocker extends JavaPlugin {
 
     private final Map<String, ChatListener> chatListeners = new HashMap<>();
 
-    @Setter
     private String path;
 
     private PluginMessage pluginMessage;
@@ -73,9 +72,7 @@ public final class UniversalBlocker extends JavaPlugin {
         final FileConfiguration config = getConfig();
         final ConfigurationSection settings = config.getConfigurationSection("settings");
         Utils.setupColorizer(settings);
-        path = settings.getBoolean("custom_plugin_folder.enable") ? settings.getString("custom_plugin_folder.path")
-                : this.getDataFolder().getAbsolutePath();
-        pluginConfig.setupExcluded(config);
+        this.setupPath(settings);
         this.setupProxy(settings);
         this.registerEvents(pm, settings);
         if (settings.getBoolean("enable_metrics")) {
@@ -133,6 +130,10 @@ public final class UniversalBlocker extends JavaPlugin {
             }
             pluginLogger.info("§6========================================");
         });
+    }
+
+    public void setupPath(ConfigurationSection settings) {
+        this.path = settings.getBoolean("custom_plugin_folder.enable") ? settings.getString("custom_plugin_folder.path") : this.getDataFolder().getAbsolutePath();
     }
 
     private void setupProxy(ConfigurationSection settings) {
