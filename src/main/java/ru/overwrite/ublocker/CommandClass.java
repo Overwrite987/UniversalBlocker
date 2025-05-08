@@ -37,38 +37,21 @@ public class CommandClass implements TabExecutor {
         }
         if (args.length == 0) {
             sender.sendMessage("§6/" + label + " reload - перезагрузить конфиг");
+            sender.sendMessage("§6/" + label + " debug <chat|commands|symbols> - включить дебаг");
+            sender.sendMessage("§6/" + label + " lock <commands|console|rcon> - отключить выбранный тип команд");
             return true;
         }
         switch (args[0].toLowerCase()) {
             case "reload": {
-                long startTime = System.currentTimeMillis();
-                plugin.getRunner().cancelTasks();
-                for (ChatListener listener : plugin.getChatListeners().values()) {
-                    listener.setRegistered(false);
-                }
-                HandlerList.unregisterAll(plugin);
-                plugin.reloadConfig();
-                final FileConfiguration config = plugin.getConfig();
-                final ConfigurationSection settings = config.getConfigurationSection("settings");
-                Utils.setupColorizer(settings);
-                plugin.setupPath(settings);
-                pluginConfig.setupExcluded(config);
-                plugin.registerEvents(Bukkit.getPluginManager(), settings);
-                for (Player p : Bukkit.getOnlinePlayers()) {
-                    p.updateCommands();
-                }
-                long endTime = System.currentTimeMillis();
-                sender.sendMessage("§cUniversalBlocker §7> §aКонфигурация перезагружена за §e" + (endTime - startTime) + " ms");
+                reloadPlugin(sender);
                 return true;
             }
             case "debug": {
                 if (args.length < 2) {
-                    sender.sendMessage("§cUniversalBlocker §7> §6Использование: /ublocker debug <chat|commands|symbols>");
+                    sender.sendMessage("§cUniversalBlocker §7> §6Использование: /" + label + " debug <chat|commands|symbols>");
                     return true;
                 }
-
                 String debugType = args[1].toLowerCase();
-
                 switch (debugType) {
                     case "chat" ->
                             toggleFeature("Дебаг для", "чата", Utils.DEBUG_CHAT, v -> Utils.DEBUG_CHAT = v, sender);
@@ -77,7 +60,7 @@ public class CommandClass implements TabExecutor {
                     case "symbols" ->
                             toggleFeature("Дебаг для", "символов", Utils.DEBUG_SYMBOLS, v -> Utils.DEBUG_SYMBOLS = v, sender);
                     default -> {
-                        sender.sendMessage("§cUniversalBlocker §7> §6Неизвестный тип дебага. Доступные: chat, commands, symbols");
+                        sender.sendMessage("§cUniversalBlocker §7> §6Неизвестный тип дебага! Доступные: chat, commands, symbols");
                         return true;
                     }
                 }
@@ -85,8 +68,8 @@ public class CommandClass implements TabExecutor {
             }
             case "lock": {
                 if (args.length < 2) {
-                    sender.sendMessage("§cUniversalBlocker §7> §6Использование: /ublocker <commands|console|rcon>");
-                    return false;
+                    sender.sendMessage("§cUniversalBlocker §7> §6Использование: /" + label + " lock <commands|console|rcon>");
+                    return true;
                 }
                 String lockType = args[1].toLowerCase();
                 switch (lockType) {
@@ -116,6 +99,27 @@ public class CommandClass implements TabExecutor {
         String message = "§cUniversalBlocker §7> §6" + actionWord + " " + featureName + " переключен в значение: " + color + newValue;
 
         sender.sendMessage(message);
+    }
+
+    private void reloadPlugin(CommandSender sender) {
+        long startTime = System.currentTimeMillis();
+        plugin.getRunner().cancelTasks();
+        for (ChatListener listener : plugin.getChatListeners().values()) {
+            listener.setRegistered(false);
+        }
+        HandlerList.unregisterAll(plugin);
+        plugin.reloadConfig();
+        final FileConfiguration config = plugin.getConfig();
+        final ConfigurationSection settings = config.getConfigurationSection("settings");
+        Utils.setupColorizer(settings);
+        plugin.setupPath(settings);
+        pluginConfig.setupExcluded(config);
+        plugin.registerEvents(Bukkit.getPluginManager(), settings);
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            p.updateCommands();
+        }
+        long endTime = System.currentTimeMillis();
+        sender.sendMessage("§cUniversalBlocker §7> §aКонфигурация перезагружена за §e" + (endTime - startTime) + " ms");
     }
 
     @Override
