@@ -124,12 +124,14 @@ public class CommandBlocker implements Listener {
     private final String[] searchList = {"%player%", "%world%", "%cmd%", "%fullcmd%"};
 
     public boolean executeActions(Cancellable e, Player p, String com, String command, List<Action> actions, String world) {
+        Utils.printDebug("Starting executing actions for player '" + p.getName() + "' and command '" + command + "'", Utils.DEBUG_COMMANDS);
         final String[] replacementList = {p.getName(), world, com, command};
 
         for (Action action : actions) {
             ActionType type = action.type();
 
             if (shouldBlockAction(type, p, action, command)) {
+                Utils.printDebug("Command event blocked for player '" + p.getName() + "'", Utils.DEBUG_SYMBOLS);
                 e.setCancelled(true);
                 continue;
             }

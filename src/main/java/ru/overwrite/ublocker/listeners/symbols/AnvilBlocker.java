@@ -102,12 +102,14 @@ public class AnvilBlocker implements Listener {
     private final String[] searchList = {"%player%", "%world%", "%symbol%", "%msg%"};
 
     public void executeActions(Cancellable e, Player p, String name, String symbol, List<Action> actions, String world) {
+        Utils.printDebug("Starting executing actions for player '" + p.getName() + "' and blocked symbol '" + symbol + "' (ANVIL)", Utils.DEBUG_SYMBOLS);
         final String[] replacementList = {p.getName(), world, name, symbol};
 
         for (Action action : actions) {
             ActionType type = action.type();
 
             if (shouldBlockAction(type, p, action)) {
+                Utils.printDebug("Anvil event blocked for player '" + p.getName() + "'", Utils.DEBUG_SYMBOLS);
                 e.setCancelled(true);
                 continue;
             }
