@@ -73,6 +73,7 @@ public final class UniversalBlocker extends JavaPlugin {
         final ConfigurationSection settings = config.getConfigurationSection("settings");
         Utils.setupColorizer(settings);
         this.setupPath(settings);
+        pluginConfig.setupExcluded(config);
         this.setupProxy(settings);
         this.registerEvents(pm, settings);
         if (settings.getBoolean("enable_metrics")) {
