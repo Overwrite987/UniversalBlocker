@@ -46,6 +46,7 @@ symbols:
     symbols:
       - "-ff"
       - "-uu"
+      - "%[^%\\s]+%"
     # Действия из описанных выше инструкций
     actions:
       - '[LITE_BLOCK] perm={ublocker.bypass.symbols1}'
