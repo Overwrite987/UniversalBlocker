@@ -36,10 +36,13 @@ public class SyntaxBlocker implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onCommand(PlayerCommandPreprocessEvent e) {
+        String command = e.getMessage().toLowerCase();
+        if (command.length() == 1) {
+            return;
+        }
         Player p = e.getPlayer();
         if (plugin.isExcluded(p))
             return;
-        String command = e.getMessage().toLowerCase();
         for (SymbolGroup group : pluginConfig.getSymbolBlockGroupSet()) {
             Utils.printDebug("Group checking now: " + group.groupId(), Utils.DEBUG_SYMBOLS);
             if (group.blockFactor().isEmpty() || !group.blockFactor().contains("command")) {

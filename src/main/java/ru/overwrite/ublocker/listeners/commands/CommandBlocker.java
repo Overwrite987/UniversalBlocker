@@ -43,10 +43,13 @@ public class CommandBlocker implements Listener {
             e.setCancelled(true);
             return;
         }
+        String command = e.getMessage().toLowerCase();
+        if (command.length() == 1) {
+            return;
+        }
         Player p = e.getPlayer();
         if (plugin.isExcluded(p))
             return;
-        String command = e.getMessage().toLowerCase();
         // Дерьмо для фикса другого дерьма
         if (command.length() >= 2 && command.charAt(1) == ' ') {
             e.setCancelled(true);
