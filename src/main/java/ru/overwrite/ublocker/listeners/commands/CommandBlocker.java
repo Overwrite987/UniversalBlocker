@@ -52,6 +52,7 @@ public class CommandBlocker implements Listener {
             e.setCancelled(true);
             Utils.printDebug("Player " + p.getName() + " tried to execute incorrect command: " + command, Utils.DEBUG_COMMANDS);
         }
+        Utils.printDebug("Executed command: " + command, Utils.DEBUG_COMMANDS);
         for (CommandGroup group : pluginConfig.getCommandBlockGroupSet()) {
             Utils.printDebug("Group checking now: " + group.groupId(), Utils.DEBUG_COMMANDS);
             Utils.printDebug("Block type: " + group.blockType(), Utils.DEBUG_COMMANDS);
@@ -87,7 +88,6 @@ public class CommandBlocker implements Listener {
                 aliases.add(comInMap.getName());
             }
             String executedCommandBase = Utils.cutCommand(command);
-            Utils.printDebug("Executed command base: " + executedCommandBase, Utils.DEBUG_COMMANDS);
             if (executedCommandBase.equalsIgnoreCase(com) || aliases.contains(executedCommandBase.substring(1))) {
                 List<Action> actions = group.actionsToExecute();
                 if (executeActions(e, p, com, command, actions, p.getWorld().getName())) {
@@ -100,7 +100,6 @@ public class CommandBlocker implements Listener {
     private void checkPatternGroup(PlayerCommandPreprocessEvent e, Player p, String command, CommandGroup group) {
         for (Pattern pattern : group.commandsToBlockPattern()) {
             String executedCommandBase = Utils.cutCommand(command);
-            Utils.printDebug("Executed command base: " + executedCommandBase, Utils.DEBUG_COMMANDS);
             Matcher matcher = pattern.matcher(executedCommandBase.replace("/", ""));
             if (matcher.matches()) {
                 Command comInMap = Bukkit.getCommandMap().getCommand(matcher.group());
