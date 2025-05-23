@@ -18,6 +18,7 @@ import ru.overwrite.ublocker.listeners.commands.RconBlocker;
 import ru.overwrite.ublocker.utils.Utils;
 
 import java.util.List;
+import java.util.TreeSet;
 import java.util.function.Consumer;
 
 public class CommandClass implements TabExecutor {
@@ -59,6 +60,12 @@ public class CommandClass implements TabExecutor {
                             toggleFeature("Дебаг для", "команд", Utils.DEBUG_COMMANDS, v -> Utils.DEBUG_COMMANDS = v, sender);
                     case "symbols" ->
                             toggleFeature("Дебаг для", "символов", Utils.DEBUG_SYMBOLS, v -> Utils.DEBUG_SYMBOLS = v, sender);
+                    case "printknowncommands" ->
+                            plugin.getPluginLogger().info("Known commands: " + new TreeSet<>(Bukkit.getCommandMap().getKnownCommands().keySet()));
+                    case "printcommandgroups" ->
+                            plugin.getPluginLogger().info("Known command groups: " + pluginConfig.getCommandBlockGroupSet());
+                    case "printsymbolgroups" ->
+                            plugin.getPluginLogger().info("Known command groups: " + pluginConfig.getSymbolBlockGroupSet());
                     default -> {
                         sender.sendMessage("§cUniversalBlocker §7> §6Неизвестный тип дебага! Доступные: chat, commands, symbols");
                         return true;
@@ -139,6 +146,9 @@ public class CommandClass implements TabExecutor {
                     completions.add("chat");
                     completions.add("commands");
                     completions.add("symbols");
+                    completions.add("printknowncommands");
+                    completions.add("printcommandgroups");
+                    completions.add("printsymbolgroups");
                 }
                 break;
             }
