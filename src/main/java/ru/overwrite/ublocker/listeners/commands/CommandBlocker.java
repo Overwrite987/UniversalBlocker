@@ -48,8 +48,9 @@ public class CommandBlocker implements Listener {
             return;
         }
         Player p = e.getPlayer();
-        if (plugin.isExcluded(p))
+        if (plugin.isExcluded(p)) {
             return;
+        }
         // Дерьмо для фикса другого дерьма
         if (command.length() >= 2 && command.charAt(1) == ' ') {
             e.setCancelled(true);

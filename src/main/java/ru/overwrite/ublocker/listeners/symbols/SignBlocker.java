@@ -37,8 +37,9 @@ public class SignBlocker implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onSign(SignChangeEvent e) {
         Player p = e.getPlayer();
-        if (plugin.isExcluded(p))
+        if (plugin.isExcluded(p)) {
             return;
+        }
         String line0 = e.getLine(0).toLowerCase();
         String line1 = e.getLine(1).toLowerCase();
         String line2 = e.getLine(2).toLowerCase();

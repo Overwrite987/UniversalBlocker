@@ -37,8 +37,9 @@ public class ChatBlocker implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onCommand(AsyncPlayerChatEvent e) {
         Player p = e.getPlayer();
-        if (plugin.isExcluded(p))
+        if (plugin.isExcluded(p)) {
             return;
+        }
         String message = e.getMessage().toLowerCase();
         for (SymbolGroup group : pluginConfig.getSymbolBlockGroupSet()) {
             Utils.printDebug("Group checking now: " + group.groupId(), Utils.DEBUG_SYMBOLS);

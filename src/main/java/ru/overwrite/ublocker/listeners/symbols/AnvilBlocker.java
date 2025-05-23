@@ -45,8 +45,9 @@ public class AnvilBlocker implements Listener {
             return;
         }
         Player p = (Player) e.getWhoClicked();
-        if (plugin.isExcluded(p))
+        if (plugin.isExcluded(p)) {
             return;
+        }
         String name = resultItem.getItemMeta().getDisplayName();
         for (SymbolGroup group : pluginConfig.getSymbolBlockGroupSet()) {
             Utils.printDebug("Group checking now: " + group.groupId(), Utils.DEBUG_SYMBOLS);
