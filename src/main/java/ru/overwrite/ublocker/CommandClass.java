@@ -31,6 +31,7 @@ public class CommandClass implements TabExecutor {
         this.pluginConfig = plugin.getPluginConfig();
     }
 
+    @Override
     public boolean onCommand(CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
         if (!sender.hasPermission("ublocker.admin")) {
             sender.sendMessage("§6❖ §7Running §c§lUniversalBlocker §c§l" + plugin.getDescription().getVersion() + "§7 by §5OverwriteMC");
