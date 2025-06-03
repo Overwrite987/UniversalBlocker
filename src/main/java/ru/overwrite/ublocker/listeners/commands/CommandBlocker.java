@@ -2,6 +2,7 @@ package ru.overwrite.ublocker.listeners.commands;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
@@ -52,9 +53,10 @@ public class CommandBlocker implements Listener {
             return;
         }
         // Дерьмо для фикса другого дерьма
-        if (command.length() >= 2 && command.charAt(1) == ' ') {
+        if ((command.length() >= 2 && command.charAt(1) == ' ') || hasTwoConsecutiveSpaces(command.toCharArray())) {
             e.setCancelled(true);
             Utils.printDebug("Player " + p.getName() + " tried to execute incorrect command: " + command, Utils.DEBUG_COMMANDS);
+            return;
         }
         Utils.printDebug("Executed command: " + command, Utils.DEBUG_COMMANDS);
         for (CommandGroup group : pluginConfig.getCommandBlockGroupSet()) {
@@ -247,5 +249,15 @@ public class CommandBlocker implements Listener {
 
     private boolean hasArguments(String command) {
         return command.split(" ").length > 1;
+    }
+
+    // В новых версиях нет нормализации пробелов на сервер сайде, таким образом игрок может спокойно обойти любые блокировки
+    private boolean hasTwoConsecutiveSpaces(char[] chars) {
+        for (int i = 0; i < chars.length - 1; i++) {
+            if (chars[i] == ' ' && chars[i + 1] == ' ') {
+                return true;
+            }
+        }
+        return false;
     }
 }

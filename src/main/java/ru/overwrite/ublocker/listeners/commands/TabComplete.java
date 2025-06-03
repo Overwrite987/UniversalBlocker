@@ -37,22 +37,17 @@ public class TabComplete implements Listener {
         String buffer = e.getBuffer();
         // Херня которая запрещает стилить плагины через читы, а за одно еще и предотвращает краш таб-комплитом
         if ((buffer.split(" ").length == 1 && !buffer.endsWith(" ")) || !buffer.startsWith("/") || buffer.length() > 256) {
-            if (Utils.DEBUG_COMMANDS) {
-                plugin.getPluginLogger().warn("Preventing illegal tab complete action from player " + p.getName());
-                plugin.getPluginLogger().warn("Tab complete buffer: " + buffer);
-            }
+            Utils.printDebug("Preventing illegal tab complete action from player " + p.getName(), Utils.DEBUG_COMMANDS);
+            Utils.printDebug("Tab complete buffer: " + buffer, Utils.DEBUG_COMMANDS);
             e.setCancelled(true);
             return;
         }
         for (CommandGroup group : pluginConfig.getCommandBlockGroupSet()) {
-            Utils.printDebug("Group checking now: " + group.groupId(), Utils.DEBUG_COMMANDS);
-            Utils.printDebug("Block type: " + group.blockType(), Utils.DEBUG_COMMANDS);
             List<Action> actions = group.actionsToExecute();
             if (actions.isEmpty()) {
                 continue;
             }
             if (!ConditionChecker.isMeetsRequirements(p, group.conditionsToCheck())) {
-                Utils.printDebug("Blocking does not fulfill the requirements. Skipping group...", Utils.DEBUG_COMMANDS);
                 continue;
             }
             switch (group.blockType()) {
