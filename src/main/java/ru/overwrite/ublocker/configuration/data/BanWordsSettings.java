@@ -10,6 +10,7 @@ public record BanWordsSettings(
         Set<String> banWordsString,
         Set<Pattern> banWordsPattern,
         boolean block,
+        String censorSymbol,
         CancellationSettings cancellationSettings
 ) {
 }

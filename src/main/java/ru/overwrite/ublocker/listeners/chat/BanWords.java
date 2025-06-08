@@ -56,11 +56,11 @@ public class BanWords extends ChatListener {
         if (banWordsSettings.block()) {
             e.setCancelled(true);
             executeBlockActions(p, banword, message, banWordsSettings.cancellationSettings());
-        } else {
-            notifyAdmins(p, banword, message, banWordsSettings.cancellationSettings());
-            String censored = "*".repeat(banword.length());
-            e.setMessage(message.replace(banword, censored));
+            return;
         }
+        notifyAdmins(p, banword, message, banWordsSettings.cancellationSettings());
+        String censored = banWordsSettings.censorSymbol().repeat(banword.length());
+        e.setMessage(message.replace(banword, censored));
     }
 
     private void executeBlockActions(Player p, String banword, String message, CancellationSettings cancellationSettings) {

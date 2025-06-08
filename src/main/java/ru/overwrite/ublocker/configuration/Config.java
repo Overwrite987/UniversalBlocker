@@ -392,6 +392,7 @@ public class Config {
         }
 
         boolean block = banWords.getBoolean("block");
+        String censorSymbol = String.valueOf(banWords.getString("censor_symbol", "*").charAt(0));
 
         String message = Utils.COLORIZER.colorize(banWords.getString("message"));
         String[] sound = banWords.getString("sound", "ENTITY_ITEM_BREAK;1.0;1.0").split(";");
@@ -406,6 +407,7 @@ public class Config {
                 banWordsString,
                 banWordsPattern,
                 block,
+                censorSymbol,
                 new CancellationSettings(
                         message,
                         sound,
