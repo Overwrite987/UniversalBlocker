@@ -41,7 +41,7 @@ symbols:
     # chat - заблокирует символ в чате
     # sign - заблокирует символ на табличке
     # anvil - заблокирует символ во время переименования на наковальне
-    block_factor: command;chat
+    block_factor: command
     # Список символов из данной категории к котором будут применены действия
     symbols:
       - "-ff"
@@ -67,7 +67,7 @@ symbols:
       - '^/reg(ister)?( .*)?$'
   string_example:
     mode: 'STRING'
-    block_factor: command;chat
+    block_factor: command
     symbols:
       - '.*'
       - '**'
