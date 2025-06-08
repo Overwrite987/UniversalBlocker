@@ -60,7 +60,7 @@ chat_settings:
     enable: false
     mode: STRING
     pattern: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ ~`1!2@3#4$5%6^7&§89(0)-_=+*|[{]}\;:"',<.>/?!№
-    message: '&7&l(&c&l!&7&l) &cНа табличке нельзя писать символы, которых нет на клавиатуре'
+    message: '&7&l(&c&l!&7&l) &cВ команде нельзя писать символы, которых нет на клавиатуре'
     sound: ENTITY_ITEM_BREAK;1.0;1.0
     notify:
       enable: true
