@@ -4,7 +4,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.server.RemoteServerCommandEvent;
+import org.bukkit.event.server.ServerCommandEvent;
 import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.actions.ActionType;
@@ -16,23 +16,23 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class RconBlocker implements Listener {
+public class ConsoleSymbolBlocker implements Listener {
 
     private final UniversalBlocker plugin;
     private final Config pluginConfig;
 
-    public RconBlocker(UniversalBlocker plugin) {
+    public ConsoleSymbolBlocker(UniversalBlocker plugin) {
         this.plugin = plugin;
         this.pluginConfig = plugin.getPluginConfig();
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onCommand(RemoteServerCommandEvent e) {
+    public void onCommand(ServerCommandEvent e) {
         String command = e.getCommand().toLowerCase();
         for (SymbolGroup group : pluginConfig.getSymbolBlockGroupSet()) {
             Utils.printDebug("Group checking now: " + group.groupId(), Utils.DEBUG_SYMBOLS);
-            if (group.blockFactor().isEmpty() || !group.blockFactor().contains("rcon_command")) {
-                Utils.printDebug("Group " + group.groupId() + " does not have 'rcon_command' block factor. Skipping...", Utils.DEBUG_SYMBOLS);
+            if (group.blockFactor().isEmpty() || !group.blockFactor().contains("console_command")) {
+                Utils.printDebug("Group " + group.groupId() + " does not have 'console_command' block factor. Skipping...", Utils.DEBUG_SYMBOLS);
                 continue;
             }
             List<Action> actions = group.actionsToExecute();
@@ -55,7 +55,7 @@ public class RconBlocker implements Listener {
         }
     }
 
-    private void checkStringBlock(RemoteServerCommandEvent e, String command, SymbolGroup group) {
+    private void checkStringBlock(ServerCommandEvent e, String command, SymbolGroup group) {
         for (String symbol : group.symbolsToBlock()) {
             if (startWithExcludedString(command, group.excludedCommandsString())) {
                 continue;
@@ -68,7 +68,7 @@ public class RconBlocker implements Listener {
         }
     }
 
-    private void checkPatternBlock(RemoteServerCommandEvent e, String command, SymbolGroup group) {
+    private void checkPatternBlock(ServerCommandEvent e, String command, SymbolGroup group) {
         for (Pattern pattern : group.patternsToBlock()) {
             Matcher matcher = pattern.matcher(command);
             if (startWithExcludedPattern(command, group.excludedCommandsPattern())) {

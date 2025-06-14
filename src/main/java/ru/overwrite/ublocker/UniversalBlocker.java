@@ -14,10 +14,7 @@ import org.bukkit.plugin.messaging.Messenger;
 import ru.overwrite.ublocker.configuration.Config;
 import ru.overwrite.ublocker.listeners.chat.*;
 import ru.overwrite.ublocker.listeners.commands.*;
-import ru.overwrite.ublocker.listeners.symbols.AnvilBlocker;
-import ru.overwrite.ublocker.listeners.symbols.ChatBlocker;
-import ru.overwrite.ublocker.listeners.symbols.SignBlocker;
-import ru.overwrite.ublocker.listeners.symbols.SyntaxBlocker;
+import ru.overwrite.ublocker.listeners.symbols.*;
 import ru.overwrite.ublocker.task.BukkitRunner;
 import ru.overwrite.ublocker.task.PaperRunner;
 import ru.overwrite.ublocker.task.Runner;
@@ -160,6 +157,8 @@ public final class UniversalBlocker extends JavaPlugin {
             pluginConfig.setupSymbols(path);
             pm.registerEvents(new SyntaxBlocker(this), this);
             pm.registerEvents(new ChatBlocker(this), this);
+            pm.registerEvents(new ConsoleSymbolBlocker(this), this);
+            pm.registerEvents(new RconSymbolBlocker(this), this);
             pm.registerEvents(new SignBlocker(this), this);
             pm.registerEvents(new AnvilBlocker(this), this);
         }
