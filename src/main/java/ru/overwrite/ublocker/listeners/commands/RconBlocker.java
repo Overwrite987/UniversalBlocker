@@ -65,7 +65,7 @@ public class RconBlocker implements Listener {
             if (!aliases.isEmpty() && !aliases.contains(comInMap.getName())) {
                 aliases.add(comInMap.getName());
             }
-            String executedCommandBase = command.contains(" ") ? Utils.cutCommand(command) : command;
+            String executedCommandBase = Utils.cutCommand(command);
             if (executedCommandBase.equalsIgnoreCase(com) || aliases.contains(executedCommandBase.substring(1))) {
                 List<Action> actions = group.actionsToExecute();
                 if (shouldBlockCommand(e, actions)) {

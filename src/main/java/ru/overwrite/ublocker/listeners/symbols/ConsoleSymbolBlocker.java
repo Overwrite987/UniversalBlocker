@@ -1,5 +1,6 @@
 package ru.overwrite.ublocker.listeners.symbols;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -82,11 +83,11 @@ public class ConsoleSymbolBlocker implements Listener {
         }
     }
 
-    private final String[] searchList = {"%symbol%", "%msg%"};
+    private final String[] searchList = {"%player%", "%symbol%", "%msg%"};
 
     public void executeActions(Cancellable e, String command, String symbol, List<Action> actions) {
         Utils.printDebug("Starting executing actions for rcon and blocked symbol '" + symbol + "' (COMMAND)", Utils.DEBUG_SYMBOLS);
-        final String[] replacementList = {symbol, command};
+        final String[] replacementList = {"CONSOLE", symbol, command};
 
         for (Action action : actions) {
             ActionType type = action.type();
@@ -101,6 +102,9 @@ public class ConsoleSymbolBlocker implements Listener {
                 if (type == ActionType.LOG) {
                     logAction(action, replacementList);
                 }
+                if (type == ActionType.NOTIFY_CONSOLE) {
+                    sendNotifyConsole(action, replacementList);
+                }
             }
         }
     }
@@ -113,6 +117,15 @@ public class ConsoleSymbolBlocker implements Listener {
         String logMessage = Utils.extractMessage(action.context(), Utils.FILE_MARKER);
         String file = Utils.extractValue(action.context(), Utils.FILE_PREFIX, "}");
         plugin.logAction(Utils.replaceEach(logMessage, searchList, replacementList), file);
+    }
+
+    private void sendNotifyConsole(Action action, String[] replacementList) {
+        String formattedMessage = formatActionMessage(action, replacementList);
+        Bukkit.getConsoleSender().sendMessage(formattedMessage);
+    }
+
+    private String formatActionMessage(Action action, String[] replacementList) {
+        return Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
     }
 
     private boolean startWithExcludedString(String command, List<String> excludedList) {
