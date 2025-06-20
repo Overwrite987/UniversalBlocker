@@ -1,6 +1,7 @@
 package ru.overwrite.ublocker;
 
 import com.google.common.collect.ImmutableList;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bstats.bukkit.Metrics;
@@ -30,7 +31,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.Map;
 
 @Getter
@@ -47,7 +47,7 @@ public final class UniversalBlocker extends JavaPlugin {
 
     private final Config pluginConfig = new Config(this);
 
-    private final Map<String, ChatListener> chatListeners = new HashMap<>();
+    private final Map<String, ChatListener> chatListeners = new Object2ObjectOpenHashMap<>();
 
     private String path;
 
