@@ -30,6 +30,9 @@ public class SameMessageLimiter extends ChatListener {
         }
         SameMessagesSettings sameMessagesSettings = pluginConfig.getSameMessagesSettings();
         String message = e.getMessage();
+        if (message.length() <= sameMessagesSettings.minMessageLength()) {
+            return;
+        }
         String playerName = p.getName();
         if (checkMessage(playerName, message, sameMessagesSettings)) {
             String[] replacementList = {playerName, message};

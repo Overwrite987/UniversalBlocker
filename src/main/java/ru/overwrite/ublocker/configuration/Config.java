@@ -255,7 +255,7 @@ public class Config {
             chatListener.setRegistered(shouldBeRegistered);
         }
 
-        int maxNumbers = numbersCheck.getInt("maxmsgnumbers");
+        int maxNumbers = numbersCheck.getInt("maxmsgnumbers", 12);
         boolean strictCheck = numbersCheck.getBoolean("strict");
 
         String message = Utils.COLORIZER.colorize(numbersCheck.getString("message"));
@@ -294,7 +294,7 @@ public class Config {
             chatListener.setRegistered(shouldBeRegistered);
         }
 
-        int maxUpperCasePercent = caseCheck.getInt("maxuppercasepercent");
+        int maxUpperCasePercent = caseCheck.getInt("max_uppercase_percent", 70);
         boolean strictCheck = caseCheck.getBoolean("strict");
         String message = Utils.COLORIZER.colorize(caseCheck.getString("message"));
 
@@ -333,9 +333,10 @@ public class Config {
             chatListener.setRegistered(shouldBeRegistered);
         }
 
-        int samePercents = sameMessages.getInt("same_percents");
-        int maxSameMessage = sameMessages.getInt("max_same_message");
-        int historySize = sameMessages.getInt("history_size");
+        int samePercents = sameMessages.getInt("same_percents", 70);
+        int maxSameMessage = sameMessages.getInt("max_same_message", 2);
+        int minMessageLength = sameMessages.getInt("min_message_length", 3);
+        int historySize = sameMessages.getInt("history_size", 10);
 
         String message = Utils.COLORIZER.colorize(sameMessages.getString("message"));
         String[] sound = sameMessages.getString("sound", "ENTITY_ITEM_BREAK;1.0;1.0").split(";");
@@ -348,6 +349,7 @@ public class Config {
         this.sameMessagesSettings = new SameMessagesSettings(
                 samePercents,
                 maxSameMessage,
+                minMessageLength,
                 historySize,
                 new CancellationSettings(
                         message,
