@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.RemoteServerCommandEvent;
 import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.actions.Action;
+import ru.overwrite.ublocker.actions.ActionType;
 import ru.overwrite.ublocker.blockgroups.CommandGroup;
 import ru.overwrite.ublocker.configuration.Config;
 import ru.overwrite.ublocker.utils.Utils;
@@ -65,56 +66,79 @@ public class RconBlocker implements Listener {
             if (!aliases.isEmpty() && !aliases.contains(comInMap.getName())) {
                 aliases.add(comInMap.getName());
             }
-            String executedCommandBase = Utils.cutCommand(command);
-            if (executedCommandBase.equalsIgnoreCase(com) || aliases.contains(executedCommandBase.substring(1))) {
+            String executedCommandBase = Utils.cutCommand(command).toLowerCase();
+            String baseCommand = executedCommandBase.startsWith("/")
+                    ? executedCommandBase.substring(1)
+                    : executedCommandBase;
+
+            if (com.equalsIgnoreCase(baseCommand) || aliases.contains(baseCommand)) {
                 List<Action> actions = group.actionsToExecute();
-                if (shouldBlockCommand(e, actions)) {
-                    break;
-                }
+                executeActions(e, command, baseCommand, actions);
             }
         }
     }
 
     private void checkPatternBlock(RemoteServerCommandEvent e, String command, CommandGroup group) {
         for (Pattern pattern : group.commandsToBlockPattern()) {
-            Matcher matcher = pattern.matcher(Utils.cutCommand(command).replace("/", ""));
+            String baseCommand = Utils.cutCommand(command).replace("/", "");
+            Matcher matcher = pattern.matcher(baseCommand);
             if (matcher.matches()) {
                 Command comInMap = Bukkit.getCommandMap().getCommand(matcher.group());
                 List<String> aliases = comInMap == null ? List.of() : comInMap.getAliases();
                 if (!aliases.isEmpty()) {
                     aliases.add(comInMap.getName());
                 }
-                List<Action> actions = group.actionsToExecute();
                 if (aliases.contains(matcher.group())) {
-                    if (shouldBlockCommand(e, actions)) {
-                        break;
-                    }
-                }
-                if (shouldBlockCommand(e, actions)) {
-                    break;
+                    List<Action> actions = group.actionsToExecute();
+                    executeActions(e, command, matcher.group(), actions);
                 }
             }
         }
     }
 
-    private boolean shouldBlockCommand(Cancellable e, List<Action> actions) {
+    private final String[] searchList = {"%player%", "%command%", "%msg%"};
+
+    public void executeActions(Cancellable e, String fullCommand, String baseCommand, List<Action> actions) {
+        Utils.printDebug("Starting executing actions for rcon and blocked command '" + baseCommand + "'", Utils.DEBUG_COMMANDS);
+        final String[] replacementList = {"RCON", baseCommand, fullCommand};
+
         for (Action action : actions) {
-            switch (action.type()) {
-                case BLOCK_CONSOLE: {
-                    e.setCancelled(true);
-                }
-                case LOG: {
-                    if (!e.isCancelled())
+            ActionType type = action.type();
+
+            if (type == ActionType.BLOCK_CONSOLE) {
+                Utils.printDebug("Command event blocked for rcon", Utils.DEBUG_COMMANDS);
+                e.setCancelled(true);
+            }
+
+            if (e.isCancelled()) {
+                switch (type) {
+                    case LOG: {
+                        logAction(action, replacementList);
                         break;
-                    String logMessage = Utils.extractMessage(action.context(), Utils.FILE_MARKER);
-                    String file = Utils.extractValue(action.context(), Utils.FILE_PREFIX, "}");
-                    plugin.logAction(logMessage, file);
-                    break;
+                    }
+                    case NOTIFY_CONSOLE: {
+                        sendNotifyConsole(action, replacementList);
+                        break;
+                    }
+                    default:
+                        break;
                 }
-                default:
-                    break;
             }
         }
-        return e.isCancelled();
+    }
+
+    private void logAction(Action action, String[] replacementList) {
+        String logMessage = Utils.extractMessage(action.context(), Utils.FILE_MARKER);
+        String file = Utils.extractValue(action.context(), Utils.FILE_PREFIX, "}");
+        plugin.logAction(Utils.replaceEach(logMessage, searchList, replacementList), file);
+    }
+
+    private void sendNotifyConsole(Action action, String[] replacementList) {
+        String formattedMessage = formatActionMessage(action, replacementList);
+        Bukkit.getConsoleSender().sendMessage(formattedMessage);
+    }
+
+    private String formatActionMessage(Action action, String[] replacementList) {
+        return Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
     }
 }
