@@ -64,10 +64,9 @@ commands:
   regex_example:
     mode: 'PATTERN'
     commands:
-      - 'pl(ugins)?'
-      - 'ver(sion)?'
+      - '/pl(ugins)?'
+      - '/ver(sion)?'
     actions:
-      - '[HIDE]'
       - '[BLOCK_TAB_COMPLETE]'
       - '[BLOCK]'
       - '[MESSAGE] &7&l(&c&l!&7&l) &3Команда &8(&4%cmd%&8) &3не доступна с вашим уровнем доступа! hoverText={&7Данная команда была заблокирована по причине: &4так надо}'

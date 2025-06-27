@@ -57,11 +57,6 @@ symbols:
       - '[SOUND] ENTITY_ITEM_BREAK;1.0;1.0'
       - '[NOTIFY] &7&l(&c&l!&7&l) &cИгрок &3%player% &cиспользовал запрещеннный символ! hoverText={&7Использованная написанная команда: &4%cmd%, &7Заблокированный компонент: &4%symbol%} perm={ublocker.notify.symbol1}'
       - '[NOTIFY_SOUND] BLOCK_NOTE_BLOCK_PLING;1.0;1.0 perm={ublocker.notify.symbol1}'
-    # Условия выполнения действий
-    # Если указаны пустым или не указаны вовсе - блокировка будет выполняться вне зависимости от них
-    conditions:
-      - '[WORLD] == spawn'
-      - '[REGION] == pvp'
     # На какие команды эти действия не распространяется (можно оставить пустым)
     # Если указан тип 'PATTERN' - то команды тоже должны указываться в виде регулярных выражений
     excluded_commands:
@@ -80,6 +75,11 @@ symbols:
       - '[SOUND] ENTITY_ITEM_BREAK;1.0;1.0'
       - '[NOTIFY] &7&l(&c&l!&7&l) &cИгрок &3%player% &cиспользовал запрещеннный символ! hoverText={&7Использованная написанная команда: &4%cmd%, &7Заблокированный компонент: %symbol%} perm={ublocker.notify.symbol1}'
       - '[NOTIFY_SOUND] BLOCK_NOTE_BLOCK_PLING;1.0;1.0 perm={ublocker.notify.symbol1}'
+    # Условия выполнения действий
+    # Если указаны пустым или не указаны вовсе - блокировка будет выполняться вне зависимости от них
+    conditions:
+      - '[WORLD] == spawn'
+      - '[REGION] == pvp'
     excluded_commands:
       - '/login'
       - '/register'
