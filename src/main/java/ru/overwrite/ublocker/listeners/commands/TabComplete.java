@@ -86,7 +86,7 @@ public class TabComplete implements Listener {
     private void checkPatternBlock(AsyncTabCompleteEvent e, Player p, String buffer, CommandGroup group) {
         for (Pattern pattern : group.commandsToBlockPattern()) {
             List<Action> actions = group.actionsToExecute();
-            Matcher matcher = pattern.matcher(buffer.split(" ")[0]);
+            Matcher matcher = pattern.matcher(Utils.cutCommand(buffer));
             if (matcher.matches()) {
                 Command comInMap = Bukkit.getCommandMap().getCommand(matcher.group());
                 List<String> aliases = comInMap == null ? List.of() : comInMap.getAliases();
