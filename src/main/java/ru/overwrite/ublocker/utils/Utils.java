@@ -149,13 +149,13 @@ public class Utils {
             boolean hasTrailingSpace = buttonEnd + 1 < formattedMessage.length() && formattedMessage.charAt(buttonEnd + 1) == ' ';
 
             if (hasLeadingSpace) {
-                components.add(Component.text(" "));
+                components.add(Component.space());
             }
 
             components.add(buttonComponent);
 
             if (hasTrailingSpace) {
-                components.add(Component.text(" "));
+                components.add(Component.space());
             }
 
             currentIndex = buttonEnd + 1;
