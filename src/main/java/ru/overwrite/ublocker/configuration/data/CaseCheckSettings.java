@@ -4,4 +4,5 @@ public record CaseCheckSettings(
         int maxUpperCasePercent,
         boolean strictCheck,
         CancellationSettings cancellationSettings
-) { }
+) {
+}
