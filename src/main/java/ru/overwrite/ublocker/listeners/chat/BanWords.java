@@ -27,6 +27,9 @@ public class BanWords extends ChatListener {
         }
         BanWordsSettings banWordsSettings = pluginConfig.getBanWordsSettings();
         String message = e.getMessage().toLowerCase();
+        if (banWordsSettings.stripColor()) {
+            message = Utils.stripColorCodes(message);
+        }
         switch (banWordsSettings.mode()) {
             case STRING: {
                 for (String banword : banWordsSettings.banWordsString()) {

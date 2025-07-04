@@ -9,6 +9,7 @@ public record SameMessagesSettings(
         int maxSameMessage,
         int minMessageLength,
         int historySize,
+        boolean stripColor,
         List<Action> actionsToExecute
 ) {
 }

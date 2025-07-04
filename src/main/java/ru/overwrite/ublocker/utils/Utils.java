@@ -307,19 +307,38 @@ public class Utils {
         return message.clickEvent(click);
     }
 
+    public String stripColorCodes(String text) {
+        if (text.length() < 3) {
+            return text;
+        }
+
+        char[] chars = text.toCharArray();
+        int writeIndex = 0;
+
+        for (int i = 0; i < chars.length; i++) {
+            if (chars[i] == '&' && i + 1 < chars.length && Utils.isValidColorCharacter(chars[i + 1])) {
+                i++;
+                continue;
+            }
+            chars[writeIndex++] = chars[i];
+        }
+
+        return writeIndex == chars.length ? text : new String(chars, 0, writeIndex);
+    }
+
     public final char COLOR_CHAR = '§';
 
     public String translateAlternateColorCodes(char altColorChar, String textToTranslate) {
-        final char[] b = textToTranslate.toCharArray();
+        final char[] chars = textToTranslate.toCharArray();
 
-        for (int i = 0, length = b.length - 1; i < length; ++i) {
-            if (b[i] == altColorChar && isValidColorCharacter(b[i + 1])) {
-                b[i++] = COLOR_CHAR;
-                b[i] |= 0x20;
+        for (int i = 0, length = chars.length - 1; i < length; ++i) {
+            if (chars[i] == altColorChar && isValidColorCharacter(chars[i + 1])) {
+                chars[i++] = COLOR_CHAR;
+                chars[i] |= 0x20;
             }
         }
 
-        return new String(b);
+        return new String(chars);
     }
 
     private boolean isValidColorCharacter(char c) {

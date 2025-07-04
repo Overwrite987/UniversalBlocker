@@ -30,6 +30,9 @@ public class SameMessageLimiter extends ChatListener {
         }
         SameMessagesSettings sameMessagesSettings = pluginConfig.getSameMessagesSettings();
         String message = e.getMessage();
+        if (sameMessagesSettings.stripColor()) {
+            message = Utils.stripColorCodes(message);
+        }
         if (message.length() <= sameMessagesSettings.minMessageLength()) {
             return;
         }

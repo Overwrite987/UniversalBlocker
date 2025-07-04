@@ -208,12 +208,14 @@ public class Config {
 
         int maxNumbers = numbersCheck.getInt("maxmsgnumbers", 12);
         boolean strictCheck = numbersCheck.getBoolean("strict");
+        boolean stripColor = numbersCheck.getBoolean("strip_color");
 
         List<Action> actionList = getActionList(numbersCheck.getStringList("actions"));
 
         this.numberCheckSettings = new NumberCheckSettings(
                 maxNumbers,
                 strictCheck,
+                stripColor,
                 actionList
         );
     }
@@ -264,6 +266,7 @@ public class Config {
         int maxSameMessage = sameMessages.getInt("max_same_message", 2);
         int minMessageLength = sameMessages.getInt("min_message_length", 3);
         int historySize = sameMessages.getInt("history_size", 10);
+        boolean stripColor = sameMessages.getBoolean("strip_color");
 
         List<Action> actionList = getActionList(sameMessages.getStringList("actions"));
 
@@ -272,6 +275,7 @@ public class Config {
                 maxSameMessage,
                 minMessageLength,
                 historySize,
+                stripColor,
                 actionList
         );
     }
@@ -310,6 +314,7 @@ public class Config {
 
         boolean strict = banWords.getBoolean("strict");
         String censorSymbol = String.valueOf(banWords.getString("censor_symbol", "*").charAt(0));
+        boolean stripColor = banWords.getBoolean("strip_color");
 
         List<Action> actionList = getActionList(banWords.getStringList("actions"));
 
@@ -319,6 +324,7 @@ public class Config {
                 banWordsPattern,
                 strict,
                 censorSymbol,
+                stripColor,
                 actionList
         );
     }

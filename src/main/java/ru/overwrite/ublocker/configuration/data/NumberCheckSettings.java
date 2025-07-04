@@ -7,6 +7,7 @@ import java.util.List;
 public record NumberCheckSettings(
         int maxNumbers,
         boolean strictCheck,
+        boolean stripColor,
         List<Action> actionsToExecute
 ) {
 }

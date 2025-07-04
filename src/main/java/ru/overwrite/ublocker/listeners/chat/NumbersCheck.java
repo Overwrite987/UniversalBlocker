@@ -6,6 +6,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.configuration.data.NumberCheckSettings;
+import ru.overwrite.ublocker.utils.Utils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,6 +29,9 @@ public class NumbersCheck extends ChatListener {
         }
         NumberCheckSettings numberCheckSettings = pluginConfig.getNumberCheckSettings();
         String message = e.getMessage();
+        if (numberCheckSettings.stripColor()) {
+            message = Utils.stripColorCodes(message);
+        }
         if (numberCheckSettings.strictCheck()) {
             int count = 0;
             for (int a = 0, b = message.length(); a < b; a++) {

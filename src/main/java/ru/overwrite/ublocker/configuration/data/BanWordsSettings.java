@@ -13,6 +13,7 @@ public record BanWordsSettings(
         Set<Pattern> banWordsPattern,
         boolean strict,
         String censorSymbol,
+        boolean stripColor,
         List<Action> actionsToExecute
 ) {
 }
