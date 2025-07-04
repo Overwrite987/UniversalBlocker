@@ -36,7 +36,7 @@ public class SameMessageLimiter extends ChatListener {
         String playerName = p.getName();
         if (checkMessage(playerName, message, sameMessagesSettings)) {
             String[] replacementList = {playerName, message};
-            super.cancelEvent(p, searchList, replacementList, e, sameMessagesSettings.cancellationSettings(), plugin.getPluginMessage());
+            super.executeActions(e, p, searchList, replacementList, sameMessagesSettings.actionsToExecute());
         }
     }
 

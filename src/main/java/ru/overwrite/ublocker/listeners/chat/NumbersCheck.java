@@ -38,7 +38,7 @@ public class NumbersCheck extends ChatListener {
             }
             if (count > numberCheckSettings.maxNumbers()) {
                 String[] replacementList = {p.getName(), Integer.toString(numberCheckSettings.maxNumbers()), message};
-                super.cancelEvent(p, searchList, replacementList, e, numberCheckSettings.cancellationSettings(), plugin.getPluginMessage());
+                super.executeActions(e, p, searchList, replacementList, numberCheckSettings.actionsToExecute());
             }
         } else {
             Matcher matcher = IP_PATTERN.matcher(message);
@@ -52,7 +52,7 @@ public class NumbersCheck extends ChatListener {
             }
             if (digitsCount > numberCheckSettings.maxNumbers()) {
                 String[] replacementList = {p.getName(), Integer.toString(numberCheckSettings.maxNumbers()), message};
-                super.cancelEvent(p, searchList, replacementList, e, numberCheckSettings.cancellationSettings(), plugin.getPluginMessage());
+                super.executeActions(e, p, searchList, replacementList, numberCheckSettings.actionsToExecute());
             }
         }
     }

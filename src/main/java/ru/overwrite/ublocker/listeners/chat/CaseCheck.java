@@ -6,6 +6,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.configuration.data.CaseCheckSettings;
+import ru.overwrite.ublocker.utils.Utils;
 
 public class CaseCheck extends ChatListener {
 
@@ -27,9 +28,10 @@ public class CaseCheck extends ChatListener {
         if (checkCase(message, threshold)) {
             if (caseCheckSettings.strictCheck()) {
                 String[] replacementList = {p.getName(), Integer.toString(caseCheckSettings.maxUpperCasePercent()), message};
-                super.cancelEvent(p, searchList, replacementList, e, caseCheckSettings.cancellationSettings(), plugin.getPluginMessage());
+                super.executeActions(e, p, searchList, replacementList, caseCheckSettings.actionsToExecute());
                 return;
             }
+            Utils.printDebug("Moving message to lower case: " + message, Utils.DEBUG_CHAT);
             e.setMessage(message.toLowerCase());
         }
     }

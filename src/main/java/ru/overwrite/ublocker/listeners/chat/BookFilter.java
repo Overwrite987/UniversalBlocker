@@ -12,7 +12,7 @@ import java.util.function.Predicate;
 
 public class BookFilter extends ChatListener {
 
-    private final String[] searchList = {"%player%", "%symbol%"};
+    private final String[] searchList = {"%player%", "%world%", "%symbol%"};
 
     public BookFilter(UniversalBlocker plugin) {
         super(plugin);
@@ -29,7 +29,7 @@ public class BookFilter extends ChatListener {
             String serialisedMessage = page.replace("\n", "");
             if (containsBlockedChars(serialisedMessage, bookCharsSettings)) {
                 String[] replacementList = {p.getName(), getFirstBlockedChar(serialisedMessage, bookCharsSettings)};
-                cancelEvent(p, searchList, replacementList, e, bookCharsSettings.cancellationSettings(), plugin.getPluginMessage());
+                super.executeActions(e, p, searchList, replacementList, bookCharsSettings.actionsToExecute());
                 break;
             }
         }

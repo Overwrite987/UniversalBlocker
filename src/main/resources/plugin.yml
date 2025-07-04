@@ -11,13 +11,6 @@ commands:
 permissions:
   ublocker.bypass.*:
     children:
-      ublocker.bypass.banwords: true
-      ublocker.bypass.bookchars: true
-      ublocker.bypass.chatchars: true
-      ublocker.bypass.signchars: true
-      ublocker.bypass.commandchars: true
-      ublocker.bypass.numbers: true
       ublocker.bypass.commands: true
       ublocker.bypass.symbols: true
-      ublocker.bypass.samemessage: true
-      ublocker.bypass.case: true
+      ublocker.bypass.chat: true

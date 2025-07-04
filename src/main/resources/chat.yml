@@ -13,14 +13,12 @@ chat_settings:
     # В режиме PATTERN - используются регулярные выражения
     mode: STRING
     pattern: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ ~`1!2@3#4$5%6^7&§89(0)-_=+*|[{]}\;:"',<.>/?!№
-    message: '&7&l(&c&l!&7&l) &cВаше сообщение содержит запрещенные символы'
-    # Настройка звука, который будет проигрываться при нарушении
-    sound: ENTITY_ITEM_BREAK;1.0;1.0 # ID:громкость:тон
-    # Настройка оповещений для администрации
-    notify:
-      enable: true
-      message: '&7&l(&c&l!&7&l) &cИгрок &3%player% &cиспользовал запрещеннный символ в чате &8(&4%symbol%&8) hoverText={&7Сообщение игрока: &c%msg%}'
-      sound: BLOCK_NOTE_BLOCK_PLING;1.0;1.0
+    # Действия, которые будут выполняться при нарушении игроком.
+    actions:
+      - '[MESSAGE] &7&l(&c&l!&7&l) &cВаше сообщение содержит запрещенные символы'
+      - '[SOUND] ENTITY_ITEM_BREAK;1.0;1.0'
+      - '[NOTIFY] &7&l(&c&l!&7&l) &cИгрок &3%player% &cиспользовал запрещеннный символ в чате &8(&4%symbol%&8) hoverText={&7Сообщение игрока: &c%msg%} perm={ublocker.notify.chat}'
+      - '[NOTIFY_SOUND] BLOCK_NOTE_BLOCK_PLING;1.0;1.0 perm={ublocker.notify.chat}'
   # Какие символы можно писать в книге
   # Плейсхолдеры: 
   ## %symbol% - заблокированный символ (если таких символов много - отобразится только первый заблокированный)
@@ -30,12 +28,11 @@ chat_settings:
     enable: true
     mode: PATTERN
     pattern: "[A-Za-zА-Яа-я,!?\\s]+"
-    message: '&7&l(&c&l!&7&l) &cВ книге нельзя писать символы, которых нет на клавиатуре'
-    sound: ENTITY_ITEM_BREAK;1.0;1.0
-    notify:
-      enable: true
-      message: '&7&l(&c&l!&7&l) &cИгрок &3%player% &cпытался написать запрещенные символы в книге &8(&4%symbol%&8).'
-      sound: BLOCK_NOTE_BLOCK_PLING;1.0;1.0
+    actions:
+      - '[MESSAGE] &7&l(&c&l!&7&l) &cВ книге нельзя писать символы, которых нет на клавиатуре'
+      - '[SOUND] ENTITY_ITEM_BREAK;1.0;1.0'
+      - '[NOTIFY] &7&l(&c&l!&7&l) &cИгрок &3%player% &cпытался написать запрещенные символы в книге &8(&4%symbol%&8). perm={ublocker.notify.books}'
+      - '[NOTIFY_SOUND] BLOCK_NOTE_BLOCK_PLING;1.0;1.0 perm={ublocker.notify.books}'
   # Какие символы можно писать на табличке
   # Плейсхолдеры: 
   ## %symbol% - заблокированный символ (если таких символов много - отобразится только первый заблокированный)
@@ -45,12 +42,11 @@ chat_settings:
     enable: true
     mode: PATTERN
     pattern: "[A-Za-zА-Яа-я,!?\\s]+"
-    message: '&7&l(&c&l!&7&l) &cНа табличке нельзя писать символы, которых нет на клавиатуре'
-    sound: ENTITY_ITEM_BREAK;1.0;1.0
-    notify:
-      enable: true
-      message: '&7&l(&c&l!&7&l) &cИгрок &3%player% &cпытался написать запрещенные символы на табличке &8(&4%symbol%&8).'
-      sound: BLOCK_NOTE_BLOCK_PLING;1.0;1.0
+    actions:
+      - '[MESSAGE] &7&l(&c&l!&7&l) &cНа табличке нельзя писать символы, которых нет на клавиатуре'
+      - '[SOUND] ENTITY_ITEM_BREAK;1.0;1.0'
+      - '[NOTIFY] &7&l(&c&l!&7&l) &cИгрок &3%player% &cпытался написать запрещенные символы на табличке &8(&4%symbol%&8). perm={ublocker.notify.signs}'
+      - '[NOTIFY_SOUND] BLOCK_NOTE_BLOCK_PLING;1.0;1.0 perm={ublocker.notify.signs}'
   # Какие символы можно писать командах
   # Плейсхолдеры: 
   ## %symbol% - заблокированный символ (если таких символов много - отобразится только первый заблокированный)
@@ -60,12 +56,11 @@ chat_settings:
     enable: false
     mode: STRING
     pattern: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ ~`1!2@3#4$5%6^7&§89(0)-_=+*|[{]}\;:"',<.>/?!№
-    message: '&7&l(&c&l!&7&l) &cВ команде нельзя писать символы, которых нет на клавиатуре'
-    sound: ENTITY_ITEM_BREAK;1.0;1.0
-    notify:
-      enable: true
-      message: '&7&l(&c&l!&7&l) &cИгрок &3%player% &cпытался написать запрещенные символы в команде &8(&4%symbol%&8). hoverText={&7Сообщение игрока: &c%msg%}'
-      sound: BLOCK_NOTE_BLOCK_PLING;1.0;1.0
+    actions:
+      - '[MESSAGE] &7&l(&c&l!&7&l) &cВ команде нельзя писать символы, которых нет на клавиатуре'
+      - '[SOUND] ENTITY_ITEM_BREAK;1.0;1.0'
+      - '[NOTIFY] &7&l(&c&l!&7&l) &cИгрок &3%player% &cпытался написать запрещенные символы в команде &8(&4%symbol%&8). hoverText={&7Сообщение игрока: &c%msg%} perm={ublocker.notify.symbols}'
+      - '[NOTIFY_SOUND] BLOCK_NOTE_BLOCK_PLING;1.0;1.0 perm={ublocker.notify.symbols}'
   # Максимальное кол_во цифр в сообщении
   # Плейсхолдеры: 
   ## %limit% - лимит цифр
@@ -79,12 +74,11 @@ chat_settings:
     # Если включено _ плагин будет блокировать все сообщения с большим колличеством цифр в сообщении
     # Если отключено _ плагин будет блокировать только попытки написать IP (по типу 228.13.37.69 _ число цифр в IP 11, а разрешено 7)
     strict: true
-    message: '&7&l(&c&l!&7&l) &eМаксимальное кол_во цифр в сообщении &a%limit%'
-    sound: ENTITY_ITEM_BREAK;1.0;1.0
-    notify:
-      enable: true
-      message: '&7&l(&c&l!&7&l) &cИгрок &3%player% &cпытался написать более 7 цифр в сообщении. hoverText={&7Сообщение игрока: &c%msg%}'
-      sound: BLOCK_NOTE_BLOCK_PLING;1.0;1.0
+    actions:
+      - '[MESSAGE] &7&l(&c&l!&7&l) &eМаксимальное кол_во цифр в сообщении &a%limit%'
+      - '[SOUND] ENTITY_ITEM_BREAK;1.0;1.0'
+      - '[NOTIFY] &7&l(&c&l!&7&l) &cИгрок &3%player% &cпытался написать более 7 цифр в сообщении. hoverText={&7Сообщение игрока: &c%msg%} perm={ublocker.notify.digits}'
+      - '[NOTIFY_SOUND] BLOCK_NOTE_BLOCK_PLING;1.0;1.0 perm={ublocker.notify.digits}'
   # Максимальное кол_во капса в сообщении
   # Плейсхолдеры:
   ## %limit% - лимит капса в процентах
@@ -95,15 +89,15 @@ chat_settings:
     # Сколько максимально может быть капса в процентах в одном сообщении
     max_uppercase_percent: 70
     # Проверять ли строго
-    # Если включено - плагин будет блокировать все сообщения с большим количеством капса в сообщении
-    # Если отключено - плагин будет переводить всё сообщение в нижний регистр (и не будет писать сообщение о блокировке и оповещать администрацию)
+    # Если true - плагин будет блокировать все сообщения с большим количеством капса в сообщении
+    # Если false - плагин будет переводить всё сообщение в нижний регистр (и не будут выполнены действия)
     strict: false
-    message: '&7&l(&c&l!&7&l) &eВы превысили процент капса в сообщении &a%limit%'
-    sound: ENTITY_ITEM_BREAK;1.0;1.0
-    notify:
-      enable: true
-      message: '&7&l(&c&l!&7&l) &cИгрок &3%player% &cпревысили процент капса в сообщении hoverText={&7Сообщение игрока: &c%msg%}'
-      sound: BLOCK_NOTE_BLOCK_PLING;1.0;1.0
+    # Работает только в строгом режиме!
+    actions:
+      - '[MESSAGE] &7&l(&c&l!&7&l) &eВы превысили процент капса в сообщении &a%limit%'
+      - '[SOUND] ENTITY_ITEM_BREAK;1.0;1.0'
+      - '[NOTIFY] &7&l(&c&l!&7&l) &cИгрок &3%player% &cпревысили процент капса в сообщении hoverText={&7Сообщение игрока: &c%msg%} perm={ublocker.notify.caps}'
+      - '[NOTIFY_SOUND] BLOCK_NOTE_BLOCK_PLING;1.0;1.0 perm={ublocker.notify.caps}'
   # Лимитёр однотипных сообщений
   # Плейсхолдеры:
   ## %msg% - полное сообщение
@@ -118,12 +112,11 @@ chat_settings:
     min_message_length: 3
     # Сколько предыдущих сообщений игрока хранить для проверки?
     history_size: 10
-    message: '&7&l(&c&l!&7&l) &3Нельзя спамить однотипными сообщениями.'
-    sound: ENTITY_ITEM_BREAK;1.0;1.0
-    notify:
-      enable: true
-      message: '&7&l(&c&l!&7&l) &cИгрок &3%player% &cпопытался спамить однотипным сообщением. hoverText={&7Полное сообщение: &4%msg%}'
-      sound: BLOCK_NOTE_BLOCK_PLING;1.0;1.0
+    actions:
+      - '[MESSAGE] &7&l(&c&l!&7&l) &3Нельзя спамить однотипными сообщениями.'
+      - '[SOUND] ENTITY_ITEM_BREAK;1.0;1.0'
+      - '[NOTIFY] &7&l(&c&l!&7&l) &cИгрок &3%player% &cпопытался спамить однотипным сообщением. hoverText={&7Полное сообщение: &4%msg%} perm={ublocker.notify.spam}'
+      - '[NOTIFY_SOUND] BLOCK_NOTE_BLOCK_PLING;1.0;1.0 perm={ublocker.notify.spam}'
   # Запрещенные слова в чате.
   # Плейсхолдеры: 
   ## %word% - заблокированное слово
@@ -132,10 +125,10 @@ chat_settings:
   ban_words_chat:
     enable: true
     mode: STRING
-    # Блокировать ли полностью?
+    # Проверять ли строго?
     # Если true - сообщение не будет отправлено и игроку выдастся сообщение
-    # Если false - сообщение будет отправлено, но заблокированное слово будет зацензурено
-    block: true
+    # Если false - сообщение будет отправлено, но заблокированное слово будет зацензурено (и не будут выполнены действия)
+    strict: true
     # Чем будет зацензурено слово.
     censor_symbol: '*'
     words:
@@ -149,9 +142,9 @@ chat_settings:
       - '.su'
       - '.me'
       - '.org'
-    message: '&7&l(&c&l!&7&l) &3Нельзя использовать слово &4%word%'
-    sound: ENTITY_ITEM_BREAK;1.0;1.0
-    notify:
-      enable: true
-      message: '&7&l(&c&l!&7&l) &cИгрок &3%player% &cиспользовал запрещенное слово &8(&4%word%&8) hoverText={&7Полное сообщение: &4%msg%}'
-      sound: BLOCK_NOTE_BLOCK_PLING;1.0;1.0
+    # Работает только в строгом режиме!
+    actions:
+      - '[MESSAGE] &7&l(&c&l!&7&l) &3Нельзя использовать слово &4%word%'
+      - '[SOUND] ENTITY_ITEM_BREAK;1.0;1.0'
+      - '[NOTIFY] &7&l(&c&l!&7&l) &cИгрок &3%player% &cиспользовал запрещенное слово &8(&4%word%&8) hoverText={&7Полное сообщение: &4%msg%} perm={ublocker.notify.words}'
+      - '[NOTIFY_SOUND] BLOCK_NOTE_BLOCK_PLING;1.0;1.0 perm={ublocker.notify.words}'

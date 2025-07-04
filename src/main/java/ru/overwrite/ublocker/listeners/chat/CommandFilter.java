@@ -28,7 +28,7 @@ public class CommandFilter extends ChatListener {
         String message = e.getMessage();
         if (containsBlockedChars(message, commandCharsSettings)) {
             String[] replacementList = {p.getName(), getFirstBlockedChar(message, commandCharsSettings)};
-            super.cancelEvent(p, searchList, replacementList, e, commandCharsSettings.cancellationSettings(), plugin.getPluginMessage());
+            super.executeActions(e, p, searchList, replacementList, commandCharsSettings.actionsToExecute());
         }
     }
 

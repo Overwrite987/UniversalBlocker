@@ -1,7 +1,5 @@
-package ru.overwrite.ublocker.listeners.chat;
+package ru.overwrite.ublocker.listeners.symbols;
 
-import lombok.Getter;
-import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.bukkit.Bukkit;
@@ -17,44 +15,43 @@ import ru.overwrite.ublocker.utils.Utils;
 
 import java.util.List;
 
-public abstract class ChatListener implements Listener {
+public abstract class SymbolBlocker implements Listener {
 
     protected final UniversalBlocker plugin;
     protected final Config pluginConfig;
     private final Runner runner;
 
-    @Getter
-    @Setter
-    protected boolean registered;
+    private final String[] searchList = {"%player%", "%world%", "%symbol%", "%msg%"};
 
-    public ChatListener(UniversalBlocker plugin) {
+    public SymbolBlocker(UniversalBlocker plugin) {
         this.plugin = plugin;
         this.pluginConfig = plugin.getPluginConfig();
         this.runner = plugin.getRunner();
     }
 
-    public void executeActions(Cancellable e, Player p, String[] searchList, String[] replacementList, List<Action> actions) {
-        Utils.printDebug("Starting executing actions for player '" + p.getName() + "'", Utils.DEBUG_CHAT);
+    protected void executeActions(Cancellable e, Player p, String name, String symbol, List<Action> actions) {
+        Utils.printDebug("Starting executing actions for player '" + p.getName() + "' and blocked symbol '" + symbol + "'", Utils.DEBUG_SYMBOLS);
+        final String[] replacementList = {p.getName(), p.getWorld().getName(), name, symbol};
 
         for (Action action : actions) {
             ActionType type = action.type();
 
             if (shouldBlockAction(type, p, action)) {
-                Utils.printDebug("Chat event blocked for player '" + p.getName() + "'", Utils.DEBUG_CHAT);
+                Utils.printDebug("Anvil event blocked for player '" + p.getName() + "'", Utils.DEBUG_SYMBOLS);
                 e.setCancelled(true);
                 continue;
             }
 
             if (e.isCancelled()) {
                 switch (type) {
-                    case MESSAGE -> sendMessageAsync(p, action, searchList, replacementList);
-                    case TITLE -> sendTitleAsync(p, action, searchList, replacementList);
-                    case ACTIONBAR -> sendActionBarAsync(p, action, searchList, replacementList);
+                    case MESSAGE -> sendMessageAsync(p, action, replacementList);
+                    case TITLE -> sendTitleAsync(p, action, replacementList);
+                    case ACTIONBAR -> sendActionBarAsync(p, action, replacementList);
                     case SOUND -> sendSoundAsync(p, action);
                     case CONSOLE -> executeConsoleCommand(p, action);
-                    case LOG -> logAction(action, searchList, replacementList);
-                    case NOTIFY -> sendNotifyAsync(p, action, searchList, replacementList);
-                    case NOTIFY_CONSOLE -> sendNotifyConsoleAsync(action, searchList, replacementList);
+                    case LOG -> logAction(action, replacementList);
+                    case NOTIFY -> sendNotifyAsync(p, action, replacementList);
+                    case NOTIFY_CONSOLE -> sendNotifyConsoleAsync(action, replacementList);
                     case NOTIFY_SOUND -> sendNotifySoundAsync(action);
                 }
             }
@@ -69,25 +66,25 @@ public abstract class ChatListener implements Listener {
         };
     }
 
-    private void sendMessageAsync(Player p, Action action, String[] searchList, String[] replacementList) {
+    private void sendMessageAsync(Player p, Action action, String[] replacementList) {
         runner.runAsync(() -> {
-            String formattedMessage = formatActionMessage(action, searchList, replacementList);
+            String formattedMessage = formatActionMessage(action, replacementList);
             Component component = Utils.parseMessage(formattedMessage, Utils.HOVER_MARKERS);
             p.sendMessage(component);
         });
     }
 
-    private void sendTitleAsync(Player p, Action action, String[] searchList, String[] replacementList) {
+    private void sendTitleAsync(Player p, Action action, String[] replacementList) {
         runner.runAsync(() -> {
-            String formattedMessage = formatActionMessage(action, searchList, replacementList);
+            String formattedMessage = formatActionMessage(action, replacementList);
             String[] titleMessages = formattedMessage.split(";");
             Utils.sendTitleMessage(titleMessages, p);
         });
     }
 
-    private void sendActionBarAsync(Player p, Action action, String[] searchList, String[] replacementList) {
+    private void sendActionBarAsync(Player p, Action action, String[] replacementList) {
         runner.runAsync(() -> {
-            String message = formatActionMessage(action, searchList, replacementList);
+            String message = formatActionMessage(action, replacementList);
             p.sendActionBar(message);
         });
     }
@@ -97,22 +94,19 @@ public abstract class ChatListener implements Listener {
     }
 
     private void executeConsoleCommand(Player p, Action action) {
-        runner.run(() -> Bukkit.dispatchCommand(
-                Bukkit.getConsoleSender(),
-                action.context().replace("%player%", p.getName())
-        ));
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), action.context().replace("%player%", p.getName()));
     }
 
-    private void logAction(Action action, String[] searchList, String[] replacementList) {
+    private void logAction(Action action, String[] replacementList) {
         String logMessage = Utils.extractMessage(action.context(), Utils.FILE_MARKER);
         String file = Utils.extractValue(action.context(), Utils.FILE_PREFIX, "}");
         plugin.logAction(Utils.replaceEach(logMessage, searchList, replacementList), file);
     }
 
-    private void sendNotifyAsync(Player p, Action action, String[] searchList, String[] replacementList) {
+    private void sendNotifyAsync(Player p, Action action, String[] replacementList) {
         runner.runAsync(() -> {
             String perm = getActionPermission(action, "ublocker.admin");
-            String formattedMessage = formatActionMessage(action, searchList, replacementList);
+            String formattedMessage = formatActionMessage(action, replacementList);
             Component component = Utils.parseMessage(formattedMessage, Utils.NOTIFY_MARKERS);
 
             Bukkit.getOnlinePlayers().stream()
@@ -120,15 +114,15 @@ public abstract class ChatListener implements Listener {
                     .forEach(player -> player.sendMessage(component));
 
             if (plugin.getPluginMessage() != null) {
-                String gsonMessage = GsonComponentSerializer.gson().serialize(component);
+                String gsonMessage = GsonComponentSerializer.gson().serializer().toJsonTree(component).toString();
                 plugin.getPluginMessage().sendCrossProxyPerm(p, perm + " " + gsonMessage);
             }
         });
     }
 
-    private void sendNotifyConsoleAsync(Action action, String[] searchList, String[] replacementList) {
+    private void sendNotifyConsoleAsync(Action action, String[] replacementList) {
         runner.runAsync(() -> {
-            String formattedMessage = formatActionMessage(action, searchList, replacementList);
+            String formattedMessage = formatActionMessage(action, replacementList);
             Bukkit.getConsoleSender().sendMessage(formattedMessage);
         });
     }
@@ -144,26 +138,15 @@ public abstract class ChatListener implements Listener {
         });
     }
 
-    private String formatActionMessage(Action action, String[] searchList, String[] replacementList) {
-        return Utils.replaceEach(
-                Utils.COLORIZER.colorize(action.context()),
-                searchList,
-                replacementList
-        );
+    private String formatActionMessage(Action action, String[] replacementList) {
+        return Utils.replaceEach(Utils.COLORIZER.colorize(action.context()), searchList, replacementList);
     }
 
     private boolean hasBypassPermission(Player p, Action action) {
-        return p.hasPermission(getActionPermission(action, "ublocker.bypass.chat"));
+        return p.hasPermission(getActionPermission(action, "ublocker.bypass.symbols"));
     }
 
     private String getActionPermission(Action action, String defaultPerm) {
-        return Utils.getPermOrDefault(
-                Utils.extractValue(action.context(), Utils.PERM_PREFIX, "}"),
-                defaultPerm
-        );
-    }
-
-    protected boolean isAdmin(Player player, String permission) {
-        return player.hasPermission(permission) || plugin.isExcluded(player);
+        return Utils.getPermOrDefault(Utils.extractValue(action.context(), Utils.PERM_PREFIX, "}"), defaultPerm);
     }
 }

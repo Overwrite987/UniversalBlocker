@@ -22,7 +22,6 @@ import ru.overwrite.ublocker.blockgroups.SymbolGroup;
 import ru.overwrite.ublocker.conditions.Condition;
 import ru.overwrite.ublocker.configuration.data.*;
 import ru.overwrite.ublocker.listeners.chat.*;
-import ru.overwrite.ublocker.utils.Utils;
 
 import java.io.File;
 import java.util.List;
@@ -75,14 +74,6 @@ public class Config {
             chatListener.setRegistered(shouldBeRegistered);
         }
 
-        String message = Utils.COLORIZER.colorize(allowedChars.getString("message"));
-        String[] sound = allowedChars.getString("sound", "ENTITY_ITEM_BREAK;1.0;1.0").split(";");
-
-        final ConfigurationSection allowedChatCharsNotify = allowedChars.getConfigurationSection("notify");
-        boolean notifyEnabled = allowedChatCharsNotify.getBoolean("enable");
-        String notifyMessage = Utils.COLORIZER.colorize(allowedChatCharsNotify.getString("message"));
-        String[] notifySound = allowedChatCharsNotify.getString("sound", "BLOCK_NOTE_BLOCK_PLING;1.0;1.0").split(";");
-
         BlockType mode = BlockType.valueOf(allowedChars.getString("mode").toUpperCase());
         CharSet charSet = null;
         Pattern pattern = null;
@@ -91,17 +82,13 @@ public class Config {
             case PATTERN -> pattern = Pattern.compile(allowedChars.getString("pattern"));
         }
 
+        List<Action> actionList = getActionList(allowedChars.getStringList("actions"));
+
         this.chatCharsSettings = new ChatCharsSettings(
                 mode,
                 charSet,
                 pattern,
-                new CancellationSettings(
-                        message,
-                        sound,
-                        notifyEnabled,
-                        notifyMessage,
-                        notifySound
-                )
+                actionList
         );
     }
 
@@ -120,14 +107,6 @@ public class Config {
             chatListener.setRegistered(shouldBeRegistered);
         }
 
-        String message = Utils.COLORIZER.colorize(allowedBookChars.getString("message"));
-        String[] sound = allowedBookChars.getString("sound", "ENTITY_ITEM_BREAK;1.0;1.0").split(";");
-
-        final ConfigurationSection allowedBookCharsNotify = allowedBookChars.getConfigurationSection("notify");
-        boolean notifyEnabled = allowedBookCharsNotify.getBoolean("enable");
-        String notifyMessage = Utils.COLORIZER.colorize(allowedBookCharsNotify.getString("message"));
-        String[] notifySound = allowedBookCharsNotify.getString("sound", "BLOCK_NOTE_BLOCK_PLING;1.0;1.0").split(";");
-
         BlockType mode = BlockType.valueOf(allowedBookChars.getString("mode").toUpperCase());
         CharSet charSet = null;
         Pattern pattern = null;
@@ -136,17 +115,13 @@ public class Config {
             case PATTERN -> pattern = Pattern.compile(allowedBookChars.getString("pattern"));
         }
 
+        List<Action> actionList = getActionList(allowedBookChars.getStringList("actions"));
+
         this.bookCharsSettings = new BookCharsSettings(
                 mode,
                 charSet,
                 pattern,
-                new CancellationSettings(
-                        message,
-                        sound,
-                        notifyEnabled,
-                        notifyMessage,
-                        notifySound
-                )
+                actionList
         );
     }
 
@@ -165,14 +140,6 @@ public class Config {
             chatListener.setRegistered(shouldBeRegistered);
         }
 
-        String message = Utils.COLORIZER.colorize(allowedSignChars.getString("message"));
-        String[] sound = allowedSignChars.getString("sound", "ENTITY_ITEM_BREAK;1.0;1.0").split(";");
-
-        final ConfigurationSection allowedSignCharsNotify = allowedSignChars.getConfigurationSection("notify");
-        boolean notifyEnabled = allowedSignCharsNotify.getBoolean("enable");
-        String notifyMessage = Utils.COLORIZER.colorize(allowedSignCharsNotify.getString("message"));
-        String[] notifySound = allowedSignCharsNotify.getString("sound", "BLOCK_NOTE_BLOCK_PLING;1.0;1.0").split(";");
-
         BlockType mode = BlockType.valueOf(allowedSignChars.getString("mode").toUpperCase());
         CharSet charSet = null;
         Pattern pattern = null;
@@ -181,17 +148,13 @@ public class Config {
             case PATTERN -> pattern = Pattern.compile(allowedSignChars.getString("pattern"));
         }
 
+        List<Action> actionList = getActionList(allowedSignChars.getStringList("actions"));
+
         this.signCharsSettings = new SignCharsSettings(
                 mode,
                 charSet,
                 pattern,
-                new CancellationSettings(
-                        message,
-                        sound,
-                        notifyEnabled,
-                        notifyMessage,
-                        notifySound
-                )
+                actionList
         );
     }
 
@@ -210,14 +173,6 @@ public class Config {
             chatListener.setRegistered(shouldBeRegistered);
         }
 
-        String message = Utils.COLORIZER.colorize(allowedCommandChars.getString("message"));
-        String[] sound = allowedCommandChars.getString("sound", "ENTITY_ITEM_BREAK;1.0;1.0").split(";");
-
-        final ConfigurationSection allowedCommandCharsNotify = allowedCommandChars.getConfigurationSection("notify");
-        boolean notifyEnabled = allowedCommandCharsNotify.getBoolean("enable");
-        String notifyMessage = Utils.COLORIZER.colorize(allowedCommandCharsNotify.getString("message"));
-        String[] notifySound = allowedCommandCharsNotify.getString("sound", "BLOCK_NOTE_BLOCK_PLING;1.0;1.0").split(";");
-
         BlockType mode = BlockType.valueOf(allowedCommandChars.getString("mode").toUpperCase());
         CharSet charSet = null;
         Pattern pattern = null;
@@ -226,17 +181,13 @@ public class Config {
             case PATTERN -> pattern = Pattern.compile(allowedCommandChars.getString("pattern"));
         }
 
+        List<Action> actionList = getActionList(allowedCommandChars.getStringList("actions"));
+
         this.commandCharsSettings = new CommandCharsSettings(
                 mode,
                 charSet,
                 pattern,
-                new CancellationSettings(
-                        message,
-                        sound,
-                        notifyEnabled,
-                        notifyMessage,
-                        notifySound
-                )
+                actionList
         );
     }
 
@@ -258,24 +209,12 @@ public class Config {
         int maxNumbers = numbersCheck.getInt("maxmsgnumbers", 12);
         boolean strictCheck = numbersCheck.getBoolean("strict");
 
-        String message = Utils.COLORIZER.colorize(numbersCheck.getString("message"));
-        String[] sound = numbersCheck.getString("sound", "ENTITY_ITEM_BREAK;1.0;1.0").split(";");
-
-        final ConfigurationSection numbersCheckNotify = numbersCheck.getConfigurationSection("notify");
-        boolean notifyEnabled = numbersCheckNotify.getBoolean("enable");
-        String notifyMessage = Utils.COLORIZER.colorize(numbersCheckNotify.getString("message"));
-        String[] notifySound = numbersCheckNotify.getString("sound", "BLOCK_NOTE_BLOCK_PLING;1.0;1.0").split(";");
+        List<Action> actionList = getActionList(numbersCheck.getStringList("actions"));
 
         this.numberCheckSettings = new NumberCheckSettings(
                 maxNumbers,
                 strictCheck,
-                new CancellationSettings(
-                        message,
-                        sound,
-                        notifyEnabled,
-                        notifyMessage,
-                        notifySound
-                )
+                actionList
         );
     }
 
@@ -296,25 +235,13 @@ public class Config {
 
         int maxUpperCasePercent = caseCheck.getInt("max_uppercase_percent", 70);
         boolean strictCheck = caseCheck.getBoolean("strict");
-        String message = Utils.COLORIZER.colorize(caseCheck.getString("message"));
 
-        String[] sound = caseCheck.getString("sound", "ENTITY_ITEM_BREAK;1.0;1.0").split(";");
-
-        ConfigurationSection caseCheckNotify = caseCheck.getConfigurationSection("notify");
-        boolean notifyEnabled = caseCheckNotify.getBoolean("enable");
-        String notifyMessage = Utils.COLORIZER.colorize(caseCheckNotify.getString("message"));
-        String[] notifySound = caseCheckNotify.getString("sound", "BLOCK_NOTE_BLOCK_PLING;1.0;1.0").split(";");
+        List<Action> actionList = getActionList(caseCheck.getStringList("actions"));
 
         this.caseCheckSettings = new CaseCheckSettings(
                 maxUpperCasePercent,
                 strictCheck,
-                new CancellationSettings(
-                        message,
-                        sound,
-                        notifyEnabled,
-                        notifyMessage,
-                        notifySound
-                )
+                actionList
         );
     }
 
@@ -338,26 +265,14 @@ public class Config {
         int minMessageLength = sameMessages.getInt("min_message_length", 3);
         int historySize = sameMessages.getInt("history_size", 10);
 
-        String message = Utils.COLORIZER.colorize(sameMessages.getString("message"));
-        String[] sound = sameMessages.getString("sound", "ENTITY_ITEM_BREAK;1.0;1.0").split(";");
-
-        final ConfigurationSection sameMessagesNotify = sameMessages.getConfigurationSection("notify");
-        boolean notifyEnabled = sameMessagesNotify.getBoolean("enable");
-        String notifyMessage = Utils.COLORIZER.colorize(sameMessagesNotify.getString("message"));
-        String[] notifySound = sameMessagesNotify.getString("sound", "BLOCK_NOTE_BLOCK_PLING;1.0;1.0").split(";");
+        List<Action> actionList = getActionList(sameMessages.getStringList("actions"));
 
         this.sameMessagesSettings = new SameMessagesSettings(
                 samePercents,
                 maxSameMessage,
                 minMessageLength,
                 historySize,
-                new CancellationSettings(
-                        message,
-                        sound,
-                        notifyEnabled,
-                        notifyMessage,
-                        notifySound
-                )
+                actionList
         );
     }
 
@@ -393,30 +308,18 @@ public class Config {
                 break;
         }
 
-        boolean block = banWords.getBoolean("block");
+        boolean strict = banWords.getBoolean("strict");
         String censorSymbol = String.valueOf(banWords.getString("censor_symbol", "*").charAt(0));
 
-        String message = Utils.COLORIZER.colorize(banWords.getString("message"));
-        String[] sound = banWords.getString("sound", "ENTITY_ITEM_BREAK;1.0;1.0").split(";");
-
-        final ConfigurationSection banWordsNotify = banWords.getConfigurationSection("notify");
-        boolean notifyEnabled = banWordsNotify.getBoolean("enable");
-        String notifyMessage = Utils.COLORIZER.colorize(banWordsNotify.getString("message"));
-        String[] notifySound = banWordsNotify.getString("sound", "BLOCK_NOTE_BLOCK_PLING;1.0;1.0").split(";");
+        List<Action> actionList = getActionList(banWords.getStringList("actions"));
 
         this.banWordsSettings = new BanWordsSettings(
                 mode,
                 banWordsString,
                 banWordsPattern,
-                block,
+                strict,
                 censorSymbol,
-                new CancellationSettings(
-                        message,
-                        sound,
-                        notifyEnabled,
-                        notifyMessage,
-                        notifySound
-                )
+                actionList
         );
     }
 

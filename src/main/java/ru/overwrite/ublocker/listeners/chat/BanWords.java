@@ -1,15 +1,11 @@
 package ru.overwrite.ublocker.listeners.chat;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.configuration.data.BanWordsSettings;
-import ru.overwrite.ublocker.configuration.data.CancellationSettings;
 import ru.overwrite.ublocker.utils.Utils;
 
 import java.util.regex.Matcher;
@@ -53,40 +49,14 @@ public class BanWords extends ChatListener {
     }
 
     private void blockBanWord(Player p, String banword, String message, AsyncPlayerChatEvent e, BanWordsSettings banWordsSettings) {
-        if (banWordsSettings.block()) {
+        if (banWordsSettings.strict()) {
             e.setCancelled(true);
-            executeBlockActions(p, banword, message, banWordsSettings.cancellationSettings());
+            final String[] replacementList = {p.getName(), banword, message};
+            executeActions(e, p, searchList, replacementList, banWordsSettings.actionsToExecute());
             return;
         }
-        notifyAdmins(p, banword, message, banWordsSettings.cancellationSettings());
+        Utils.printDebug("Censored word " + banword, Utils.DEBUG_CHAT);
         String censored = banWordsSettings.censorSymbol().repeat(banword.length());
         e.setMessage(message.replace(banword, censored));
-    }
-
-    private void executeBlockActions(Player p, String banword, String message, CancellationSettings cancellationSettings) {
-        p.sendMessage(cancellationSettings.message().replace("%word%", banword));
-        Utils.sendSound(cancellationSettings.sound(), p);
-        notifyAdmins(p, banword, message, cancellationSettings);
-    }
-
-    private void notifyAdmins(Player p, String banword, String message, CancellationSettings cancellationSettings) {
-        if (cancellationSettings.notifyEnabled()) {
-            String[] replacementList = {p.getName(), banword, message};
-
-            String formattedMessage = Utils.replaceEach(cancellationSettings.notifyMessage(), searchList, replacementList);
-
-            Component component = Utils.parseMessage(formattedMessage, Utils.NOTIFY_MARKERS);
-
-            for (Player admin : Bukkit.getOnlinePlayers()) {
-                if (admin.hasPermission("ublocker.admin")) {
-                    admin.sendMessage(component);
-                    Utils.sendSound(cancellationSettings.notifySound(), admin);
-                }
-            }
-            if (plugin.getPluginMessage() != null) {
-                String gsonMessage = GsonComponentSerializer.gson().serializer().toJsonTree(component).toString();
-                plugin.getPluginMessage().sendCrossProxyBasic(p, gsonMessage);
-            }
-        }
     }
 }
