@@ -54,7 +54,7 @@ public class BanWords extends ChatListener {
     private void blockBanWord(Player p, String banword, String message, AsyncPlayerChatEvent e, BanWordsSettings banWordsSettings) {
         if (banWordsSettings.strict()) {
             e.setCancelled(true);
-            final String[] replacementList = {p.getName(), banword, message};
+            String[] replacementList = {p.getName(), banword, message};
             executeActions(e, p, searchList, replacementList, banWordsSettings.actionsToExecute());
             return;
         }

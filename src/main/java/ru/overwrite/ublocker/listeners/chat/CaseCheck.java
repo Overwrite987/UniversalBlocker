@@ -27,6 +27,7 @@ public class CaseCheck extends ChatListener {
         int threshold = caseCheckSettings.maxUpperCasePercent();
         if (checkCase(message, threshold)) {
             if (caseCheckSettings.strictCheck()) {
+                e.setCancelled(true);
                 String[] replacementList = {p.getName(), Integer.toString(caseCheckSettings.maxUpperCasePercent()), message};
                 super.executeActions(e, p, searchList, replacementList, caseCheckSettings.actionsToExecute());
                 return;

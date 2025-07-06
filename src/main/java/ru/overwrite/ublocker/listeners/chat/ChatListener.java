@@ -38,35 +38,18 @@ public abstract class ChatListener implements Listener {
 
         for (Action action : actions) {
             ActionType type = action.type();
-
-            if (shouldBlockAction(type, p, action)) {
-                Utils.printDebug("Chat event blocked for player '" + p.getName() + "'", Utils.DEBUG_CHAT);
-                e.setCancelled(true);
-                continue;
-            }
-
-            if (e.isCancelled()) {
-                switch (type) {
-                    case MESSAGE -> sendMessageAsync(p, action, searchList, replacementList);
-                    case TITLE -> sendTitleAsync(p, action, searchList, replacementList);
-                    case ACTIONBAR -> sendActionBarAsync(p, action, searchList, replacementList);
-                    case SOUND -> sendSoundAsync(p, action);
-                    case CONSOLE -> executeConsoleCommand(p, action);
-                    case LOG -> logAction(action, searchList, replacementList);
-                    case NOTIFY -> sendNotifyAsync(p, action, searchList, replacementList);
-                    case NOTIFY_CONSOLE -> sendNotifyConsoleAsync(action, searchList, replacementList);
-                    case NOTIFY_SOUND -> sendNotifySoundAsync(action);
-                }
+            switch (type) {
+                case MESSAGE -> sendMessageAsync(p, action, searchList, replacementList);
+                case TITLE -> sendTitleAsync(p, action, searchList, replacementList);
+                case ACTIONBAR -> sendActionBarAsync(p, action, searchList, replacementList);
+                case SOUND -> sendSoundAsync(p, action);
+                case CONSOLE -> executeConsoleCommand(p, action);
+                case LOG -> logAction(action, searchList, replacementList);
+                case NOTIFY -> sendNotifyAsync(p, action, searchList, replacementList);
+                case NOTIFY_CONSOLE -> sendNotifyConsoleAsync(action, searchList, replacementList);
+                case NOTIFY_SOUND -> sendNotifySoundAsync(action);
             }
         }
-    }
-
-    private boolean shouldBlockAction(ActionType type, Player p, Action action) {
-        return switch (type) {
-            case BLOCK -> true;
-            case LITE_BLOCK -> !hasBypassPermission(p, action);
-            default -> false;
-        };
     }
 
     private void sendMessageAsync(Player p, Action action, String[] searchList, String[] replacementList) {

@@ -37,7 +37,7 @@ public abstract class SymbolBlocker implements Listener {
             ActionType type = action.type();
 
             if (shouldBlockAction(type, p, action)) {
-                Utils.printDebug("Anvil event blocked for player '" + p.getName() + "'", Utils.DEBUG_SYMBOLS);
+                Utils.printDebug("Event blocked for player '" + p.getName() + "'", Utils.DEBUG_SYMBOLS);
                 e.setCancelled(true);
                 continue;
             }

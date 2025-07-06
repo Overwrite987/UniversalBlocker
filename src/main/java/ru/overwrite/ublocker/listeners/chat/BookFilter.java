@@ -28,6 +28,7 @@ public class BookFilter extends ChatListener {
         for (String page : e.getNewBookMeta().getPages()) {
             String serialisedMessage = page.replace("\n", "");
             if (containsBlockedChars(serialisedMessage, bookCharsSettings)) {
+                e.setCancelled(true);
                 String[] replacementList = {p.getName(), getFirstBlockedChar(serialisedMessage, bookCharsSettings)};
                 super.executeActions(e, p, searchList, replacementList, bookCharsSettings.actionsToExecute());
                 break;

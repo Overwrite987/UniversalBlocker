@@ -41,6 +41,7 @@ public class NumbersCheck extends ChatListener {
                 }
             }
             if (count > numberCheckSettings.maxNumbers()) {
+                e.setCancelled(true);
                 String[] replacementList = {p.getName(), Integer.toString(numberCheckSettings.maxNumbers()), message};
                 super.executeActions(e, p, searchList, replacementList, numberCheckSettings.actionsToExecute());
             }
@@ -55,6 +56,7 @@ public class NumbersCheck extends ChatListener {
                 }
             }
             if (digitsCount > numberCheckSettings.maxNumbers()) {
+                e.setCancelled(true);
                 String[] replacementList = {p.getName(), Integer.toString(numberCheckSettings.maxNumbers()), message};
                 super.executeActions(e, p, searchList, replacementList, numberCheckSettings.actionsToExecute());
             }
