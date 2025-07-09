@@ -5,9 +5,7 @@ import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.chars.CharOpenHashSet;
 import it.unimi.dsi.fastutil.chars.CharSet;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import it.unimi.dsi.fastutil.objects.ObjectSet;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
@@ -296,12 +294,11 @@ public class Config {
         }
 
         BlockType mode = BlockType.valueOf(banWords.getString("mode").toUpperCase());
-        ObjectSet<String> banWordsString = null;
-        ObjectSet<Pattern> banWordsPattern = null;
+        Set<String> banWordsString = null;
+        Set<Pattern> banWordsPattern = null;
         switch (mode) {
             case STRING:
-                banWordsString = new ObjectOpenHashSet<>();
-                banWordsString.addAll(banWords.getStringList("words"));
+                banWordsString = new ObjectOpenHashSet<>(banWords.getStringList("words"));
                 break;
             case PATTERN:
                 banWordsPattern = new ObjectOpenHashSet<>();
@@ -335,15 +332,16 @@ public class Config {
 
     public void setupCommands(String path) {
         final FileConfiguration commands = getFile(path, "commands.yml");
-        ObjectSet<CommandGroup> commandBlockGroupSet = new ObjectOpenHashSet<>();
-        ObjectSet<CommandGroup> commandHideGroupSet = new ObjectOpenHashSet<>();
-        for (String commandsID : commands.getConfigurationSection("commands").getKeys(false)) {
+        Set<String> keys = commands.getConfigurationSection("commands").getKeys(false);
+        ImmutableSet.Builder<CommandGroup> commandBlockGroupSetBuilder = ImmutableSet.builderWithExpectedSize(keys.size());
+        ImmutableSet.Builder<CommandGroup> commandHideGroupSetBuilder = ImmutableSet.builderWithExpectedSize(keys.size());
+        for (String commandsID : keys) {
             final ConfigurationSection section = commands.getConfigurationSection("commands." + commandsID);
             BlockType blockType = BlockType.valueOf(section.getString("mode").toUpperCase());
             boolean blockAliases = section.getBoolean("block_aliases") && blockType == BlockType.STRING; // Не будет работать с паттернами
             List<Condition> conditionList = getConditionList(section.getStringList("conditions"));
             List<Action> actionList = getActionList(section.getStringList("actions"));
-            commandBlockGroupSet.add(
+            commandBlockGroupSetBuilder.add(
                     new CommandGroup(
                             commandsID,
                             blockType,
@@ -364,12 +362,12 @@ public class Config {
                 }
             }
             if (shouldAddToHideList) {
-                ObjectList<String> commandList = new ObjectArrayList<>();
+                List<String> commandList = new ObjectArrayList<>();
                 for (String command : section.getStringList("commands")) {
                     String newCmd = command.replace("/", "");
                     commandList.add(newCmd);
                 }
-                commandHideGroupSet.add(
+                commandHideGroupSetBuilder.add(
                         new CommandGroup(
                                 commandsID,
                                 blockType,
@@ -381,14 +379,15 @@ public class Config {
                 );
             }
         }
-        this.commandBlockGroupSet = ImmutableSet.copyOf(commandBlockGroupSet);
-        this.commandHideGroupSet = ImmutableSet.copyOf(commandHideGroupSet);
+        this.commandBlockGroupSet = commandBlockGroupSetBuilder.build();
+        this.commandHideGroupSet = commandHideGroupSetBuilder.build();
     }
 
     public void setupSymbols(String path) {
         final FileConfiguration symbols = getFile(path, "symbols.yml");
-        ObjectSet<SymbolGroup> symbolBlockGroupSet = new ObjectOpenHashSet<>();
-        for (String symbolsID : symbols.getConfigurationSection("symbols").getKeys(false)) {
+        Set<String> keys = symbols.getConfigurationSection("symbols").getKeys(false);
+        ImmutableSet.Builder<SymbolGroup> symbolBlockGroupSetBuilder = ImmutableSet.builderWithExpectedSize(keys.size());
+        for (String symbolsID : keys) {
             final ConfigurationSection section = symbols.getConfigurationSection("symbols." + symbolsID);
             BlockType blockType = BlockType.valueOf(section.getString("mode").toUpperCase());
             List<String> blockFactor = getBlockFactorList(section.getString("block_factor", ""));
@@ -406,23 +405,29 @@ public class Config {
                     )
             );
         }
-        this.symbolBlockGroupSet = ImmutableSet.copyOf(symbolBlockGroupSet);
+        this.symbolBlockGroupSet = symbolBlockGroupSetBuilder.build();
     }
 
     private ImmutableList<Action> getActionList(List<String> actionStrings) {
-        ObjectList<Action> actionList = new ObjectArrayList<>(actionStrings.size());
-        for (String action : actionStrings) {
-            actionList.add(Action.fromString(action));
+        ImmutableList.Builder<Action> actionListBuilder = ImmutableList.builderWithExpectedSize(actionStrings.size());
+        for (String actionString : actionStrings) {
+            Action action = Action.fromString(actionString);
+            if (action != null) {
+                actionListBuilder.add(action);
+            }
         }
-        return ImmutableList.copyOf(actionList);
+        return actionListBuilder.build();
     }
 
     private ImmutableList<Condition> getConditionList(List<String> conditionStrings) {
-        ObjectList<Condition> conditionList = new ObjectArrayList<>(conditionStrings.size());
-        for (String condition : conditionStrings) {
-            conditionList.add(Condition.fromString(condition));
+        ImmutableList.Builder<Condition> conditionListBuilder = ImmutableList.builderWithExpectedSize(conditionStrings.size());
+        for (String conditionString : conditionStrings) {
+            Condition condition = Condition.fromString(conditionString);
+            if (condition != null) {
+                conditionListBuilder.add(condition);
+            }
         }
-        return ImmutableList.copyOf(conditionList);
+        return conditionListBuilder.build();
     }
 
     private ImmutableList<String> getBlockFactorList(String str) {

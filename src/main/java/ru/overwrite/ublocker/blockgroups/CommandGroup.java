@@ -1,7 +1,5 @@
 package ru.overwrite.ublocker.blockgroups;
 
-import com.google.common.collect.ImmutableSet;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.conditions.Condition;
 
@@ -29,26 +27,10 @@ public record CommandGroup(
                 groupId,
                 blockType,
                 blockAliases,
-                blockType == BlockType.STRING ? setupStringSet(commandsToBlock) : null,
-                blockType == BlockType.PATTERN ? setupPatternSet(commandsToBlock) : null,
+                blockType == BlockType.STRING ? GroupUtils.createStringSet(commandsToBlock) : null,
+                blockType == BlockType.PATTERN ? GroupUtils.createPatternSet(commandsToBlock) : null,
                 conditionsToCheck,
                 actionsToExecute
         );
-    }
-
-    private static ImmutableSet<String> setupStringSet(List<String> commands) {
-        Set<String> set = new ObjectOpenHashSet<>(commands.size());
-        for (String s : commands) {
-            set.add(s.toLowerCase());
-        }
-        return ImmutableSet.copyOf(set);
-    }
-
-    private static ImmutableSet<Pattern> setupPatternSet(List<String> commands) {
-        Set<Pattern> set = new ObjectOpenHashSet<>(commands.size());
-        for (String s : commands) {
-            set.add(Pattern.compile(s));
-        }
-        return ImmutableSet.copyOf(set);
     }
 }
