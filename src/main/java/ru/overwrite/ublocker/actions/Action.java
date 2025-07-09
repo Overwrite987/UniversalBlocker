@@ -10,7 +10,7 @@ public record Action(ActionType type, String context) {
     public static Action fromString(String str) {
         Matcher matcher = ACTION_PATTERN.matcher(str);
         if (!matcher.matches()) return null;
-        ActionType type = ActionType.fromString(matcher.group(1));
+        ActionType type = ActionType.get(matcher.group(1));
         if (type == null) return null;
         return new Action(type, matcher.group(2).trim());
     }
