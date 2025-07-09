@@ -105,7 +105,7 @@ public class RconBlocker implements Listener {
         for (Action action : actions) {
             ActionType type = action.type();
 
-            if (type == ActionType.BLOCK_CONSOLE) {
+            if (type == ActionType.BLOCK_RCON) {
                 Utils.printDebug("Command event blocked for rcon", Utils.DEBUG_COMMANDS);
                 e.setCancelled(true);
             }
