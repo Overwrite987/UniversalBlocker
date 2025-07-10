@@ -10,7 +10,7 @@ public record Condition(ConditionType type, String operator, String context) {
     public static Condition fromString(String str) {
         Matcher matcher = CONDITION_PATTERN.matcher(str);
         if (!matcher.matches()) return null;
-        ConditionType type = ConditionType.fromString(matcher.group(1));
+        ConditionType type = ConditionType.get(matcher.group(1));
         if (type == null) return null;
         String[] globalContext = matcher.group(2).split(" ");
         return new Condition(type, globalContext[0].trim(), globalContext[1].trim());
