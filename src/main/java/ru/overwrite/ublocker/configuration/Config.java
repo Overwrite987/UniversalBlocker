@@ -296,13 +296,14 @@ public class Config {
         BlockType mode = BlockType.valueOf(banWords.getString("mode").toUpperCase());
         Set<String> banWordsString = null;
         Set<Pattern> banWordsPattern = null;
+        List<String> banWordsList = banWords.getStringList("words");
         switch (mode) {
             case STRING:
-                banWordsString = new ObjectOpenHashSet<>(banWords.getStringList("words"));
+                banWordsString = new ObjectOpenHashSet<>(banWordsList);
                 break;
             case PATTERN:
-                banWordsPattern = new ObjectOpenHashSet<>();
-                for (String patternString : banWords.getStringList("words")) {
+                banWordsPattern = new ObjectOpenHashSet<>(banWordsList.size());
+                for (String patternString : banWordsList) {
                     Pattern pattern = Pattern.compile(patternString);
                     banWordsPattern.add(pattern);
                 }
