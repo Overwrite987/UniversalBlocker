@@ -299,11 +299,18 @@ public class Utils {
         return message.hoverEvent(hover);
     }
 
-    public Component createClickEvent(Component message, String clickEvent) {
-        String[] clickEventArgs = clickEvent.split(";", 2);
-        ClickEvent.Action action = ClickEvent.Action.valueOf(clickEventArgs[0].toUpperCase());
-        String context = clickEventArgs[1];
+    private Component createClickEvent(Component message, String clickEvent) {
+        int separatorIndex = clickEvent.indexOf(';');
+        if (separatorIndex == -1) {
+            throw new IllegalArgumentException("Некорректный формат clickEvent: отсутствует разделитель ';'");
+        }
+
+        String actionStr = clickEvent.substring(0, separatorIndex).trim();
+        String context = clickEvent.substring(separatorIndex + 1).trim();
+
+        ClickEvent.Action action = ClickEvent.Action.valueOf(actionStr.toUpperCase());
         ClickEvent click = ClickEvent.clickEvent(action, context);
+
         return message.clickEvent(click);
     }
 
