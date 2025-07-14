@@ -49,6 +49,10 @@
                             <pattern>org.bstats</pattern>
                             <shadedPattern>ru.overwrite.ublocker.utils.metrics</shadedPattern>
                         </relocation>
+                        <relocation>
+                            <pattern>com.google</pattern>
+                            <shadedPattern>ru.overwrite.ublocker.libs.com.google</shadedPattern>
+                        </relocation>
                     </relocations>
                     <filters>
                         <filter>
@@ -61,6 +65,7 @@
                             <artifact>*:*</artifact>
                             <excludes>
                                 <exclude>META-INF/maven/</exclude>
+                                <exclude>org/jspecify/</exclude>
                             </excludes>
                         </filter>
                     </filters>
@@ -159,6 +164,12 @@
             <version>RELEASE</version>
             <optional>true</optional>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>33.4.8-jre</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>
