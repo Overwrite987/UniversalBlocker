@@ -394,7 +394,7 @@ public class Config {
             List<String> blockFactor = getBlockFactorList(section.getString("block_factor", ""));
             List<Condition> conditionList = getConditionList(section.getStringList("conditions"));
             List<Action> actionList = getActionList(section.getStringList("actions"));
-            symbolBlockGroupSet.add(
+            symbolBlockGroupSetBuilder.add(
                     new SymbolGroup(
                             symbolsID,
                             blockType,
