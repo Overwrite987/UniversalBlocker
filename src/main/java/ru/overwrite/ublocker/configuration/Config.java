@@ -438,7 +438,7 @@ public class Config {
     }
 
     public void setupExcluded(FileConfiguration config) {
-        excludedPlayers = new ObjectOpenHashSet<>(config.getStringList("excluded_players"));
+        excludedPlayers = ImmutableSet.copyOf(config.getStringList("excluded_players"));
     }
 
     public FileConfiguration getFile(String path, String fileName) {
