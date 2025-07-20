@@ -58,6 +58,7 @@ public class CommandBlocker implements Listener {
             return;
         }
         Utils.printDebug("Executed command: " + command, Utils.DEBUG_COMMANDS);
+        outer:
         for (CommandGroup group : pluginConfig.getCommandBlockGroupSet()) {
             Utils.printDebug("Group checking now: " + group.groupId(), Utils.DEBUG_COMMANDS);
             Utils.printDebug("Block type: " + group.blockType(), Utils.DEBUG_COMMANDS);
@@ -71,18 +72,22 @@ public class CommandBlocker implements Listener {
             }
             switch (group.blockType()) {
                 case STRING: {
-                    checkStringBlock(e, p, command, group);
+                    if (checkStringBlock(e, p, command, group)) {
+                        break outer;
+                    }
                     break;
                 }
                 case PATTERN: {
-                    checkPatternGroup(e, p, command, group);
+                    if (checkPatternGroup(e, p, command, group)) {
+                        break outer;
+                    }
                     break;
                 }
             }
         }
     }
 
-    private void checkStringBlock(PlayerCommandPreprocessEvent e, Player p, String command, CommandGroup group) {
+    private boolean checkStringBlock(PlayerCommandPreprocessEvent e, Player p, String command, CommandGroup group) {
         for (String com : group.commandsToBlockString()) {
             Command comInMap = Bukkit.getCommandMap().getCommand(com.replace("/", ""));
             List<String> aliases = comInMap == null ? List.of() : comInMap.getAliases();
@@ -92,14 +97,13 @@ public class CommandBlocker implements Listener {
             String executedCommandBase = Utils.cutCommand(command);
             if (executedCommandBase.equalsIgnoreCase(com) || aliases.contains(executedCommandBase.substring(1))) {
                 List<Action> actions = group.actionsToExecute();
-                if (executeActions(e, p, com, command, actions)) {
-                    break;
-                }
+                return executeActions(e, p, com, command, actions);
             }
         }
+        return false;
     }
 
-    private void checkPatternGroup(PlayerCommandPreprocessEvent e, Player p, String command, CommandGroup group) {
+    private boolean checkPatternGroup(PlayerCommandPreprocessEvent e, Player p, String command, CommandGroup group) {
         for (Pattern pattern : group.commandsToBlockPattern()) {
             String executedCommandBase = Utils.cutCommand(command);
             Matcher matcher = pattern.matcher(executedCommandBase.replace("/", ""));
@@ -111,15 +115,12 @@ public class CommandBlocker implements Listener {
                 }
                 List<Action> actions = group.actionsToExecute();
                 if (aliases.contains(matcher.group())) {
-                    if (executeActions(e, p, matcher.group(), command, actions)) {
-                        break;
-                    }
+                    return executeActions(e, p, matcher.group(), command, actions);
                 }
-                if (executeActions(e, p, matcher.group(), command, actions)) {
-                    break;
-                }
+                return executeActions(e, p, matcher.group(), command, actions);
             }
         }
+        return false;
     }
 
     private final String[] searchList = {"%player%", "%world%", "%cmd%", "%fullcmd%"};

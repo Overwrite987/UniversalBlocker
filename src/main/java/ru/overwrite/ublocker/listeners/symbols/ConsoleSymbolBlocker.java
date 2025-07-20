@@ -30,6 +30,7 @@ public class ConsoleSymbolBlocker implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onCommand(ServerCommandEvent e) {
         String command = e.getCommand().toLowerCase();
+        outer:
         for (SymbolGroup group : pluginConfig.getSymbolBlockGroupSet()) {
             Utils.printDebug("Group checking now: " + group.groupId(), Utils.DEBUG_SYMBOLS);
             if (group.blockFactor().isEmpty() || !group.blockFactor().contains("console_command")) {
@@ -42,21 +43,22 @@ public class ConsoleSymbolBlocker implements Listener {
             }
             switch (group.blockType()) {
                 case STRING: {
-                    checkStringBlock(e, command, group);
+                    if (checkStringBlock(e, command, group)) {
+                        break outer;
+                    }
                     break;
                 }
                 case PATTERN: {
-                    checkPatternBlock(e, command, group);
-                    break;
-                }
-                default: {
+                    if (checkPatternBlock(e, command, group)) {
+                        break outer;
+                    }
                     break;
                 }
             }
         }
     }
 
-    private void checkStringBlock(ServerCommandEvent e, String command, SymbolGroup group) {
+    private boolean checkStringBlock(ServerCommandEvent e, String command, SymbolGroup group) {
         for (String symbol : group.symbolsToBlock()) {
             if (startWithExcludedString(command, group.excludedCommandsString())) {
                 continue;
@@ -65,11 +67,13 @@ public class ConsoleSymbolBlocker implements Listener {
                 Utils.printDebug("Command '" + command + "' contains blocked symbol" + symbol + ". (String)", Utils.DEBUG_SYMBOLS);
                 List<Action> actions = group.actionsToExecute();
                 executeActions(e, command, symbol, actions);
+                return true;
             }
         }
+        return false;
     }
 
-    private void checkPatternBlock(ServerCommandEvent e, String command, SymbolGroup group) {
+    private boolean checkPatternBlock(ServerCommandEvent e, String command, SymbolGroup group) {
         for (Pattern pattern : group.patternsToBlock()) {
             Matcher matcher = pattern.matcher(command);
             if (startWithExcludedPattern(command, group.excludedCommandsPattern())) {
@@ -79,8 +83,10 @@ public class ConsoleSymbolBlocker implements Listener {
                 Utils.printDebug("Command '" + command + "' contains blocked symbol" + matcher.group() + ". (Pattern)", Utils.DEBUG_SYMBOLS);
                 List<Action> actions = group.actionsToExecute();
                 executeActions(e, command, matcher.group(), actions);
+                return true;
             }
         }
+        return false;
     }
 
     private final String[] searchList = {"%player%", "%symbol%", "%msg%"};

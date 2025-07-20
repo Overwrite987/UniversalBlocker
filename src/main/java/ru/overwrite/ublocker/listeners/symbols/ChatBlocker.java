@@ -27,6 +27,7 @@ public class ChatBlocker extends SymbolBlocker {
             return;
         }
         String message = e.getMessage().toLowerCase();
+        outer:
         for (SymbolGroup group : pluginConfig.getSymbolBlockGroupSet()) {
             Utils.printDebug("Group checking now: " + group.groupId(), Utils.DEBUG_SYMBOLS);
             if (group.blockFactor().isEmpty() || !group.blockFactor().contains("chat")) {
@@ -43,38 +44,43 @@ public class ChatBlocker extends SymbolBlocker {
             }
             switch (group.blockType()) {
                 case STRING: {
-                    checkStringBlock(e, p, message, group);
+                    if (checkStringBlock(e, p, message, group)) {
+                        break outer;
+                    }
                     break;
                 }
                 case PATTERN: {
-                    checkPatternBlock(e, p, message, group);
-                    break;
-                }
-                default: {
+                    if (checkPatternBlock(e, p, message, group)) {
+                        break outer;
+                    }
                     break;
                 }
             }
         }
     }
 
-    private void checkStringBlock(AsyncPlayerChatEvent e, Player p, String message, SymbolGroup group) {
+    private boolean checkStringBlock(AsyncPlayerChatEvent e, Player p, String message, SymbolGroup group) {
         for (String symbol : group.symbolsToBlock()) {
             if (message.contains(symbol)) {
                 Utils.printDebug("Message '" + message + "' contains blocked symbol" + symbol + ". (String)", Utils.DEBUG_SYMBOLS);
                 List<Action> actions = group.actionsToExecute();
                 super.executeActions(e, p, message, symbol, actions);
+                return true;
             }
         }
+        return false;
     }
 
-    private void checkPatternBlock(AsyncPlayerChatEvent e, Player p, String message, SymbolGroup group) {
+    private boolean checkPatternBlock(AsyncPlayerChatEvent e, Player p, String message, SymbolGroup group) {
         for (Pattern pattern : group.patternsToBlock()) {
             Matcher matcher = pattern.matcher(message);
             if (matcher.find()) {
                 Utils.printDebug("Message '" + message + "' contains blocked symbol" + matcher.group() + ". (Pattern)", Utils.DEBUG_SYMBOLS);
                 List<Action> actions = group.actionsToExecute();
                 super.executeActions(e, p, message, matcher.group(), actions);
+                return true;
             }
         }
+        return false;
     }
 }
