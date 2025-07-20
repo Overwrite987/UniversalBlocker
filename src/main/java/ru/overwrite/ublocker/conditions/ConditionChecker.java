@@ -11,7 +11,7 @@ import java.util.List;
 @UtilityClass
 public class ConditionChecker {
 
-    private Boolean hasWorldGuard = null;
+    private Boolean hasWorldGuard;
 
     public boolean hasWorldGuard() {
         if (hasWorldGuard == null) {

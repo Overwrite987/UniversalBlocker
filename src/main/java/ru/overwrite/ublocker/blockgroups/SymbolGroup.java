@@ -32,10 +32,10 @@ public record SymbolGroup(
                 groupId,
                 blockType,
                 blockFactor,
-                blockType == BlockType.STRING ? GroupUtils.createStringSet(symbolsToBlock) : null,
-                blockType == BlockType.PATTERN ? GroupUtils.createPatternSet(symbolsToBlock) : null,
-                blockType == BlockType.STRING ? GroupUtils.createStringList(excludedCommand) : null,
-                blockType == BlockType.PATTERN ? GroupUtils.createPatternList(excludedCommand) : null,
+                blockType.isString() ? GroupUtils.createStringSet(symbolsToBlock) : null,
+                blockType.isPattern() ? GroupUtils.createPatternSet(symbolsToBlock) : null,
+                blockType.isString() ? GroupUtils.createStringList(excludedCommand) : null,
+                blockType.isPattern() ? GroupUtils.createPatternList(excludedCommand) : null,
                 conditionsToCheck,
                 actionsToExecute
         );

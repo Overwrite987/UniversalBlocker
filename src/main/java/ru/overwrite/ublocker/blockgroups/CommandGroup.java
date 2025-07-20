@@ -27,8 +27,8 @@ public record CommandGroup(
                 groupId,
                 blockType,
                 blockAliases,
-                blockType == BlockType.STRING ? GroupUtils.createStringSet(commandsToBlock) : null,
-                blockType == BlockType.PATTERN ? GroupUtils.createPatternSet(commandsToBlock) : null,
+                blockType.isString() ? GroupUtils.createStringSet(commandsToBlock) : null,
+                blockType.isPattern() ? GroupUtils.createPatternSet(commandsToBlock) : null,
                 conditionsToCheck,
                 actionsToExecute
         );

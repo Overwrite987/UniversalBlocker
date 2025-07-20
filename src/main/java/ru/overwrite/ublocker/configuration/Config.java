@@ -339,7 +339,7 @@ public class Config {
         for (String commandsID : keys) {
             final ConfigurationSection section = commands.getConfigurationSection("commands." + commandsID);
             BlockType blockType = BlockType.valueOf(section.getString("mode").toUpperCase());
-            boolean blockAliases = section.getBoolean("block_aliases") && blockType == BlockType.STRING; // Не будет работать с паттернами
+            boolean blockAliases = section.getBoolean("block_aliases") && blockType.isString(); // Не будет работать с паттернами
             List<Condition> conditionList = getConditionList(section.getStringList("conditions"));
             List<Action> actionList = getActionList(section.getStringList("actions"));
             commandBlockGroupSetBuilder.add(

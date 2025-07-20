@@ -74,7 +74,7 @@ public class SameMessageLimiter extends ChatListener {
 
     public static double similarityPercentage(String s1, String s2) {
         if (s2 == null) {
-            return 0d;
+            return 0D;
         }
         final int maxLength = Math.max(s1.length(), s2.length());
         if (maxLength == 0) {
@@ -124,8 +124,7 @@ public class SameMessageLimiter extends ChatListener {
     private static final class Buffer {
 
         private final String[] buffer;
-        private int start;
-        private int size;
+        private int start, size;
 
         private Buffer(String message, int bufferSize) {
             this.buffer = new String[bufferSize];
