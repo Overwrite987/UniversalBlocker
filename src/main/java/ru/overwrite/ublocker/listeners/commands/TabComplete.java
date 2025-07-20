@@ -59,9 +59,6 @@ public class TabComplete implements Listener {
                     checkPatternBlock(e, p, buffer, group);
                     break;
                 }
-                default: {
-                    break;
-                }
             }
         }
     }

@@ -35,6 +35,7 @@ public class BanWords extends ChatListener {
                 for (String banword : banWordsSettings.banWordsString()) {
                     if (message.contains(banword)) {
                         blockBanWord(p, banword, message, e, banWordsSettings);
+                        return;
                     }
                 }
                 break;
@@ -44,6 +45,7 @@ public class BanWords extends ChatListener {
                     Matcher matcher = banword.matcher(message);
                     if (matcher.find()) {
                         blockBanWord(p, matcher.group(), message, e, banWordsSettings);
+                        return;
                     }
                 }
                 break;

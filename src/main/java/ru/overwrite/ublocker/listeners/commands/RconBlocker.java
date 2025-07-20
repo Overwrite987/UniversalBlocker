@@ -52,9 +52,6 @@ public class RconBlocker implements Listener {
                     checkPatternBlock(e, command, group);
                     break;
                 }
-                default: {
-                    break;
-                }
             }
         }
     }

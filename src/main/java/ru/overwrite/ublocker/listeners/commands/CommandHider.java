@@ -27,8 +27,9 @@ public class CommandHider implements Listener {
     @EventHandler
     public void onCommandSend(PlayerCommandSendEvent e) {
         Player p = e.getPlayer();
-        if (plugin.isExcluded(p))
+        if (plugin.isExcluded(p)) {
             return;
+        }
         e.getCommands().removeIf(command -> {
             for (CommandGroup group : pluginConfig.getCommandHideGroupSet()) {
                 List<Action> actions = group.actionsToExecute();

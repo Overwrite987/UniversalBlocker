@@ -78,9 +78,6 @@ public class CommandBlocker implements Listener {
                     checkPatternGroup(e, p, command, group);
                     break;
                 }
-                default: {
-                    break;
-                }
             }
         }
     }
