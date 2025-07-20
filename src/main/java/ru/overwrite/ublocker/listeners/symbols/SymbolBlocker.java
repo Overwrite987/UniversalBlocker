@@ -21,7 +21,7 @@ public abstract class SymbolBlocker implements Listener {
     protected final Config pluginConfig;
     private final Runner runner;
 
-    private final String[] searchList = {"%player%", "%world%", "%symbol%", "%msg%"};
+    private final String[] searchList = {"%player%", "%world%", "%msg%", "%symbol%",};
 
     protected SymbolBlocker(UniversalBlocker plugin) {
         this.plugin = plugin;
@@ -29,9 +29,9 @@ public abstract class SymbolBlocker implements Listener {
         this.runner = plugin.getRunner();
     }
 
-    protected void executeActions(Cancellable e, Player p, String name, String symbol, List<Action> actions) {
+    protected void executeActions(Cancellable e, Player p, String fullString, String symbol, List<Action> actions) {
         Utils.printDebug("Starting executing actions for player '" + p.getName() + "' and blocked symbol '" + symbol + "'", Utils.DEBUG_SYMBOLS);
-        final String[] replacementList = {p.getName(), p.getWorld().getName(), name, symbol};
+        final String[] replacementList = {p.getName(), p.getWorld().getName(), fullString, symbol};
 
         for (Action action : actions) {
             ActionType type = action.type();
