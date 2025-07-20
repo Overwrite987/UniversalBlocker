@@ -23,7 +23,7 @@ public abstract class SymbolBlocker implements Listener {
 
     private final String[] searchList = {"%player%", "%world%", "%symbol%", "%msg%"};
 
-    public SymbolBlocker(UniversalBlocker plugin) {
+    protected SymbolBlocker(UniversalBlocker plugin) {
         this.plugin = plugin;
         this.pluginConfig = plugin.getPluginConfig();
         this.runner = plugin.getRunner();

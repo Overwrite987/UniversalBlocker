@@ -27,7 +27,7 @@ public abstract class ChatListener implements Listener {
     @Setter
     protected boolean registered;
 
-    public ChatListener(UniversalBlocker plugin) {
+    protected ChatListener(UniversalBlocker plugin) {
         this.plugin = plugin;
         this.pluginConfig = plugin.getPluginConfig();
         this.runner = plugin.getRunner();
