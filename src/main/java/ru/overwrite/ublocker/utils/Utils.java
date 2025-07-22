@@ -338,7 +338,7 @@ public class Utils {
     public String translateAlternateColorCodes(char altColorChar, String textToTranslate) {
         final char[] chars = textToTranslate.toCharArray();
 
-        for (int i = 0, length = chars.length; i < length; i++) {
+        for (int i = 0, length = chars.length - 1; i < length; i++) {
             if (chars[i] == altColorChar && isValidColorCharacter(chars[i + 1])) {
                 chars[i++] = COLOR_CHAR;
                 chars[i] |= 0x20;
