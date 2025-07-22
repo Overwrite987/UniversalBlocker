@@ -4,26 +4,13 @@ import it.unimi.dsi.fastutil.objects.ObjectList;
 import lombok.experimental.UtilityClass;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
+import ru.overwrite.ublocker.utils.Utils;
 import ru.overwrite.ublocker.utils.WGUtils;
 
 import java.util.List;
 
 @UtilityClass
 public class ConditionChecker {
-
-    private Boolean hasWorldGuard;
-
-    public boolean hasWorldGuard() {
-        if (hasWorldGuard == null) {
-            try {
-                Class.forName("com.sk89q.worldguard.protection.flags.registry.FlagConflictException");
-                hasWorldGuard = true;
-            } catch (ClassNotFoundException ex) {
-                hasWorldGuard = false;
-            }
-        }
-        return hasWorldGuard;
-    }
 
     public boolean isMeetsRequirements(Player p, List<Condition> conditions) {
         if (conditions == null || conditions.isEmpty()) {
@@ -37,7 +24,7 @@ public class ConditionChecker {
             boolean meetsCondition;
             switch (condition.type()) {
                 case REGION: {
-                    if (!hasWorldGuard()) return false;
+                    if (!Utils.hasWorldGuard()) return false;
                     ObjectList<String> regions = WGUtils.getRegions(p.getLocation());
                     meetsCondition = evaluateCondition(operator, regions.contains(context));
                     break;
@@ -53,8 +40,17 @@ public class ConditionChecker {
                     meetsCondition = evaluateCondition(operator, playerMode == conditionMode);
                     break;
                 }
+                case PLACEHOLDER: {
+                    if (!Utils.USE_PAPI) return false;
+                    int startIndex = context.indexOf(";");
+                    if (startIndex == -1) return false;
+                    String placeholderValue = Utils.parsePlaceholders(context.substring(0, startIndex).trim(), p);
+                    String value = context.substring(startIndex + 1).trim();
+                    meetsCondition = evaluateCondition(operator, placeholderValue.equals(value));
+                    break;
+                }
                 default: {
-                    continue;
+                    return false;
                 }
             }
 

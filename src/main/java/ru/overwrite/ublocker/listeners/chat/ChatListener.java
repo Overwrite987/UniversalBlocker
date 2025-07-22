@@ -6,7 +6,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.Listener;
 import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.actions.Action;
@@ -33,7 +32,7 @@ public abstract class ChatListener implements Listener {
         this.runner = plugin.getRunner();
     }
 
-    public void executeActions(Cancellable e, Player p, String[] searchList, String[] replacementList, List<Action> actions) {
+    public void executeActions(Player p, String[] searchList, String[] replacementList, List<Action> actions) {
         Utils.printDebug("Starting executing actions for player '" + p.getName() + "'", Utils.DEBUG_CHAT);
 
         for (Action action : actions) {
@@ -46,7 +45,7 @@ public abstract class ChatListener implements Listener {
                 case CONSOLE -> executeConsoleCommand(p, action);
                 case LOG -> logAction(action, searchList, replacementList);
                 case NOTIFY -> sendNotifyAsync(p, action, searchList, replacementList);
-                case NOTIFY_CONSOLE -> sendNotifyConsoleAsync(action, searchList, replacementList);
+                case NOTIFY_CONSOLE -> sendNotifyConsoleAsync(p, action, searchList, replacementList);
                 case NOTIFY_SOUND -> sendNotifySoundAsync(action);
             }
         }
@@ -55,6 +54,9 @@ public abstract class ChatListener implements Listener {
     private void sendMessageAsync(Player p, Action action, String[] searchList, String[] replacementList) {
         runner.runAsync(() -> {
             String formattedMessage = formatActionMessage(action, searchList, replacementList);
+            if (Utils.USE_PAPI) {
+                formattedMessage = Utils.parsePlaceholders(formattedMessage, p);
+            }
             Component component = Utils.parseMessage(formattedMessage, Utils.HOVER_MARKERS);
             p.sendMessage(component);
         });
@@ -96,6 +98,9 @@ public abstract class ChatListener implements Listener {
         runner.runAsync(() -> {
             String perm = getActionPermission(action, "ublocker.admin");
             String formattedMessage = formatActionMessage(action, searchList, replacementList);
+            if (Utils.USE_PAPI) {
+                formattedMessage = Utils.parsePlaceholders(formattedMessage, p);
+            }
             Component component = Utils.parseMessage(formattedMessage, Utils.NOTIFY_MARKERS);
 
             Bukkit.getOnlinePlayers().stream()
@@ -109,9 +114,12 @@ public abstract class ChatListener implements Listener {
         });
     }
 
-    private void sendNotifyConsoleAsync(Action action, String[] searchList, String[] replacementList) {
+    private void sendNotifyConsoleAsync(Player p, Action action, String[] searchList, String[] replacementList) {
         runner.runAsync(() -> {
             String formattedMessage = formatActionMessage(action, searchList, replacementList);
+            if (Utils.USE_PAPI) {
+                formattedMessage = Utils.parsePlaceholders(formattedMessage, p);
+            }
             Bukkit.getConsoleSender().sendMessage(formattedMessage);
         });
     }

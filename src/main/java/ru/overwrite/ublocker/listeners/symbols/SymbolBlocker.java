@@ -51,7 +51,7 @@ public abstract class SymbolBlocker implements Listener {
                     case CONSOLE -> executeConsoleCommand(p, action);
                     case LOG -> logAction(action, replacementList);
                     case NOTIFY -> sendNotifyAsync(p, action, replacementList);
-                    case NOTIFY_CONSOLE -> sendNotifyConsoleAsync(action, replacementList);
+                    case NOTIFY_CONSOLE -> sendNotifyConsoleAsync(p, action, replacementList);
                     case NOTIFY_SOUND -> sendNotifySoundAsync(action);
                 }
             }
@@ -69,6 +69,9 @@ public abstract class SymbolBlocker implements Listener {
     private void sendMessageAsync(Player p, Action action, String[] replacementList) {
         runner.runAsync(() -> {
             String formattedMessage = formatActionMessage(action, replacementList);
+            if (Utils.USE_PAPI) {
+                formattedMessage = Utils.parsePlaceholders(formattedMessage, p);
+            }
             Component component = Utils.parseMessage(formattedMessage, Utils.HOVER_MARKERS);
             p.sendMessage(component);
         });
@@ -107,6 +110,9 @@ public abstract class SymbolBlocker implements Listener {
         runner.runAsync(() -> {
             String perm = getActionPermission(action, "ublocker.admin");
             String formattedMessage = formatActionMessage(action, replacementList);
+            if (Utils.USE_PAPI) {
+                formattedMessage = Utils.parsePlaceholders(formattedMessage, p);
+            }
             Component component = Utils.parseMessage(formattedMessage, Utils.NOTIFY_MARKERS);
 
             Bukkit.getOnlinePlayers().stream()
@@ -120,9 +126,12 @@ public abstract class SymbolBlocker implements Listener {
         });
     }
 
-    private void sendNotifyConsoleAsync(Action action, String[] replacementList) {
+    private void sendNotifyConsoleAsync(Player p, Action action, String[] replacementList) {
         runner.runAsync(() -> {
             String formattedMessage = formatActionMessage(action, replacementList);
+            if (Utils.USE_PAPI) {
+                formattedMessage = Utils.parsePlaceholders(formattedMessage, p);
+            }
             Bukkit.getConsoleSender().sendMessage(formattedMessage);
         });
     }

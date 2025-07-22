@@ -67,6 +67,7 @@ public final class UniversalBlocker extends JavaPlugin {
         final FileConfiguration config = getConfig();
         final ConfigurationSection settings = config.getConfigurationSection("settings");
         Utils.setupColorizer(settings);
+        this.setupPlaceholders(settings, getServer().getPluginManager());
         this.setupPath(settings);
         pluginConfig.setupExcluded(config);
         this.setupProxy(settings);
@@ -98,7 +99,7 @@ public final class UniversalBlocker extends JavaPlugin {
     }
 
     private boolean checkCompatible(PluginManager pm) {
-        for (String inc : ImmutableList.of("ViaRewind", "NeroChat", "PermissionsEx", "AntiCmds")) {
+        for (String inc : ImmutableList.of("ViaRewind", "PermissionsEx", "AntiCmds")) {
             if (pm.isPluginEnabled(inc)) {
                 pluginLogger.info(" ");
                 pluginLogger.info("§c============= §6! WARNING ! §c=============");
@@ -112,6 +113,14 @@ public final class UniversalBlocker extends JavaPlugin {
             }
         }
         return true;
+    }
+
+    private void setupPlaceholders(ConfigurationSection settings, PluginManager pluginManager) {
+        if (!settings.getBoolean("papi_support", true) || !pluginManager.isPluginEnabled("PlaceholderAPI")) {
+            return;
+        }
+        Utils.USE_PAPI = true;
+        pluginLogger.info("§eПлейсхолдеры подключены!");
     }
 
     private void checkUpdates() {

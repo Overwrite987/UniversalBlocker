@@ -29,7 +29,7 @@ public class CaseCheck extends ChatListener {
             if (caseCheckSettings.strictCheck()) {
                 e.setCancelled(true);
                 String[] replacementList = {p.getName(), Integer.toString(caseCheckSettings.maxUpperCasePercent()), message};
-                super.executeActions(e, p, searchList, replacementList, caseCheckSettings.actionsToExecute());
+                super.executeActions(p, searchList, replacementList, caseCheckSettings.actionsToExecute());
                 return;
             }
             Utils.printDebug("Moving message to lower case: " + message, Utils.DEBUG_CHAT);

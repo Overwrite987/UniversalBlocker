@@ -36,7 +36,7 @@ public class SignFilter extends ChatListener {
             if (containsBlockedChars(message, signCharsSettings)) {
                 e.setCancelled(true);
                 String[] replacementList = {p.getName(), getFirstBlockedChar(message, signCharsSettings), line0 + line1 + line2 + line3};
-                super.executeActions(e, p, searchList, replacementList, signCharsSettings.actionsToExecute());
+                super.executeActions(p, searchList, replacementList, signCharsSettings.actionsToExecute());
             }
             break;
         }

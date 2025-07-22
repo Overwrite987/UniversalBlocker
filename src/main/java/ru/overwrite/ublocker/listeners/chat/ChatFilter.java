@@ -29,7 +29,7 @@ public class ChatFilter extends ChatListener {
         if (containsBlockedChars(message, chatCharsSettings)) {
             e.setCancelled(true);
             String[] replacementList = {p.getName(), getFirstBlockedChar(message, chatCharsSettings), message};
-            super.executeActions(e, p, searchList, replacementList, chatCharsSettings.actionsToExecute());
+            super.executeActions(p, searchList, replacementList, chatCharsSettings.actionsToExecute());
         }
     }
 

@@ -4,7 +4,7 @@ author: OverwriteMC
 version: '${project.version}'
 api-version: 1.16
 folia-supported: true
-softdepend: [ WorldGuard ]
+softdepend: [ WorldGuard, PlaceholderAPI ]
 commands:
   universalblocker:
     aliases: [ ublocker, ub ]

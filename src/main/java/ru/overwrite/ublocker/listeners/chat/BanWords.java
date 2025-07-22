@@ -57,7 +57,7 @@ public class BanWords extends ChatListener {
         if (banWordsSettings.strict()) {
             e.setCancelled(true);
             String[] replacementList = {p.getName(), banword, message};
-            executeActions(e, p, searchList, replacementList, banWordsSettings.actionsToExecute());
+            executeActions(p, searchList, replacementList, banWordsSettings.actionsToExecute());
             return;
         }
         Utils.printDebug("Censored word " + banword, Utils.DEBUG_CHAT);

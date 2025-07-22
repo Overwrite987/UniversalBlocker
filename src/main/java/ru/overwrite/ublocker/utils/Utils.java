@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.chars.CharSet;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import lombok.experimental.UtilityClass;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -37,6 +38,29 @@ public class Utils {
             folia = false;
         }
         FOLIA = folia;
+    }
+
+    private Boolean hasWorldGuard;
+
+    public boolean hasWorldGuard() {
+        if (hasWorldGuard == null) {
+            try {
+                Class.forName("com.sk89q.worldguard.protection.flags.registry.FlagConflictException");
+                hasWorldGuard = true;
+            } catch (ClassNotFoundException ex) {
+                hasWorldGuard = false;
+            }
+        }
+        return hasWorldGuard;
+    }
+
+    public boolean USE_PAPI;
+
+    public String parsePlaceholders(String message, Player player) {
+        if (PlaceholderAPI.containsPlaceholders(message)) {
+            message = PlaceholderAPI.setPlaceholders(player, message);
+        }
+        return message;
     }
 
     public Colorizer COLORIZER;

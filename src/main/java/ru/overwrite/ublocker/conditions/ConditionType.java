@@ -4,7 +4,8 @@ public enum ConditionType {
 
     REGION,
     WORLD,
-    GAMEMODE;
+    GAMEMODE,
+    PLACEHOLDER;
 
     public static ConditionType get(String string) {
         try {

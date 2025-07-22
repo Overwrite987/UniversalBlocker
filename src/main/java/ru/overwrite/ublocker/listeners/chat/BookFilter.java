@@ -30,7 +30,7 @@ public class BookFilter extends ChatListener {
             if (containsBlockedChars(serialisedMessage, bookCharsSettings)) {
                 e.setCancelled(true);
                 String[] replacementList = {p.getName(), getFirstBlockedChar(serialisedMessage, bookCharsSettings)};
-                super.executeActions(e, p, searchList, replacementList, bookCharsSettings.actionsToExecute());
+                super.executeActions(p, searchList, replacementList, bookCharsSettings.actionsToExecute());
                 break;
             }
         }
