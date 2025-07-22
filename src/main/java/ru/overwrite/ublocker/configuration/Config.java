@@ -80,7 +80,7 @@ public class Config {
             case PATTERN -> pattern = Pattern.compile(allowedChars.getString("pattern"));
         }
 
-        List<Action> actionList = getActionList(allowedChars.getStringList("actions"));
+        List<Action> actionList = getChatActions(allowedChars);
 
         this.chatCharsSettings = new ChatCharsSettings(
                 mode,
@@ -113,7 +113,7 @@ public class Config {
             case PATTERN -> pattern = Pattern.compile(allowedBookChars.getString("pattern"));
         }
 
-        List<Action> actionList = getActionList(allowedBookChars.getStringList("actions"));
+        List<Action> actionList = getChatActions(allowedBookChars);
 
         this.bookCharsSettings = new BookCharsSettings(
                 mode,
@@ -146,7 +146,7 @@ public class Config {
             case PATTERN -> pattern = Pattern.compile(allowedSignChars.getString("pattern"));
         }
 
-        List<Action> actionList = getActionList(allowedSignChars.getStringList("actions"));
+        List<Action> actionList = getChatActions(allowedSignChars);
 
         this.signCharsSettings = new SignCharsSettings(
                 mode,
@@ -179,7 +179,7 @@ public class Config {
             case PATTERN -> pattern = Pattern.compile(allowedCommandChars.getString("pattern"));
         }
 
-        List<Action> actionList = getActionList(allowedCommandChars.getStringList("actions"));
+        List<Action> actionList = getChatActions(allowedCommandChars);
 
         this.commandCharsSettings = new CommandCharsSettings(
                 mode,
@@ -208,7 +208,7 @@ public class Config {
         boolean strictCheck = numbersCheck.getBoolean("strict");
         boolean stripColor = numbersCheck.getBoolean("strip_color");
 
-        List<Action> actionList = getActionList(numbersCheck.getStringList("actions"));
+        List<Action> actionList = getChatActions(numbersCheck);
 
         this.numberCheckSettings = new NumberCheckSettings(
                 maxNumbers,
@@ -236,7 +236,7 @@ public class Config {
         int maxUpperCasePercent = caseCheck.getInt("max_uppercase_percent", 70);
         boolean strictCheck = caseCheck.getBoolean("strict");
 
-        List<Action> actionList = getActionList(caseCheck.getStringList("actions"));
+        List<Action> actionList = getChatActions(caseCheck);
 
         this.caseCheckSettings = new CaseCheckSettings(
                 maxUpperCasePercent,
@@ -266,7 +266,7 @@ public class Config {
         int historySize = sameMessages.getInt("history_size", 10);
         boolean stripColor = sameMessages.getBoolean("strip_color");
 
-        List<Action> actionList = getActionList(sameMessages.getStringList("actions"));
+        List<Action> actionList = getChatActions(sameMessages);
 
         this.sameMessagesSettings = new SameMessagesSettings(
                 samePercents,
@@ -314,7 +314,7 @@ public class Config {
         String censorSymbol = String.valueOf(banWords.getString("censor_symbol", "*").charAt(0));
         boolean stripColor = banWords.getBoolean("strip_color");
 
-        List<Action> actionList = getActionList(banWords.getStringList("actions"));
+        List<Action> actionList = getChatActions(banWords);
 
         this.banWordsSettings = new BanWordsSettings(
                 mode,
@@ -407,6 +407,30 @@ public class Config {
             );
         }
         this.symbolBlockGroupSet = symbolBlockGroupSetBuilder.build();
+    }
+
+    public List<Action> getChatActions(ConfigurationSection section) {
+        if (section.contains("actions")) {
+            return getActionList(section.getStringList("actions"));
+        }
+        List<String> actions = new ObjectArrayList<>();
+        if (section.contains("message")) {
+            actions.add("[MESSAGE] " + section.getString("message"));
+        }
+        if (section.contains("sound")) {
+            actions.add("[SOUND] " + section.getString("sound"));
+        }
+
+        ConfigurationSection notifySection = section.getConfigurationSection("notify");
+        if (notifySection != null && notifySection.getBoolean("enable")) {
+            if (notifySection.contains("message")) {
+                actions.add("[NOTIFY] " + notifySection.getString("message"));
+            }
+            if (notifySection.contains("sound")) {
+                actions.add("[NOTIFY_SOUND] " + notifySection.getString("sound"));
+            }
+        }
+        return getActionList(actions);
     }
 
     private ImmutableList<Action> getActionList(List<String> actionStrings) {
