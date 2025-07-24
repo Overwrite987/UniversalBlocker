@@ -25,19 +25,11 @@ public final class PluginMessage implements PluginMessageListener {
             return;
         ByteArrayDataInput input = ByteStreams.newDataInput(message);
         String subchannel = input.readUTF();
-        if (subchannel.equalsIgnoreCase("ublocker_1")) {
-            Component comp = GsonComponentSerializer.gson().serializer().fromJson(input.readUTF(), Component.class);
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                if (p.hasPermission("ublocker.admin")) {
-                    p.sendMessage(comp);
-                }
-            }
-            return;
-        }
         if (subchannel.equalsIgnoreCase("ublocker_2")) {
-            String[] split = input.readUTF().split(" ", 2);
-            String perm = split[0];
-            String notifyMessage = split[1];
+            String data = input.readUTF();
+            int index = data.indexOf(' ');
+            String perm = data.substring(0, index).trim();
+            String notifyMessage = data.substring(index + 1).trim();
             Component comp = GsonComponentSerializer.gson().serializer().fromJson(notifyMessage, Component.class);
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (p.hasPermission(perm)) {
@@ -45,15 +37,6 @@ public final class PluginMessage implements PluginMessageListener {
                 }
             }
         }
-    }
-
-    public void sendCrossProxyBasic(Player player, String message) {
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        out.writeUTF("Forward");
-        out.writeUTF("ALL");
-        out.writeUTF("ublocker_1");
-        out.writeUTF(message);
-        player.sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
     }
 
     public void sendCrossProxyPerm(Player player, String message) {
