@@ -1,6 +1,7 @@
 package ru.overwrite.ublocker.listeners.chat;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -11,11 +12,9 @@ import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.configuration.data.SameMessagesSettings;
 import ru.overwrite.ublocker.utils.Utils;
 
-import java.util.Map;
-
 public class SameMessageLimiter extends ChatListener {
 
-    private final Map<String, Buffer> sent = new Object2ObjectOpenHashMap<>();
+    private final Reference2ObjectMap<String, Buffer> sent = new Reference2ObjectOpenHashMap<>();
     private final String[] searchList = {"%player%", "%msg%"};
 
     public SameMessageLimiter(UniversalBlocker plugin) {

@@ -1,7 +1,7 @@
 package ru.overwrite.ublocker;
 
-import com.google.common.collect.ImmutableList;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bstats.bukkit.Metrics;
@@ -47,7 +47,7 @@ public final class UniversalBlocker extends JavaPlugin {
 
     private final Config pluginConfig = new Config(this);
 
-    private final Map<String, ChatListener> chatListeners = new Object2ObjectOpenHashMap<>();
+    private final Reference2ObjectMap<String, ChatListener> chatListeners = new Reference2ObjectOpenHashMap<>();
 
     private String path;
 
@@ -99,7 +99,7 @@ public final class UniversalBlocker extends JavaPlugin {
     }
 
     private boolean checkCompatible(PluginManager pm) {
-        for (String inc : ImmutableList.of("ViaRewind", "PermissionsEx", "AntiCmds")) {
+        for (String inc : new String[]{"ViaRewind", "PermissionsEx", "AntiCmds"}) {
             if (pm.isPluginEnabled(inc)) {
                 pluginLogger.info(" ");
                 pluginLogger.info("§c============= §6! WARNING ! §c=============");
@@ -138,7 +138,8 @@ public final class UniversalBlocker extends JavaPlugin {
     }
 
     public void setupPath(ConfigurationSection settings) {
-        this.path = settings.getBoolean("custom_plugin_folder.enable") ? settings.getString("custom_plugin_folder.path") : this.getDataFolder().getAbsolutePath();
+        ConfigurationSection customPluginFolder = settings.getConfigurationSection("custom_plugin_folder");
+        this.path = customPluginFolder.getBoolean("enable") ? customPluginFolder.getString("path") : this.getDataFolder().getAbsolutePath();
     }
 
     private void setupProxy(ConfigurationSection settings) {
@@ -152,7 +153,7 @@ public final class UniversalBlocker extends JavaPlugin {
 
     public void registerEvents(PluginManager pm, ConfigurationSection settings) {
         if (settings.getBoolean("enable_chat_module")) {
-            Map<String, ChatListener> chatListeners = getChatListeners();
+            Reference2ObjectMap<String, ChatListener> chatListeners = getChatListeners();
             pluginConfig.setupChat(path);
             for (Map.Entry<String, ChatListener> entry : chatListeners.entrySet()) {
                 ChatListener listener = entry.getValue();
@@ -181,7 +182,7 @@ public final class UniversalBlocker extends JavaPlugin {
         }
     }
 
-    public Map<String, ChatListener> getChatListeners() {
+    public Reference2ObjectMap<String, ChatListener> getChatListeners() {
         if (chatListeners.isEmpty()) {
             ChatFilter chatFilter = new ChatFilter(this);
             chatListeners.put(chatFilter.getClass().getSimpleName(), chatFilter);
