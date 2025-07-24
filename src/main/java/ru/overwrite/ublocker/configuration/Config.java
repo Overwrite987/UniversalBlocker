@@ -472,11 +472,10 @@ public class Config {
         File file = new File(path, fileName);
         if (!file.exists()) {
             try {
-                file.getParentFile().mkdirs();
-
                 if (path.equals(plugin.getDataFolder().getAbsolutePath())) {
                     plugin.saveResource(fileName, false);
                 } else {
+                    file.getParentFile().mkdirs();
                     try (InputStream in = plugin.getResource(fileName)) {
                         if (in == null) {
                             throw new IllegalArgumentException("Ресурс " + fileName + " не найден в папке плагина!");
