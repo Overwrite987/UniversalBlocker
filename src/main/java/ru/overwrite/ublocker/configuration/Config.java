@@ -22,6 +22,9 @@ import ru.overwrite.ublocker.configuration.data.*;
 import ru.overwrite.ublocker.listeners.chat.*;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -468,7 +471,22 @@ public class Config {
     public FileConfiguration getFile(String path, String fileName) {
         File file = new File(path, fileName);
         if (!file.exists()) {
-            plugin.saveResource(fileName, false);
+            try {
+                file.getParentFile().mkdirs();
+
+                if (path.equals(plugin.getDataFolder().getAbsolutePath())) {
+                    plugin.saveResource(fileName, false);
+                } else {
+                    try (InputStream in = plugin.getResource(fileName)) {
+                        if (in == null) {
+                            throw new IllegalArgumentException("Ресурс " + fileName + " не найден в папке плагина!");
+                        }
+                        Files.copy(in, file.toPath());
+                    }
+                }
+            } catch (IOException ex) {
+                throw new RuntimeException("Не удалось создать файл " + file.getAbsolutePath(), ex);
+            }
         }
         return YamlConfiguration.loadConfiguration(file);
     }
