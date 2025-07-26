@@ -50,8 +50,8 @@
                             <shadedPattern>ru.overwrite.ublocker.utils.metrics</shadedPattern>
                         </relocation>
                         <relocation>
-                            <pattern>com.google</pattern>
-                            <shadedPattern>ru.overwrite.ublocker.libs.com.google</shadedPattern>
+                            <pattern>com.google.common.collect</pattern>
+                            <shadedPattern>ru.overwrite.ublocker.libs.com.google.common.collect</shadedPattern>
                         </relocation>
                     </relocations>
                     <filters>
@@ -66,7 +66,15 @@
                             <excludes>
                                 <exclude>META-INF/maven/</exclude>
                                 <exclude>org/jspecify/</exclude>
+                                <exclude>com/google/errorprone/</exclude>
+                                <exclude>com/google/j2objc/</exclude>
                             </excludes>
+                        </filter>
+                        <filter>
+                            <artifact>*:guava</artifact>
+                            <includes>
+                                <include>com/google/common/collect/**</include>
+                            </includes>
                         </filter>
                     </filters>
                     <minimizeJar>true</minimizeJar>
