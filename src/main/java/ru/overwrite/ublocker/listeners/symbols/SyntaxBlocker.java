@@ -16,7 +16,6 @@ import java.util.regex.Pattern;
 
 public class SyntaxBlocker extends SymbolBlocker {
 
-
     public SyntaxBlocker(UniversalBlocker plugin) {
         super(plugin);
     }
