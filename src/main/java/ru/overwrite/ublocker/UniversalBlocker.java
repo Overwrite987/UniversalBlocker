@@ -184,29 +184,14 @@ public final class UniversalBlocker extends JavaPlugin {
 
     public Reference2ObjectMap<String, ChatListener> getChatListeners() {
         if (chatListeners.isEmpty()) {
-            ChatFilter chatFilter = new ChatFilter(this);
-            chatListeners.put(chatFilter.getClass().getSimpleName(), chatFilter);
-
-            BookFilter bookFilter = new BookFilter(this);
-            chatListeners.put(bookFilter.getClass().getSimpleName(), bookFilter);
-
-            SignFilter signFilter = new SignFilter(this);
-            chatListeners.put(signFilter.getClass().getSimpleName(), signFilter);
-
-            CommandFilter commandFilter = new CommandFilter(this);
-            chatListeners.put(commandFilter.getClass().getSimpleName(), commandFilter);
-
-            NumbersCheck numbersCheck = new NumbersCheck(this);
-            chatListeners.put(numbersCheck.getClass().getSimpleName(), numbersCheck);
-
-            CaseCheck caseCheck = new CaseCheck(this);
-            chatListeners.put(caseCheck.getClass().getSimpleName(), caseCheck);
-
-            SameMessageLimiter sameMessageLimiter = new SameMessageLimiter(this);
-            chatListeners.put(sameMessageLimiter.getClass().getSimpleName(), sameMessageLimiter);
-
-            BanWords banWords = new BanWords(this);
-            chatListeners.put(banWords.getClass().getSimpleName(), banWords);
+            chatListeners.put(ChatFilter.class.getSimpleName(), new ChatFilter(this));
+            chatListeners.put(BookFilter.class.getSimpleName(), new BookFilter(this));
+            chatListeners.put(SignFilter.class.getSimpleName(), new SignFilter(this));
+            chatListeners.put(CommandFilter.class.getSimpleName(), new CommandFilter(this));
+            chatListeners.put(NumbersCheck.class.getSimpleName(), new NumbersCheck(this));
+            chatListeners.put(CaseCheck.class.getSimpleName(), new CaseCheck(this));
+            chatListeners.put(SameMessageLimiter.class.getSimpleName(), new SameMessageLimiter(this));
+            chatListeners.put(BanWords.class.getSimpleName(), new BanWords(this));
         }
         return chatListeners;
     }
