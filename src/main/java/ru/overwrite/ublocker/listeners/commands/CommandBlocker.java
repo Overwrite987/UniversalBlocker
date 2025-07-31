@@ -52,9 +52,9 @@ public class CommandBlocker implements Listener {
             return;
         }
         // Дерьмо для фикса другого дерьма
-        if ((command.length() >= 2 && command.charAt(1) == ' ') || hasTwoConsecutiveSpaces(command.toCharArray())) {
+        if (command.length() >= 2 && command.charAt(1) == ' ' || hasTwoConsecutiveSpaces(command.toCharArray())) {
             e.setCancelled(true);
-            Utils.printDebug("Player " + p.getName() + " tried to execute incorrect command: " + command, Utils.DEBUG_COMMANDS);
+            plugin.getPluginLogger().warn("Player " + p.getName() + " tried to execute incorrect command: " + command);
             return;
         }
         Utils.printDebug("Executed command: " + command, Utils.DEBUG_COMMANDS);
