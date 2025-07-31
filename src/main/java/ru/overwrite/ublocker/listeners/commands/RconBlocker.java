@@ -36,6 +36,7 @@ public class RconBlocker implements Listener {
             return;
         }
         String command = e.getCommand().toLowerCase();
+        outer:
         for (CommandGroup group : pluginConfig.getCommandBlockGroupSet()) {
             Utils.printDebug("Group checking now: " + group.groupId(), Utils.DEBUG_COMMANDS);
             Utils.printDebug("Block type: " + group.blockType(), Utils.DEBUG_COMMANDS);
@@ -45,18 +46,22 @@ public class RconBlocker implements Listener {
             }
             switch (group.blockType()) {
                 case STRING: {
-                    checkStringBlock(e, command, group);
+                    if (checkStringBlock(e, command, group)) {
+                        break outer;
+                    }
                     break;
                 }
                 case PATTERN: {
-                    checkPatternBlock(e, command, group);
+                    if (checkPatternBlock(e, command, group)) {
+                        break outer;
+                    }
                     break;
                 }
             }
         }
     }
 
-    private void checkStringBlock(RemoteServerCommandEvent e, String command, CommandGroup group) {
+    private boolean checkStringBlock(RemoteServerCommandEvent e, String command, CommandGroup group) {
         for (String com : group.commandsToBlockString()) {
             Command comInMap = Bukkit.getCommandMap().getCommand(com.replace("/", ""));
             List<String> aliases = comInMap == null ? List.of() : comInMap.getAliases();
@@ -70,12 +75,15 @@ public class RconBlocker implements Listener {
 
             if (com.equalsIgnoreCase(baseCommand) || aliases.contains(baseCommand)) {
                 List<Action> actions = group.actionsToExecute();
-                executeActions(e, command, baseCommand, actions);
+                if (executeActions(e, command, baseCommand, actions)) {
+                    return true;
+                }
             }
         }
+        return false;
     }
 
-    private void checkPatternBlock(RemoteServerCommandEvent e, String command, CommandGroup group) {
+    private boolean checkPatternBlock(RemoteServerCommandEvent e, String command, CommandGroup group) {
         for (Pattern pattern : group.commandsToBlockPattern()) {
             String baseCommand = Utils.cutCommand(command).replace("/", "");
             Matcher matcher = pattern.matcher(baseCommand);
@@ -87,15 +95,18 @@ public class RconBlocker implements Listener {
                 }
                 if (aliases.contains(matcher.group())) {
                     List<Action> actions = group.actionsToExecute();
-                    executeActions(e, command, matcher.group(), actions);
+                    if (executeActions(e, command, matcher.group(), actions)) {
+                        return true;
+                    }
                 }
             }
         }
+        return false;
     }
 
     private final String[] searchList = {"%player%", "%command%", "%msg%"};
 
-    public void executeActions(Cancellable e, String fullCommand, String baseCommand, List<Action> actions) {
+    public boolean executeActions(Cancellable e, String fullCommand, String baseCommand, List<Action> actions) {
         Utils.printDebug("Starting executing actions for rcon and blocked command '" + baseCommand + "'", Utils.DEBUG_COMMANDS);
         final String[] replacementList = {"RCON", baseCommand, fullCommand};
 
@@ -122,6 +133,7 @@ public class RconBlocker implements Listener {
                 }
             }
         }
+        return e.isCancelled();
     }
 
     private void logAction(Action action, String[] replacementList) {

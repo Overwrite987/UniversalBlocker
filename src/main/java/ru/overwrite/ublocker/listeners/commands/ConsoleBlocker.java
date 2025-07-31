@@ -36,6 +36,7 @@ public class ConsoleBlocker implements Listener {
             return;
         }
         String command = e.getCommand().toLowerCase();
+        outer:
         for (CommandGroup group : pluginConfig.getCommandBlockGroupSet()) {
             Utils.printDebug("Group checking now: " + group.groupId(), Utils.DEBUG_COMMANDS);
             Utils.printDebug("Block type: " + group.blockType(), Utils.DEBUG_COMMANDS);
@@ -45,18 +46,22 @@ public class ConsoleBlocker implements Listener {
             }
             switch (group.blockType()) {
                 case STRING: {
-                    checkStringBlock(e, command, group);
+                    if (checkStringBlock(e, command, group)) {
+                        break outer;
+                    }
                     break;
                 }
                 case PATTERN: {
-                    checkPatternBlock(e, command, group);
+                    if (checkPatternBlock(e, command, group)) {
+                        break outer;
+                    }
                     break;
                 }
             }
         }
     }
 
-    private void checkStringBlock(ServerCommandEvent e, String command, CommandGroup group) {
+    private boolean checkStringBlock(ServerCommandEvent e, String command, CommandGroup group) {
         for (String com : group.commandsToBlockString()) {
             Command comInMap = Bukkit.getCommandMap().getCommand(com.replace("/", ""));
             List<String> aliases = comInMap == null ? List.of() : comInMap.getAliases();
@@ -71,11 +76,13 @@ public class ConsoleBlocker implements Listener {
             if (com.equalsIgnoreCase(baseCommand) || aliases.contains(baseCommand)) {
                 List<Action> actions = group.actionsToExecute();
                 executeActions(e, command, baseCommand, actions);
+                return true;
             }
         }
+        return false;
     }
 
-    private void checkPatternBlock(ServerCommandEvent e, String command, CommandGroup group) {
+    private boolean checkPatternBlock(ServerCommandEvent e, String command, CommandGroup group) {
         for (Pattern pattern : group.commandsToBlockPattern()) {
             String baseCommand = Utils.cutCommand(command).replace("/", "");
             Matcher matcher = pattern.matcher(baseCommand);
@@ -88,9 +95,11 @@ public class ConsoleBlocker implements Listener {
                 if (aliases.contains(matcher.group())) {
                     List<Action> actions = group.actionsToExecute();
                     executeActions(e, command, matcher.group(), actions);
+                    return true;
                 }
             }
         }
+        return false;
     }
 
     private final String[] searchList = {"%player%", "%command%", "%msg%"};

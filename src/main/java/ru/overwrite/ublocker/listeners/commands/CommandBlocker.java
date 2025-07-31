@@ -97,7 +97,8 @@ public class CommandBlocker implements Listener {
             String executedCommandBase = Utils.cutCommand(command);
             if (executedCommandBase.equalsIgnoreCase(com) || aliases.contains(executedCommandBase.substring(1))) {
                 List<Action> actions = group.actionsToExecute();
-                return executeActions(e, p, com, command, actions);
+                executeActions(e, p, com, command, actions);
+                return true;
             }
         }
         return false;
@@ -115,9 +116,11 @@ public class CommandBlocker implements Listener {
                 }
                 List<Action> actions = group.actionsToExecute();
                 if (aliases.contains(matcher.group())) {
-                    return executeActions(e, p, matcher.group(), command, actions);
+                    executeActions(e, p, matcher.group(), command, actions);
+                    return true;
                 }
-                return executeActions(e, p, matcher.group(), command, actions);
+                executeActions(e, p, matcher.group(), command, actions);
+                return true;
             }
         }
         return false;
@@ -125,7 +128,7 @@ public class CommandBlocker implements Listener {
 
     private final String[] searchList = {"%player%", "%world%", "%cmd%", "%fullcmd%"};
 
-    public boolean executeActions(Cancellable e, Player p, String com, String command, List<Action> actions) {
+    public void executeActions(Cancellable e, Player p, String com, String command, List<Action> actions) {
         Utils.printDebug("Starting executing actions for player '" + p.getName() + "' and command '" + command + "'", Utils.DEBUG_COMMANDS);
         final String[] replacementList = {p.getName(), p.getWorld().getName(), com, command};
 
@@ -152,7 +155,6 @@ public class CommandBlocker implements Listener {
                 }
             }
         }
-        return e.isCancelled();
     }
 
     private boolean shouldBlockAction(ActionType type, Player p, Action action, String command) {
