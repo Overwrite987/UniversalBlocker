@@ -132,7 +132,7 @@ public class CommandClass implements TabExecutor {
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
-        if (!sender.hasPermission("rtp.admin")) {
+        if (!sender.hasPermission("ublocker.admin")) {
             return List.of();
         }
         final List<String> completions = new ObjectArrayList<>();
