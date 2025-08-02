@@ -67,6 +67,7 @@ public final class UniversalBlocker extends JavaPlugin {
         final FileConfiguration config = getConfig();
         final ConfigurationSection settings = config.getConfigurationSection("settings");
         Utils.setupColorizer(settings);
+        Utils.IGNORE_UNKNOWN_COMMANDS = settings.getBoolean("ignore_unknown_commands");
         this.setupPlaceholders(settings, getServer().getPluginManager());
         this.setupPath(settings);
         pluginConfig.setupExcluded(config);

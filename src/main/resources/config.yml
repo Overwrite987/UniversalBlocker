@@ -32,6 +32,9 @@ settings:
     path: '/root/server/plugins/UniversalBlocker/'
   # Отключать ли сервер при отключении плагина
   shutdown_on_disable: false
+  # Должен ли плагин игнорировать не зарегистрированные команды при их проверке?
+  # Отключено по умолчанию, поскольку MyCommand или DeluxeMenus не регистрируют команды по умолчанию
+  ignore_unknown_commands: false
 
 # На каких игроков не будут действовать никакие запреты (можно оставить пустым, это снизит нагрузку)
 excluded_players:

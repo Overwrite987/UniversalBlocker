@@ -23,7 +23,7 @@ public class SyntaxBlocker extends SymbolBlocker {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onCommand(PlayerCommandPreprocessEvent e) {
         String command = e.getMessage().toLowerCase();
-        if (command.length() == 1) {
+        if (command.length() == 1 || Utils.isUnknownCommand(command)) {
             return;
         }
         Player p = e.getPlayer();

@@ -380,6 +380,12 @@ public class Utils {
         };
     }
 
+    public boolean IGNORE_UNKNOWN_COMMANDS;
+
+    public boolean isUnknownCommand(String command) {
+        return IGNORE_UNKNOWN_COMMANDS && !Bukkit.getCommandMap().getKnownCommands().containsKey(cutCommand(command));
+    }
+
     public String cutCommand(String str) {
         int index = str.indexOf(' ');
         return index == -1 ? str : str.substring(0, index);
