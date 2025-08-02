@@ -120,6 +120,8 @@ public class CommandClass implements TabExecutor {
         final FileConfiguration config = plugin.getConfig();
         final ConfigurationSection settings = config.getConfigurationSection("settings");
         Utils.setupColorizer(settings);
+        Utils.IGNORE_UNKNOWN_COMMANDS = settings.getBoolean("ignore_unknown_commands");
+        plugin.setupPlaceholders(settings, Bukkit.getPluginManager());
         plugin.setupPath(settings);
         pluginConfig.setupExcluded(config);
         plugin.registerEvents(Bukkit.getPluginManager(), settings);

@@ -116,14 +116,6 @@ public final class UniversalBlocker extends JavaPlugin {
         return true;
     }
 
-    private void setupPlaceholders(ConfigurationSection settings, PluginManager pluginManager) {
-        if (!settings.getBoolean("papi_support", true) || !pluginManager.isPluginEnabled("PlaceholderAPI")) {
-            return;
-        }
-        Utils.USE_PAPI = true;
-        pluginLogger.info("§eПлейсхолдеры подключены!");
-    }
-
     private void checkUpdates() {
         Utils.checkUpdates(this, version -> {
             pluginLogger.info("§6========================================");
@@ -137,6 +129,15 @@ public final class UniversalBlocker extends JavaPlugin {
             pluginLogger.info("§6========================================");
         });
     }
+
+    public void setupPlaceholders(ConfigurationSection settings, PluginManager pluginManager) {
+        if (!settings.getBoolean("papi_support", true) || !pluginManager.isPluginEnabled("PlaceholderAPI")) {
+            return;
+        }
+        Utils.USE_PAPI = true;
+        pluginLogger.info("§eПлейсхолдеры подключены!");
+    }
+
 
     public void setupPath(ConfigurationSection settings) {
         ConfigurationSection customPluginFolder = settings.getConfigurationSection("custom_plugin_folder");
