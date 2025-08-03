@@ -78,7 +78,8 @@
                         </filter>
                     </filters>
                     <minimizeJar>true</minimizeJar>
-                    <shadedArtifactAttached>true</shadedArtifactAttached>
+                    <shadedArtifactAttached>false</shadedArtifactAttached>
+                    <finalName>${project.build.finalName}</finalName>
                 </configuration>
                 <executions>
                     <execution>
