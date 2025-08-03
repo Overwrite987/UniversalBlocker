@@ -143,10 +143,6 @@ public abstract class ChatListener implements Listener {
         );
     }
 
-    private boolean hasBypassPermission(Player p, Action action) {
-        return p.hasPermission(getActionPermission(action, "ublocker.bypass.chat"));
-    }
-
     private String getActionPermission(Action action, String defaultPerm) {
         return Utils.getPermOrDefault(
                 Utils.extractValue(action.context(), Utils.PERM_PREFIX, "}"),

@@ -138,7 +138,6 @@ public final class UniversalBlocker extends JavaPlugin {
         pluginLogger.info("§eПлейсхолдеры подключены!");
     }
 
-
     public void setupPath(ConfigurationSection settings) {
         ConfigurationSection customPluginFolder = settings.getConfigurationSection("custom_plugin_folder");
         this.path = customPluginFolder.getBoolean("enable") ? customPluginFolder.getString("path") : this.getDataFolder().getAbsolutePath();
