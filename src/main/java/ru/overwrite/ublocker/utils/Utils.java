@@ -383,7 +383,7 @@ public class Utils {
     public boolean IGNORE_UNKNOWN_COMMANDS;
 
     public boolean isUnknownCommand(String command) {
-        return IGNORE_UNKNOWN_COMMANDS && !Bukkit.getCommandMap().getKnownCommands().containsKey(cutCommand(command));
+        return IGNORE_UNKNOWN_COMMANDS && !Bukkit.getCommandMap().getKnownCommands().containsKey(cutCommand(command).substring(1));
     }
 
     public String cutCommand(String str) {
