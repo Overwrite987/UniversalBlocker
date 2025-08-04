@@ -13,6 +13,7 @@ import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import ru.overwrite.ublocker.configuration.Config;
 import ru.overwrite.ublocker.listeners.chat.ChatListener;
+import ru.overwrite.ublocker.listeners.commands.CommandBlocker;
 import ru.overwrite.ublocker.listeners.commands.ConsoleBlocker;
 import ru.overwrite.ublocker.listeners.commands.RconBlocker;
 import ru.overwrite.ublocker.utils.Utils;
@@ -82,7 +83,7 @@ public class CommandClass implements TabExecutor {
                 String lockType = args[1].toLowerCase();
                 switch (lockType) {
                     case "commands" ->
-                            toggleFeature("Блокировка команд для", "игроков", ConsoleBlocker.FULL_LOCK, v -> ConsoleBlocker.FULL_LOCK = v, sender);
+                            toggleFeature("Блокировка команд для", "игроков", CommandBlocker.FULL_LOCK, v -> CommandBlocker.FULL_LOCK = v, sender);
                     case "console" ->
                             toggleFeature("Блокировка команд для", "консоли", ConsoleBlocker.FULL_LOCK, v -> ConsoleBlocker.FULL_LOCK = v, sender);
                     case "rcon" ->
