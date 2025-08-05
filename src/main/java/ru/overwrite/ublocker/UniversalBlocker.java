@@ -1,7 +1,7 @@
 package ru.overwrite.ublocker;
 
-import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bstats.bukkit.Metrics;
@@ -47,7 +47,7 @@ public final class UniversalBlocker extends JavaPlugin {
 
     private final Config pluginConfig = new Config(this);
 
-    private final Reference2ObjectMap<String, ChatListener> chatListeners = new Reference2ObjectOpenHashMap<>();
+    private final Object2ObjectMap<String, ChatListener> chatListeners = new Object2ObjectOpenHashMap<>();
 
     private String path;
 
@@ -154,7 +154,7 @@ public final class UniversalBlocker extends JavaPlugin {
 
     public void registerEvents(PluginManager pm, ConfigurationSection settings) {
         if (settings.getBoolean("enable_chat_module")) {
-            Reference2ObjectMap<String, ChatListener> chatListeners = getChatListeners();
+            Object2ObjectMap<String, ChatListener> chatListeners = getChatListeners();
             pluginConfig.setupChat(path);
             for (Map.Entry<String, ChatListener> entry : chatListeners.entrySet()) {
                 ChatListener listener = entry.getValue();
@@ -183,7 +183,7 @@ public final class UniversalBlocker extends JavaPlugin {
         }
     }
 
-    public Reference2ObjectMap<String, ChatListener> getChatListeners() {
+    public Object2ObjectMap<String, ChatListener> getChatListeners() {
         if (chatListeners.isEmpty()) {
             chatListeners.put(ChatFilter.class.getSimpleName(), new ChatFilter(this));
             chatListeners.put(BookFilter.class.getSimpleName(), new BookFilter(this));
