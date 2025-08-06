@@ -117,8 +117,7 @@ public class CommandClass implements TabExecutor {
             listener.setRegistered(false);
         }
         HandlerList.unregisterAll(plugin);
-        plugin.reloadConfig();
-        final FileConfiguration config = plugin.getConfig();
+        final FileConfiguration config = pluginConfig.getFile(plugin.getDataFolder().getAbsolutePath(), "config.yml");
         final ConfigurationSection settings = config.getConfigurationSection("settings");
         Utils.setupColorizer(settings);
         Utils.IGNORE_UNKNOWN_COMMANDS = settings.getBoolean("ignore_unknown_commands");

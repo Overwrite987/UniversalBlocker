@@ -63,8 +63,7 @@ public final class UniversalBlocker extends JavaPlugin {
         if (!checkCompatible(pm)) {
             return;
         }
-        saveDefaultConfig();
-        final FileConfiguration config = getConfig();
+        final FileConfiguration config = pluginConfig.getFile(getDataFolder().getAbsolutePath(), "config.yml");
         final ConfigurationSection settings = config.getConfigurationSection("settings");
         Utils.setupColorizer(settings);
         Utils.IGNORE_UNKNOWN_COMMANDS = settings.getBoolean("ignore_unknown_commands");
@@ -217,7 +216,7 @@ public final class UniversalBlocker extends JavaPlugin {
     @Override
     public void onDisable() {
         runner.cancelTasks();
-        if (getConfig().getBoolean("settings.shutdown_on_disable")) {
+        if (pluginConfig.getFile(getDataFolder().getAbsolutePath(), "config.yml").getBoolean("settings.shutdown_on_disable")) {
             server.shutdown();
         }
         if (pluginMessage != null) {
