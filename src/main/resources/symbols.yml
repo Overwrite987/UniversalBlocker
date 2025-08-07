@@ -69,6 +69,7 @@ symbols:
     symbols:
       - '.*'
       - '**'
+      - '\n'
     actions:
       - '[LITE_BLOCK] perm={ublocker.bypass.symbols2}'
       - '[MESSAGE] &7&l(&c&l!&7&l) &3Символ &8(&4%symbol%&8) &3запрещено использовать в командах!'
