@@ -68,6 +68,8 @@ public class CommandClass implements TabExecutor {
                             plugin.getPluginLogger().info("Known command groups: " + pluginConfig.getCommandBlockGroupSet());
                     case "printsymbolgroups" ->
                             plugin.getPluginLogger().info("Known command groups: " + pluginConfig.getSymbolBlockGroupSet());
+                    case "printchatlisteners" ->
+                            plugin.getPluginLogger().info("Chat listeners: " + plugin.getChatListeners());
                     default -> {
                         sender.sendMessage("§cUniversalBlocker §7> §6Неизвестный тип дебага! Доступные: chat, commands, symbols");
                         return true;
