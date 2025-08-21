@@ -15,10 +15,11 @@ public class WGUtils {
 
     public ObjectList<String> getRegions(Location location) {
         ObjectList<String> regions = new ObjectArrayList<>();
-        if (getApplicableRegions(location) == null || getApplicableRegions(location).size() == 0) {
+        ApplicableRegionSet regionSet = getApplicableRegions(location);
+        if (regionSet == null || regionSet.size() == 0) {
             return regions;
         }
-        for (ProtectedRegion region : getApplicableRegions(location)) {
+        for (ProtectedRegion region : regionSet) {
             regions.add(region.getId());
         }
         return regions;
