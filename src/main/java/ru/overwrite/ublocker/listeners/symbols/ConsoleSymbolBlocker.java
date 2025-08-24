@@ -9,6 +9,7 @@ import org.bukkit.event.server.ServerCommandEvent;
 import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.actions.ActionType;
+import ru.overwrite.ublocker.blockgroups.BlockFactor;
 import ru.overwrite.ublocker.blockgroups.SymbolGroup;
 import ru.overwrite.ublocker.configuration.Config;
 import ru.overwrite.ublocker.utils.Utils;
@@ -33,7 +34,7 @@ public class ConsoleSymbolBlocker implements Listener {
         outer:
         for (SymbolGroup group : pluginConfig.getSymbolBlockGroupSet()) {
             Utils.printDebug("Group checking now: " + group.groupId(), Utils.DEBUG_SYMBOLS);
-            if (group.blockFactor().isEmpty() || !group.blockFactor().contains("console_command")) {
+            if (group.blockFactor().isEmpty() || !group.blockFactor().contains(BlockFactor.CONSOLE_COMMAND)) {
                 Utils.printDebug("Group " + group.groupId() + " does not have 'console_command' block factor. Skipping...", Utils.DEBUG_SYMBOLS);
                 continue;
             }

@@ -7,6 +7,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.actions.Action;
+import ru.overwrite.ublocker.blockgroups.BlockFactor;
 import ru.overwrite.ublocker.blockgroups.SymbolGroup;
 import ru.overwrite.ublocker.conditions.ConditionChecker;
 import ru.overwrite.ublocker.utils.Utils;
@@ -38,7 +39,7 @@ public class AnvilBlocker extends SymbolBlocker {
         outer:
         for (SymbolGroup group : pluginConfig.getSymbolBlockGroupSet()) {
             Utils.printDebug("Group checking now: " + group.groupId(), Utils.DEBUG_SYMBOLS);
-            if (group.blockFactor().isEmpty() || !group.blockFactor().contains("anvil")) {
+            if (group.blockFactor().isEmpty() || !group.blockFactor().contains(BlockFactor.ANVIL)) {
                 Utils.printDebug("Group " + group.groupId() + " does not have 'anvil' block factor. Skipping...", Utils.DEBUG_SYMBOLS);
                 continue;
             }

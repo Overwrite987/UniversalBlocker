@@ -6,6 +6,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.SignChangeEvent;
 import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.actions.Action;
+import ru.overwrite.ublocker.blockgroups.BlockFactor;
 import ru.overwrite.ublocker.blockgroups.SymbolGroup;
 import ru.overwrite.ublocker.conditions.ConditionChecker;
 import ru.overwrite.ublocker.utils.Utils;
@@ -34,7 +35,7 @@ public class SignBlocker extends SymbolBlocker {
         outer:
         for (SymbolGroup group : pluginConfig.getSymbolBlockGroupSet()) {
             Utils.printDebug("Group checking now: " + group.groupId(), Utils.DEBUG_SYMBOLS);
-            if (group.blockFactor().isEmpty() || !group.blockFactor().contains("sign")) {
+            if (group.blockFactor().isEmpty() || !group.blockFactor().contains(BlockFactor.SIGN)) {
                 Utils.printDebug("Group " + group.groupId() + " does not have 'sign' block factor. Skipping...", Utils.DEBUG_SYMBOLS);
                 continue;
             }

@@ -14,6 +14,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import ru.overwrite.ublocker.UniversalBlocker;
 import ru.overwrite.ublocker.actions.Action;
 import ru.overwrite.ublocker.actions.ActionType;
+import ru.overwrite.ublocker.blockgroups.BlockFactor;
 import ru.overwrite.ublocker.blockgroups.BlockType;
 import ru.overwrite.ublocker.blockgroups.CommandGroup;
 import ru.overwrite.ublocker.blockgroups.SymbolGroup;
@@ -25,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -394,7 +396,7 @@ public class Config {
         for (String symbolsID : keys) {
             final ConfigurationSection section = symbols.getConfigurationSection("symbols." + symbolsID);
             BlockType blockType = BlockType.valueOf(section.getString("mode").toUpperCase());
-            List<String> blockFactor = getBlockFactorList(section.getString("block_factor", ""));
+            Set<BlockFactor> blockFactor = getBlockFactors(section.getString("block_factor", ""));
             List<Condition> conditionList = getConditionList(section.getStringList("conditions"));
             List<Action> actionList = getActionList(section.getStringList("actions"));
             symbolBlockGroupSetBuilder.add(
@@ -458,10 +460,18 @@ public class Config {
         return conditionListBuilder.build();
     }
 
-    private ImmutableList<String> getBlockFactorList(String str) {
+    private Set<BlockFactor> getBlockFactors(String blockFactorString) {
+        Set<BlockFactor> blockFactors = EnumSet.noneOf(BlockFactor.class);
+        for (String blockFactor : getWorkFactorsAsStringArray(blockFactorString)) {
+            blockFactors.add(BlockFactor.valueOf(blockFactor));
+        }
+        return blockFactors;
+    }
+
+    public String[] getWorkFactorsAsStringArray(String str) {
         return str.contains(";")
-                ? ImmutableList.copyOf(str.trim().split(";"))
-                : ImmutableList.of(str.trim());
+                ? str.trim().split(";")
+                : new String[]{str.trim()};
     }
 
     public void setupExcluded(FileConfiguration config) {

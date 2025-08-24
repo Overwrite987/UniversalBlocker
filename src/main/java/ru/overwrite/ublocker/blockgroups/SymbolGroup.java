@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 public record SymbolGroup(
         String groupId,
         BlockType blockType,
-        List<String> blockFactor,
+        Set<BlockFactor> blockFactor,
         Set<String> symbolsToBlock,
         Set<Pattern> patternsToBlock,
         List<String> excludedCommandsString,
@@ -22,7 +22,7 @@ public record SymbolGroup(
     public SymbolGroup(
             String groupId,
             BlockType blockType,
-            List<String> blockFactor,
+            Set<BlockFactor> blockFactor,
             List<String> symbolsToBlock,
             List<String> excludedCommand,
             List<Condition> conditionsToCheck,
