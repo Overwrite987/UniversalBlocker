@@ -1,6 +1,7 @@
-package ru.overwrite.ublocker.utils.color;
+package ru.overwrite.ublocker.utils.color.impl;
 
 import ru.overwrite.ublocker.utils.Utils;
+import ru.overwrite.ublocker.utils.color.Colorizer;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

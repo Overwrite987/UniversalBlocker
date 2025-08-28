@@ -16,14 +16,14 @@ import ru.overwrite.ublocker.configuration.Config;
 import ru.overwrite.ublocker.listeners.chat.*;
 import ru.overwrite.ublocker.listeners.commands.*;
 import ru.overwrite.ublocker.listeners.symbols.*;
+import ru.overwrite.ublocker.logging.Logger;
+import ru.overwrite.ublocker.logging.impl.BukkitLogger;
+import ru.overwrite.ublocker.logging.impl.PaperLogger;
 import ru.overwrite.ublocker.task.BukkitRunner;
 import ru.overwrite.ublocker.task.PaperRunner;
 import ru.overwrite.ublocker.task.Runner;
 import ru.overwrite.ublocker.utils.PluginMessage;
 import ru.overwrite.ublocker.utils.Utils;
-import ru.overwrite.ublocker.utils.logging.BukkitLogger;
-import ru.overwrite.ublocker.utils.logging.Logger;
-import ru.overwrite.ublocker.utils.logging.PaperLogger;
 
 import java.io.BufferedWriter;
 import java.io.File;

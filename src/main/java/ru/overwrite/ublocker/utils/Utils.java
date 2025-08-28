@@ -15,7 +15,10 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import ru.overwrite.ublocker.UniversalBlocker;
-import ru.overwrite.ublocker.utils.color.*;
+import ru.overwrite.ublocker.utils.color.Colorizer;
+import ru.overwrite.ublocker.utils.color.impl.LegacyAdvancedColorizer;
+import ru.overwrite.ublocker.utils.color.impl.LegacyColorizer;
+import ru.overwrite.ublocker.utils.color.impl.MiniMessageColorizer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -68,9 +71,8 @@ public class Utils {
     public void setupColorizer(ConfigurationSection mainSettings) {
         COLORIZER = switch (mainSettings.getString("serializer", "LEGACY").toUpperCase()) {
             case "MINIMESSAGE" -> new MiniMessageColorizer();
-            case "LEGACY" -> new LegacyColorizer();
             case "LEGACY_ADVANCED" -> new LegacyAdvancedColorizer();
-            default -> new VanillaColorizer();
+            default -> new LegacyColorizer();
         };
     }
 

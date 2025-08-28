@@ -1,4 +1,4 @@
-package ru.overwrite.ublocker.utils.logging;
+package ru.overwrite.ublocker.logging;
 
 public interface Logger {
 

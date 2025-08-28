@@ -1,6 +1,7 @@
-package ru.overwrite.ublocker.utils.logging;
+package ru.overwrite.ublocker.logging.impl;
 
 import ru.overwrite.ublocker.UniversalBlocker;
+import ru.overwrite.ublocker.logging.Logger;
 
 public class BukkitLogger implements Logger {
 
