@@ -415,24 +415,29 @@ public class Config {
     }
 
     public List<Action> getChatActions(ConfigurationSection section) {
-        if (section.contains("actions")) {
+        List<String> actionStrings = section.getStringList("actions");
+        if (!actionStrings.isEmpty()) {
             return getActionList(section.getStringList("actions"));
         }
         List<String> actions = new ObjectArrayList<>();
-        if (section.contains("message")) {
-            actions.add("[MESSAGE] " + section.getString("message"));
+        String message = section.getString("message");
+        if (message != null) {
+            actions.add("[MESSAGE] " + message);
         }
-        if (section.contains("sound")) {
-            actions.add("[SOUND] " + section.getString("sound"));
+        String sound = section.getString("sound");
+        if (sound != null) {
+            actions.add("[SOUND] " + sound);
         }
 
         ConfigurationSection notifySection = section.getConfigurationSection("notify");
         if (notifySection != null && notifySection.getBoolean("enable")) {
-            if (notifySection.contains("message")) {
-                actions.add("[NOTIFY] " + notifySection.getString("message"));
+            String notifyMessage = section.getString("message");
+            if (notifyMessage != null) {
+                actions.add("[NOTIFY] " + notifyMessage);
             }
-            if (notifySection.contains("sound")) {
-                actions.add("[NOTIFY_SOUND] " + notifySection.getString("sound"));
+            String notifySound = notifySection.getString("sound");
+            if (notifySound != null) {
+                actions.add("[NOTIFY_SOUND] " + notifySound);
             }
         }
         return getActionList(actions);
