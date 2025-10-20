@@ -42,7 +42,7 @@ public class ConditionChecker {
                 }
                 case PLACEHOLDER: {
                     if (!Utils.USE_PAPI) return false;
-                    int startIndex = context.indexOf(";");
+                    int startIndex = context.indexOf(';');
                     if (startIndex == -1) return false;
                     String placeholderValue = Utils.parsePlaceholders(context.substring(0, startIndex).trim(), p);
                     String value = context.substring(startIndex + 1).trim();

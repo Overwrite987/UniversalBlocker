@@ -36,7 +36,7 @@ public class TabComplete implements Listener {
             return;
         String buffer = e.getBuffer();
         // Херня которая запрещает стилить плагины через читы, а за одно еще и предотвращает краш таб-комплитом
-        if ((buffer.split(" ").length == 1 && !buffer.endsWith(" ")) || !buffer.startsWith("/") || buffer.length() > 256) {
+        if (buffer.length() > 256 || (buffer.split(" ").length == 1 && !(buffer.charAt(buffer.length() - 1) == ' ')) || !(buffer.charAt(0) == '/')) {
             Utils.printDebug("Preventing illegal tab complete action from player " + p.getName(), Utils.DEBUG_COMMANDS);
             Utils.printDebug("Tab complete buffer: " + buffer, Utils.DEBUG_COMMANDS);
             e.setCancelled(true);

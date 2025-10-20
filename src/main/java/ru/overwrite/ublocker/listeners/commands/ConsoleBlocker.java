@@ -69,7 +69,7 @@ public class ConsoleBlocker implements Listener {
                 aliases.add(comInMap.getName());
             }
             String executedCommandBase = Utils.cutCommand(command).toLowerCase();
-            String baseCommand = executedCommandBase.startsWith("/")
+            String baseCommand = !executedCommandBase.isEmpty() && executedCommandBase.charAt(0) == '/'
                     ? executedCommandBase.substring(1)
                     : executedCommandBase;
 
