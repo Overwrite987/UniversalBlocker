@@ -499,13 +499,4 @@ public class Config {
         }
         return YamlConfiguration.loadConfiguration(file);
     }
-
-//    public FileConfiguration save(FileConfiguration config, String fileName) {
-//        try {
-//            config.save(new File(plugin.getDataFolder(), fileName));
-//        } catch (IOException ex) {
-//            ex.printStackTrace();
-//        }
-//        return config;
-//    }
 }
