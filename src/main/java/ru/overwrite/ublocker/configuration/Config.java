@@ -468,7 +468,7 @@ public class Config {
     private Set<BlockFactor> getBlockFactors(String blockFactorString) {
         Set<BlockFactor> blockFactors = EnumSet.noneOf(BlockFactor.class);
         for (String blockFactor : getWorkFactorsAsStringArray(blockFactorString)) {
-            blockFactors.add(BlockFactor.valueOf(blockFactor));
+            blockFactors.add(BlockFactor.valueOf(blockFactor.toUpperCase()));
         }
         return blockFactors;
     }
